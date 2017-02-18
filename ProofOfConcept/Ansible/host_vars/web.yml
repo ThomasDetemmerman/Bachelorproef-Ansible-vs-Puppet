@@ -1,0 +1,7 @@
+# /ansible/host_vars/pr001.yml
+# Variables for pr001.yml
+---
+
+
+rhbase_firewall_allow_services:
+  - http
