@@ -1,7 +1,7 @@
 #personal
 thoughts.txt
 ~$*xlsx
-/.vagrant
+*.vagrant
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
