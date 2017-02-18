@@ -1,7 +1,12 @@
 #personal
 thoughts.txt
+
+#excel
 ~$*xlsx
+
+#vagrant
 *.vagrant
+*.box
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
