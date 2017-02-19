@@ -1,6 +1,6 @@
 #personal
 thoughts.txt
-
+*.retry
 #excel
 ~$*xlsx
 

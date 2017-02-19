@@ -1,15 +1,15 @@
 #://www.vagrantup.com/docs/provisioning/ansible.html
 
 
-AmountOfVM = 4
-
+AmountOfVM = 2
+GroupVMName = "Anode"
 
 Vagrant.configure("2") do |config|
   config.vm.box = "bertvv/CentOS72"
 
   (1..AmountOfVM).each do |machine_id|
-    config.vm.define "node#{machine_id}" do |machine|
-      machine.vm.hostname = "node#{machine_id}"
+    config.vm.define "#{GroupVMName}#{machine_id}" do |machine|
+      machine.vm.hostname = "#{GroupVMName}#{machine_id}"
       machine.vm.network "private_network", ip: "192.168.77.#{20+machine_id}"
       config.vm.provision "shell",
         inline: "systemctl restart network" #anders werkt enp0s8 niet
