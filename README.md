@@ -5,7 +5,7 @@ Technische voor-en nadelen van Puppet en Ansible. Verloop en redenen van een oms
 [./Bachelorproefvoorstel.pdf](./Bachelorproefvoorstel.pdf)
 
 # Bachelorproef
-[./LaTeX/bachelorproef-tin.pdf](./LaTeX/bachelorproef-tin.pdf)
+[./LaTeX/bachproef-tin.pdf](./LaTeX/bachproef-tin.pdf)
 
 # Planning
 
