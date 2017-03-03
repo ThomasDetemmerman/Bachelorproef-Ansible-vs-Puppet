@@ -50,4 +50,4 @@ agent> puppet agent -t
 master> puppet cert list
 master > puppet sign cert >name>
 agent> puppet resource service puppet ensure=running 
-
+owe

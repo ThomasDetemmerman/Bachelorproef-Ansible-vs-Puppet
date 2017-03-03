@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
 
   (1..AmountOfVM).each do |machine_id|
     config.vm.define "#{GroupVMName}#{machine_id}" do |machine|
-      machine.config.vm.box = "centos/7"
+      machine.vm.box = "centos/7"
       machine.vm.hostname = "#{GroupVMName}#{machine_id}"
       machine.vm.network "private_network", ip: "192.168.100.#{20+machine_id}"
       config.vm.provision "shell",
