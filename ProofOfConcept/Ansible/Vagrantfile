@@ -6,21 +6,21 @@ GroupVMName = "Anode"
 
 #Ansible tower
 Vagrant.configure("2") do |config|
-  config.vm.box = "ansible/tower"
+
 
   config.vm.define "#{GroupVMName}Tower" do |machine|
+    machine.vm.box = "ansible/tower"
     machine.vm.hostname = "#{GroupVMName}Tower"
     machine.vm.network "private_network", ip: "192.168.100.20"
     config.vm.provision "shell",
       inline: "systemctl restart network"
-    config.vm.provision "shell",
-      inline: "sudo sh /vagrant/monitoring/newrelicinfra.sh"
   end
 
 #clients
-  config.vm.box = "centos/7"
+
   (1..AmountOfVM).each do |machine_id|
     config.vm.define "#{GroupVMName}#{machine_id}" do |machine|
+      machine.config.vm.box = "centos/7"
       machine.vm.hostname = "#{GroupVMName}#{machine_id}"
       machine.vm.network "private_network", ip: "192.168.100.#{20+machine_id}"
       config.vm.provision "shell",
