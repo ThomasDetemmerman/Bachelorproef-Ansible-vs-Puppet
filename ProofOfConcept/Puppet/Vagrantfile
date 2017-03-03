@@ -2,39 +2,23 @@
 AmountOfVM = 2
 VmGroupName = "PPnode"
 
-
-
 Vagrant.configure("2") do |config|
 
-
-  #config.vm.box = "bertvv/CentOS72"
   config.vm.box = "centos/7"
-
-
-
 
   #Master
     config.vm.define "#{VmGroupName}Master" do |machine|
       machine.vm.hostname = "#{VmGroupName}Master"
-      machine.vm.network "private_network", ip: "192.168.40.21"
+      machine.vm.network "private_network", ip: "192.168.101.20"
       config.vm.provision "shell",
         inline: "systemctl restart network" #anders werkt enp0s8 niet
     end
-
-  #DNS
-    config.vm.define "#{VmGroupName}NS" do |machine|
-      machine.vm.hostname = "#{VmGroupName}NS"
-      machine.vm.network "private_network", ip: "192.168.40.22"
-      config.vm.provision "shell",
-        inline: "systemctl restart network" #anders werkt enp0s8 niet
-    end
-
-
+    
 #Slave VM's
   (1..AmountOfVM).each do |machine_id|
     config.vm.define "#{VmGroupName}#{machine_id}" do |machine|
       machine.vm.hostname = "#{VmGroupName}#{machine_id}"
-      machine.vm.network "private_network", ip: "192.168.40.#{22+machine_id}"
+      machine.vm.network "private_network", ip: "192.168.101.#{20+machine_id}"
       config.vm.provision "shell",
         inline: "systemctl restart network"
     end

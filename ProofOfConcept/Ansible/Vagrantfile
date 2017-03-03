@@ -4,27 +4,27 @@
 AmountOfVM = 2
 GroupVMName = "Anode"
 
+#Ansible tower
 Vagrant.configure("2") do |config|
   config.vm.box = "bertvv/CentOS72"
 
+  config.vm.define "#{VmGroupName}Tower" do |machine|
+    machine.vm.hostname = "#{VmGroupName}Tower"
+    machine.vm.network "private_network", ip: "192.168.100.20"
+    config.vm.provision "shell",
+      inline: "systemctl restart network" #anders werkt enp0s8 niet
+  end
+
+#clients
   (1..AmountOfVM).each do |machine_id|
     config.vm.define "#{GroupVMName}#{machine_id}" do |machine|
       machine.vm.hostname = "#{GroupVMName}#{machine_id}"
-      machine.vm.network "private_network", ip: "192.168.77.#{20+machine_id}"
+      machine.vm.network "private_network", ip: "192.168.100.#{20+machine_id}"
       config.vm.provision "shell",
         inline: "systemctl restart network"
       config.vm.provision "shell",
         inline: "sudo sh /vagrant/monitoring/newrelicinfra.sh"
 
-      # Only execute once the Ansible provisioner,
-      # when all the machines are up and ready.
-      #if machine_id == AmountOfVM
-      #  machine.vm.provision :ansible do |ansible|
-          # Disable default limit to connect to all the machines
-      #    ansible.limit = "all"
-      #    ansible.playbook = "playbook.yml"
-      #  end
-      #end
     end
   end
 end
