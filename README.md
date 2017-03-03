@@ -1,6 +1,12 @@
 # Bachelorproef-Ansible-vs-Puppet
 Technische voor-en nadelen van Puppet en Ansible. Verloop en redenen van een omschakeling
 
+# Bachelorproefvoorstel
+[./Bachelorproefvoorstel.pdf](./Bachelorproefvoorstel.pdf)
+
+# Bachelorproef
+[./LaTeX/bachproef-tin.pdf](./LaTeX/bachproef-tin.pdf)
+
 # Planning
 
 -	De deadlines zijn terug te vinden in het excel-document getiteld [Deadlines](Deadlines.xlsx).
