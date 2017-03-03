@@ -8,11 +8,13 @@ GroupVMName = "Anode"
 Vagrant.configure("2") do |config|
   config.vm.box = "bertvv/CentOS72"
 
-  config.vm.define "#{VmGroupName}Tower" do |machine|
-    machine.vm.hostname = "#{VmGroupName}Tower"
+  config.vm.define "#{GroupVMName}Tower" do |machine|
+    machine.vm.hostname = "#{GroupVMName}Tower"
     machine.vm.network "private_network", ip: "192.168.100.20"
     config.vm.provision "shell",
-      inline: "systemctl restart network" #anders werkt enp0s8 niet
+      inline: "systemctl restart network"
+    config.vm.provision "shell",
+      inline: "sudo sh /vagrant/monitoring/newrelicinfra.sh"
   end
 
 #clients
