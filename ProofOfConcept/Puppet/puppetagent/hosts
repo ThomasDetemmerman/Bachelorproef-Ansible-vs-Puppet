@@ -1,0 +1,7 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.101.20 PPnodeMaster PPnodeMaster.puppet.local
+192.168.101.21 PPnode1 PPnode1.puppet.local
+192.168.101.22 PPnode2 PPnode2.puppet.local
+192.168.101.23 PPnode3 PPnode3.puppet.local
+192.168.101.24 PPnode4 PPnode4.puppet.local
