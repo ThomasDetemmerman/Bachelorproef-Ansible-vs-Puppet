@@ -2,9 +2,9 @@
 rpm -ivh http://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm
 yum install puppet -y
 
-yes | cp hosts /etc/hosts
+yes | cp /vagrant/puppetagent/hosts /etc/hosts
 
-yes | cp puppet.conf /etc/puppet/puppet.conf
+yes | cp /vagrant/puppetagent/puppet.conf /etc/puppet/puppet.conf
 
 systemctl start puppet
 
