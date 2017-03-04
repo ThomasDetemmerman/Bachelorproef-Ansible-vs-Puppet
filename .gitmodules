@@ -1,0 +1,6 @@
+[submodule "ProofOfConcept/Ansible/AnsibleTower"]
+	path = ProofOfConcept/Ansible/AnsibleTower
+	url = git@github.com:ThomasDetemmerman/AnsibleTower.git
+[submodule "ProofOfConcept/Puppet/PuppetMaster"]
+	path = ProofOfConcept/Puppet/PuppetMaster
+	url = git@github.com:ThomasDetemmerman/PuppetMaster.git

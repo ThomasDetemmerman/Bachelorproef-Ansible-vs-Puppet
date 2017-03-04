@@ -1,9 +1,0 @@
-# playbook.yml
----
-
-- hosts:
-    - web
-  sudo: true
-  roles:
-   - httpd
-   - bertvv.rh-base
