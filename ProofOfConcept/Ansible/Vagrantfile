@@ -1,12 +1,8 @@
-#://www.vagrantup.com/docs/provisioning/ansible.html
-
-
 AmountOfVM = 4
 GroupVMName = "Anode"
 
 #Ansible tower
 Vagrant.configure("2") do |config|
-
   config.vm.provider "virtualbox" do |v|
       v.memory = 5000
       v.cpus = 2
@@ -21,7 +17,6 @@ Vagrant.configure("2") do |config|
   end
 
 #clients
-
   (1..AmountOfVM).each do |machine_id|
       config.vm.provider "virtualbox" do |v|
           v.memory = 500
@@ -35,8 +30,6 @@ Vagrant.configure("2") do |config|
         inline: "systemctl restart network"
       config.vm.provision "shell",
         inline: "sudo sh /vagrant/monitoring/newrelicinfra.sh"
-
-
     end
   end
 end

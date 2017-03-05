@@ -24,6 +24,8 @@ werkende tutorial voor puppet
 master> yum install puppet-server -y
 agent> yum install puppet -y
 
+master> systemctl stop firewalld
+
 > vi /etc/hosts
 > ip name fqdn
 
@@ -45,9 +47,9 @@ master> vi /etc/puppet/puppet.conf
 service puppetmaster stop
 sudo -u puppet puppet master --no-daemonize --verbose
 cntrl c
-puppet resource service puppetmaster ensure=running 
+puppet resource service puppetmaster ensure=running
 agent> puppet agent -t
 master> puppet cert list
 master > puppet sign cert >name>
-agent> puppet resource service puppet ensure=running 
+agent> puppet resource service puppet ensure=running
 owe
