@@ -1,11 +1,11 @@
 #!/bin/bash
 rpm -ivh http://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm
-yum install puppet -y
+yum install puppet-server -y
 
 yes | cp /vagrant/puppetagent/hosts /etc/hosts
 
-yes | cp /vagrant/puppetagent/puppet-agent.conf /etc/puppet/puppet.conf
+yes | cp /vagrant/puppetagent/puppet-server.conf /etc/puppet/puppet.conf
 
-systemctl start puppet
+systemctl start puppetmaster
 
 puppet agent -t
