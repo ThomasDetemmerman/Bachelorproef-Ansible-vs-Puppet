@@ -4,8 +4,8 @@ yum install puppet-server -y
 
 yes | cp /vagrant/puppetagent/hosts /etc/hosts
 
-yes | cp /vagrant/puppetagent/puppet-server.conf /etc/puppet/puppet.conf
+yes | cp /vagrant/puppetagent/puppet.conf /etc/puppet/puppet.conf
 
-systemctl start puppetmaster
+systemctl start puppet
 
 puppet agent -t
