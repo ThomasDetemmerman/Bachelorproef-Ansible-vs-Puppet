@@ -1,6 +1,6 @@
 AmountOfVM = 4
 GroupVMName = "Anode"
-VagrantBox = "centos/7"
+VagrantBox = "bertvv/centos72"
 
 #Ansible tower
 Vagrant.configure("2") do |config|
