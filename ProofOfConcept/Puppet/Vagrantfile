@@ -1,6 +1,6 @@
-AmountOfVM = 2
+AmountOfVM = 5
 VmGroupName = "PPnode"
-VagrantBox = "centos/7"
+VagrantBox = "bertvv/centos72"
 
 #Master
 Vagrant.configure("2") do |config|

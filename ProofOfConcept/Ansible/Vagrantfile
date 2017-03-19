@@ -1,4 +1,4 @@
-AmountOfVM = 4
+AmountOfVM = 10
 GroupVMName = "Anode"
 VagrantBox = "bertvv/centos72"
 
