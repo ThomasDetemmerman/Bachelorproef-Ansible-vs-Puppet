@@ -27,6 +27,12 @@ Bedrijven kunnen tegenwoordig niet zonder IT-infrastructuur. Deze infrastructuur
 het volgen van de laatste technologische trends of maatregelen treffen tegen cyberdreigingen. Het opzetten en configureren van de zoveelste identieke server is een groot tijd- en geldverlies. Daarom werden configuration management tools in het leven geroepen. De eerst bekende tool was Puppet. Deze technologie stelde ons in staat om configuraties van servers als het ware te programmeren. Eens de gewenste configuratie geprogrammeerd is, kunnen extra gelijkaardige servers veel sneller opgezet worden. De systeembeheerders van weleer zijn nu meer een meer DevOp's geworden. Dit zijn dus mensen die zich niet enkel bezig houden met systeembeheer maar ook met software-ontwikkeling. Ze ontwikkelen als het ware de configuraties van servers. Puppet is daar altijd al marktleider in geweest. Dit is ook te zien op grafiek \ref{fig:popcon_everybody}. Maar daar komt nu verandering in. Er is de laatste jaren meer concurrentie op de markt gekomen waaronder relatief bekenden zoals Salt en Chef. 
 Echter,  \'e\'en van deze nieuwe CMT 's\footnote{Configuration management tool} doet het opvallend beter op gebied van populariteit en dat is Ansible inc. Zoals op de grafiek te zien is heeft Ansible in 2015 de leiding genomen. Het was bovendien ook in dat jaar dat Ansible werd vernoemd door multinationals waaronder Gartner, die over Ansible schreef in een artikel over  'Cool Vendors in DevOps' \autocite{coolvendors}. Verder was het Red Hat die aankondigde dat er een akkoord was om Ansible over te nemen \autocite{redhatovername}. Volgens grafiek  \ref{fig:popcon_everybody} van Debian laat Ansible voorlopig zijn concurrenten ver achter zich. Maar wat zijn Puppet en Ansible nu eigenlijk?
 
+
+%%misschien staat dit beter bij opzet van bachelorproef.
+
+
+Als mediahuis is het uiteraard belangrijk om te kunnen volgen in deze digitaliserende wereld. Zo neemt het online publiek alsmaar toe waardoor de focus niet langer enkel meer ligt op de televisie. Bovendien wordt er een geheel nieuw gebouw verwacht dewelke ook het datacenter zal herbergen. Complexe vraagstukken moeten hierdoor opgelost worden zoals: "hoe groot moet dit nieuwe datacenter zijn?", "Zullen er meerdere locaties komen om meerdere datacenters te kunnen voorzien?". Deze servers zijn van vitaal belang voor de werking van de VRT. De stockeren petabytes aan data waaronder filmmateriaal en zijn verantwoordelijk voor de correcte uitzending van de televisieprogramma's. Veel afdelingen binnen de VRT maken gebruik van multi-stage omgevingen zoals test, staging, productie. Het is dus belangrijk dat een correcte CMT gebruikt wordt en dat deze perfect integreerd met de bestaande en toekomstige infrastructuur.
+
 \begin{figure}
   \includegraphics[width=\linewidth]{img/popcon_everybody.png}
   \caption{Deze grafiek toont het aantal keer dat een bepaald softwarepakket ge\"{\i}nstalleerd is op een Debian distributie. \autocite{popcon}}
@@ -35,12 +41,22 @@ Echter,  \'e\'en van deze nieuwe CMT 's\footnote{Configuration management tool} 
 
 \subsection{Profiel van Puppet}
 
-Puppet werd ontwikkeld in 2005 met als doel het automatiseren van data centers \autocite{puppetfaq}. Om dit te kunnen verwezenlijken maakt Puppet gebruik van  het server/client model. De server wordt hierbij de Puppetmaster genoemd. Dit kunnen er   \'e\'en of meerdere zijn. De client wordt de Puppetagent genoemd. Zowel op de master als op de agent dient Puppet ge{\"\i}nstalleerd te zijn om te kunnen functioneren. Tussen de master en de client bestaat er een vertrouwensrelatie die onderhouden wordt door certificaten. Het is de Puppetmaster die verantwoordelijk is voor het verlenen van deze certificaten. Al deze communicatie verloopt bovendien via het HTTPS-protocol. Pas als dit alles in orde is, kan Puppet  aan de configuraties van de clients beginnen. De code die je schrijft wordt een manifest genoemd. Wanneer een Puppetagent wil controleren of hij nog up-to-date is, zal hij een catalogus aanvragen bij de Puppetmaster. Een dergelijke catalogus is in feite een manifest dat de Puppetmaster compileert. Deze catalogus is bovendien uniek voor elke Puppetagent. Dit komt omdat er bij het compileren van het manifest naar de catalogus rekening gehouden wordt met diverse parameters zoals de functie van de server of de distributie van het besturingssysteem dat op die server draait \autocite{Puppetlanguagecatalog}. Eens de Puppetagent zijn persoonlijke catalogus ontvangen heeft, zal deze voor zichzelf controleren of er verschillen zijn tussen zijn huidige configuratie en de staat die beschreven staat in de catalogus. Indien er afwijkingen zijn, worden deze ook automatisch opgelost \autocite{Puppetdoc}.
+Puppet werd ontwikkeld in 2005 met als doel het automatiseren van data centers. Om dit te kunnen verwezenlijken maakt Puppet gebruik van  het server/client model. De server wordt in dit model de Puppetmaster genoemd. Dit kunnen er  \'e\'en of meerdere zijn.  De client wordt de Puppetagent genoemd. Zowel op de master als op de agent dient Puppet ge{\"\i}nstalleerd te zijn om te kunnen functioneren. \newline
+
+Wanneer een server zichzelf wenst te configureren dient deze een aanvraag te doen bij de Puppetmaster. De Puppetmaster heeft een manifest die de verschillende soorten configuraties beschrijft. De Puppetmaster gecompileerd vervolgens dit manifest naar een catalogus. Een catalogus is uniek voor elke Puppetagent. Dit komt omdat er bij het compileren van het manifest naar de catalogus rekening gehouden wordt met diverse parameters zoals de functie van de server of de distributie van het besturingssysteem dat op die server draait \autocite{Puppetlanguagecatalog}. Eens de Puppetagent zijn persoonlijke catalogus ontvangen heeft, zal deze voor zichzelf controleren of er verschillen zijn tussen zijn huidige configuratie en de staat die beschreven staat in de catalogus. Indien er afwijkingen zijn, worden deze ook automatisch opgelost. Zie ook \ref{fig:aanvraagCatalogus} \autocite{Puppetdoc} \autocite{puppetfaq}.
+
+\begin{figure}
+  \begin{center}
+\includegraphics[width=150px]{img/aanvraagCatalogus}
+\end{center}  \caption{Aanvraag voor een configuratie}
+  \label{fig:aanvraagCatalogus}
+\end{figure}
 
 
 \subsection{Profiel van Ansible}
-Ansible is opgericht door Michael DeHaan, iemand die zeer vertrouwd was met Puppet \autocite{ansiblefordevops}. Hij vond dat bedrijven die Puppet gebruikten, moeilijkheden ondervonden op gebied van eenvoud en automatisatie. Daarom is hij samen met Sa{\"\i}d Ziouani Ansible Inc. gestart. 
-Ansible maakt geen gebruik van agenten. Dit betekent dat de ansibleserver enkel de naam en het wachtwoord dient te kennen van de servers die hij moet configureren. De code die beschrijft hoe deze servers geconfigureerd moeten worden zijn geschreven in YAML en de verzameling van al deze configuraties wordt een playbook genoemd. Wanneer Ansible een bepaalde server wenst te configureren wordt dit standaard verzorgd door het SSH-protocol. Het authenticeren kan op verschillende manieren. Er wordt aangeraden om gebruik te maken van een SSH-key, wat het eenvoudigst is, maar ook andere middelen zoals met een eenvoudig wachtwoord of het kerberos-protocol worden ondersteund. Eens de verbinding tot stand is gebracht, verstuurt Ansible modules naar de te configureren server. Deze modules worden vervolgens uitgevoerd en weer verwijderd. Ook Ansible bezit de functionaliteit om na te gaan of de huidige configuratie in lijn is met de ontvangen modules. Om servers te configureren met Ansible bestaan er bovendien twee manieren. Ansible playbooks kunnen in principe verstuurd worden naar de servers vanaf elke computer. Voor een grotere hoeveelheid servers is dit echter niet aangeraden en bestaat er de commerci\"ele versie waarbij de playbooks worden verstuurd vanaf een centraal punt. Dit centraal punt is voorzien van Ansible Tower die een inventaris heeft van alle servers en playbooks die onder zijn verantwoordelijkheid vallen \autocite{ansibledoc}.
+Ansible is opgericht door Michael DeHaan, iemand die zeer vertrouwd was met Puppet \autocite{ansiblefordevops}. Hij vond dat bedrijven die Puppet gebruikten, moeilijkheden ondervonden op gebied van eenvoud en automatisatie. Daarom is hij samen met Sa{\"\i}d Ziouani Ansible Inc. gestart. \newline
+
+Bij Ansible worden configuraties van een centraal punt genaamd Ansible Tower verstuurd. Ook hier kan voor rendundantie meerdere Ansible Towers aanwezig zijn in de infrastructuur. Het is echter geen verplichting om van een dergelijk centraal punt gebruik te maken. In feite is elke computer waarop Ansible is ge\"installeerd in staat om configuraties uit te voeren. Ansible Tower verstuurd modules naar de te configureren servers, waar ze worden uitgevoerd en vervolgens weer verwijderd. Ook Ansible bezit de functionaliteit om na te gaan of de huidige configuratie in lijn is met de ontvangen modules. \autocite{ansibledoc}.
 
 
 %% TODO: deze sectie (die je kan opsplitsen in verschillende secties) bevat je
@@ -53,7 +69,11 @@ Ansible maakt geen gebruik van agenten. Dit betekent dat de ansibleserver enkel 
 \section{Opzet van deze bachelorproef}
 \label{sec:opzet-bachelorproef}
 
-In dit onderzoek vallen kleinere CMT's zoals Chef en Salt buiten de scope en zal de focus liggen op Puppet en Ansible. Dit onderzoek vindt plaats op MediaIT, een afdeling binnen VRT. Momenteel wordt er gebruik gemaakt van Puppet maar deze voldoet niet aan de verwachtingen van de bussiness en daarom is er dan ook besloten om de huidige Puppet-infrastructuur te vervangen door Ansible.
+In dit onderzoek vallen kleinere CMT's zoals Chef en Salt buiten de scope en zal de focus liggen op Puppet en Ansible. Dit onderzoek vindt plaats op MediaIT, een afdeling binnen VRT zoals weerspiegeld is op het organigram in figuur \ref{fig:organigram} .
+
+
+
+Momenteel wordt er gebruik gemaakt van Puppet maar deze voldoet niet aan de verwachtingen van de bussiness en daarom is er dan ook besloten om de huidige Puppet-infrastructuur te vervangen door Ansible.
 Deze bachelorproef zal onderzoeken wat er precies misgelopen is en waarom deze problemen zich hebben voorgedaan. Vervolgens zal er gekeken worden of Ansible deze problemen \"uberhaupt kan oplossen. Dit rapport wil een hulp bieden aan bedrijven die dezelfde stappen overwegen zodat het op voorhand duidelijk is wat er verwacht kan worden, wat de mogelijkheden zijn en waar een CMT te kort schiet. Ansible is sinds enige tijd aan een stevige opmars bezig maar er zijn voldoende voorbeelden van opensource (en andere) projecten die na een initi\"ele hype snel in mekaar zakten. Ondertussen heeft Ansible tal van mooie referenties achter zich en heeft het positieve analyses gekregen van belangrijke partijen zoals RedHat en Gartner. Is Ansible echter noemenswaardig beter dan bijvoorbeeld Puppet die reeds een lange bewezen staat van diens heeft (meer dan 12 jaar) en een grote community die het project ondersteunt.
 
 
@@ -61,7 +81,7 @@ Deze bachelorproef zal onderzoeken wat er precies misgelopen is en waarom deze p
   \begin{center}
 \includegraphics[width=150px]{img/organigram}
 \end{center}  \caption{Organigram waarbinnen dit onderzoek zich afspeelt.}
-  \label{fig:infrastructuur}
+  \label{fig:organigram}
 \end{figure}
 
 
