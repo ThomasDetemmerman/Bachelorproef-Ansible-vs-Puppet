@@ -6,3 +6,10 @@ request for catalog vs verstuuren van playbooks
 beide kunnen gedupliceert zijn
 
 Cijfers toenemende online users
+
+
+
+——waaar schiet puppet te kort?
+-> niet geintergreed in multi stage env
+-> slechte feedback bij gefaalde taken
+	- hierdoor moest handmatig puppet deamon gestart worden om een configuratie binnen  	   te halen
