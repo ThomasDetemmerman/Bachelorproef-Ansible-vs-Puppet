@@ -26,6 +26,35 @@ TO DO
 
 \subsection{Werking van Ansible}
 
+
+\subsection{Performantie}
+  Time to establisch connection and prepare for configuration \newline
+\begin{tabular}{| r |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |}
+  \hline	
+  
+ 
+  		
+Puppet & 9 & 6 & 6 & 	11 & 	6 & 7 & 8 & 6 & 9 & 9 & 7 & 7 &	 8 & 6 & 6 & 9 & 10 & 8 & 8 & 7\\
+   \hline
+  Ansible & 9 & 5 & 5 & 7 & 4 & 5 & 6 & 5 & 4 & 11 & 6 & 4 & 8 & 10 & 7 & 5 & 6 & 4 & 9 & 5 \\
+  \hline  
+\end{tabular}
+
+
+Time to configure
+
+\begin{tabular}{| r |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c | c c |}
+  \hline			
+  
+Puppet & 51,35 & 43,56 & 46,78 & 55,18 & 40,59 & 47,01 & 35,99 & 35,07 & 43,29 & 42,28 & 42,20 \\ \hline
+            & 96,83 & 32,33 & 49,99 & 40,32 & 55,62 & 52,82 & 42,72 & 44,21 & 43,13 & &  \\ \hline
+            
+   
+  Ansible & 67 & 60 & 51 & 59 & 51 & 51 & 59 & 57 & 45 & 90 & 52  \\ \hline
+                & 53 & 54 & 52 & 62 & 68 & 51 & 59 & 53 & 45 & & \\
+  \hline  
+\end{tabular}
+
 \subsection{Belasting van het netwerk}
 
 Ansible en Puppet hebben een groot verschil in de manier van communiceren en dit weerspiegeld zicht in het gedrag van de CMT. Op afbeelding \ref{fig:netwerkverbruikpernode} bevinden zich links alle Ansible clients, te herkennen aan hun naam die begint met een A. Rechts staan alle puppet clients, te herkennen aan de PP. De grafieken weerspiegelen uitsluitend het dataverkeer tussen de server (Ansible Tower of Puppetmaster) en de desbetreffende client. Andere data, zoals bijvoorbeeld het downloaden van services of uploaden van logbestanden naar de monitoringstool zijn hierin niet opgenomen. Dit word verwezenlijkt door gebruik te maken van verschillende netwerkkaarten. Wanneer er geen deploy gebeurde was de kilobyte/ minuut op deze netwerkkaart gelijk aan nul, een bewijs dat hier geen andere data dan deze van de CMT over word verstuurd.  \newline

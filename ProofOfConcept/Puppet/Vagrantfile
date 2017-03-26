@@ -1,4 +1,4 @@
-AmountOfVM = 5
+AmountOfVM = 10
 VmGroupName = "PPnode"
 VagrantBox = "bertvv/centos72"
 
@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
       config.vm.provision "shell",
         inline: "systemctl restart network"
       config.vm.provision "shell",
-        inline: "sudo sh /vagrant/puppetconfiguration/installpuppetserver.sh"
+        inline: "sudo sh /vagrant/puppetconfiguration/installpuppetmaster.sh"
     end
 
 #Clients
@@ -33,7 +33,7 @@ Vagrant.configure("2") do |config|
       config.vm.provision "shell",
         inline: "sudo sh /vagrant/monitoring/newrelicinfra.sh"
       config.vm.provision "shell",
-        inline: "sudo sh /vagrant/puppetconfiguration/installpuppetagent.sh"
+        inline: "sudo sh /vagrant/puppetconfiguration/installpuppetagent2.sh"
     end
   end
 end
