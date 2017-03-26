@@ -1,4 +1,6 @@
 #!/bin/bash
+echo "------------------- Puppet Master install script ----------------------"
+
 rpm -ivh http://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm
 yum install puppet-server -y
 
@@ -12,3 +14,7 @@ yes | cp /vagrant/PuppetMaster/manifests/* /etc/puppet/manifests/ -r
 yes | cp /vagrant/PuppetMaster/modules/* /etc/puppet/modules/ -r
 
 puppet resource service puppetmaster ensure=running
+
+echo "not save for production environment!"
+systemctl stop firewalld
+systemctl start puppet
