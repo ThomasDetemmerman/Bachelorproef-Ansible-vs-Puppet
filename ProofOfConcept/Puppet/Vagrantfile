@@ -1,4 +1,4 @@
-AmountOfVM = 10
+AmountOfVM = 5
 VmGroupName = "PPnode"
 VagrantBox = "bertvv/centos72"
 
