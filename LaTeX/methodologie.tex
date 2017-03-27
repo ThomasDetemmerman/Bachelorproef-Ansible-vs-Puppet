@@ -26,11 +26,11 @@ TO DO
 
 
 \begin{tabular}{ r |c c }
-&Ansible & Puppet \\
+& \textbf{Ansible} & \textbf{Puppet} \\
   \hline	  		
 Programmeerparadigma\footnote{synoniemen zijn ook programmeerstijl of programmeermodel, voorbeelden zijn object-geori\"onteerd, procedureel, imperatief..., \autocite{journalofinformation} }  & declaratief & declaratief  \\
    \hline
- Programmeertaal &eigen DSL & YAML \\
+ Programmeertaal & YAML & eigen DSL  \\
      \hline
    Communicatieprotocol & SSH & HTTPS \\
    \hline
@@ -56,11 +56,15 @@ Ansible maakt geen gebruik van agenten. Dit betekent dat de ansibleserver enkel 
 
 \subsection{Performantie}
   Time to establisch connection and prepare for configuration \newline
-\begin{tabular}{| r |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |}
+\begin{tabular}{| r |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |}
   \hline	  		
-Puppet & 9 & 6 & 6 & 	11 & 	6 & 7 & 8 & 6 & 9 & 9 & 7 & 7 &	 8 & 6 & 6 & 9 & 10 & 8 & 8 & 7\\
-   \hline
-  Ansible & 9 & 5 & 5 & 7 & 4 & 5 & 6 & 5 & 4 & 11 & 6 & 4 & 8 & 10 & 7 & 5 & 6 & 4 & 9 & 5 \\
+Puppet & 9 & 6 & 6 & 11 & 6 & 7 & 8 & 6 & 9 & 9 & 7 & 7 & 8 & 6 & 6   \\ 
+\hline
+& 9 & 10 & 8 & 8 & 7 & 10 & 8 & 6 & 5 & 5 & 5 & 5 & 7 & 6 & 15\\
+   \hline    \hline
+  Ansible & 9 & 5 & 5 & 7 & 4 & 5 & 6 & 5 & 4 & 11 & 6 & 4 & 8 & 10 & 7 \\ 
+\hline
+   & 5 & 6 & 4 & 9 & 5 & 11 & 13 & 13 & 8 & 12 & 8 &	7 & 7 & 8  & 10 \\
   \hline  
 \end{tabular}
 
@@ -70,12 +74,15 @@ Time to configure
 \begin{tabular}{| r |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c | c c |}
   \hline			
   
-Puppet & 51,35 & 43,56 & 46,78 & 55,18 & 40,59 & 47,01 & 35,99 & 35,07 & 43,29 & 42,28 & 42,20 \\ \hline
-            & 96,83 & 32,33 & 49,99 & 40,32 & 55,62 & 52,82 & 42,72 & 44,21 & 43,13 & &  \\ \hline
-            
+Puppet & 51,35 & 43,56 & 46,78 & 55,18 & 40,59 & 47,01 & 35,99 & 35,07 & 43,29 & 42,28  \\ \hline
+           & 42,20 & 96,83 & 32,33 & 49,99 & 40,32 & 55,62 & 52,82 & 42,72 & 44,21 & 43,13 \\ \hline
+            & 47,43 & 56,98	& 59,97 & 61,28 & 53,98	& 56,56 & 53,57 & 49,01 & 50,21 & 51,30 \\ \hline
+              \hline 
    
-  Ansible & 67 & 60 & 51 & 59 & 51 & 51 & 59 & 57 & 45 & 90 & 52  \\ \hline
-                & 53 & 54 & 52 & 62 & 68 & 51 & 59 & 53 & 45 & & \\
+  Ansible & 67 & 60 & 51 & 59 & 51 & 51 & 59 & 57 & 45 & 90 \\ \hline
+                & 52  & 53 & 54 & 52 & 62 & 68 & 51 & 59 & 53 & 45  \\ \hline
+                & 96 & 73 & 61 & 62	& 59 & 64	& 65 & 64 & 76 & 61  \\ \hline
+                
   \hline  
 \end{tabular}
 
