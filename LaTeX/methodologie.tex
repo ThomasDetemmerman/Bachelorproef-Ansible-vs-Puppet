@@ -52,13 +52,25 @@ Programmeerparadigma\footnote{synoniemen zijn ook programmeerstijl of programmee
 
 Tussen de master en de client bestaat er een vertrouwensrelatie die onderhouden wordt door certificaten. Het is de Puppetmaster die verantwoordelijk is voor het verlenen van deze certificaten. Pas als deze in orde zijn kan Puppet  aan de configuraties van de clients beginnen. De code die je schrijft wordt een manifest genoemd. Wanneer een Puppetagent wil controleren of hij nog up-to-date is, zal hij een catalogus aanvragen bij de Puppetmaster. Een dergelijke catalogus is in feite een manifest dat de Puppetmaster compileert. Deze catalogus is bovendien uniek voor elke Puppetagent. Dit komt omdat er bij het compileren van het manifest naar de catalogus rekening gehouden wordt met diverse parameters zoals de functie van de server of de distributie van het besturingssysteem dat op die server draait \autocite{Puppetlanguagecatalog}. Eens de Puppetagent zijn persoonlijke catalogus ontvangen heeft, zal deze voor zichzelf controleren of er verschillen zijn tussen zijn huidige configuratie en de staat die beschreven staat in de catalogus. Indien er afwijkingen zijn, worden deze ook automatisch opgelost \autocite{Puppetdoc}.
 
+\begin{figure}  \begin{center}
+  \includegraphics[width=250px]{img/aanvraagCatalogus.png}
+ \end{center}\caption{aanvraag van een catalogus bij de Puppetmaster door een Puppetclient.}  
+  \label{fig:aanvraagCatalogus}
+\end{figure}
+
+
 \subsection{Werking van Ansible}
 
-Ansible maakt geen gebruik van agenten. Dit betekent dat de Ansibleserver enkel de naam en het wachtwoord dient te kennen van de servers die hij moet configureren. Het authenticeren kan op verschillende manieren. Er wordt aangeraden om gebruik te maken van een SSH-key, wat het eenvoudigst is, maar ook andere middelen zoals met een eenvoudig wachtwoord of het kerberos-protocol worden ondersteund. De gewenste configuraties worden geschreven in playbooks met bijhorende modules. Eens een verbinding tot stand is gebracht wordt dit playbook met zijn modules verstuurd naar de te configureren server. Deze worden vervolgens op de Ansible clients uitgevoerd  en weer verwijderd. Ook Ansible bezit de functionaliteit om na te gaan of de huidige configuratie in lijn is met de ontvangen modules. Om servers te configureren met Ansible bestaan er bovendien twee manieren. Ansible playbooks kunnen in principe verstuurd worden naar de servers vanaf elke computer. Voor een grotere hoeveelheid servers is dit echter niet aangeraden en bestaat er de commerci"ele versie waarbij de playbooks worden verstuurd vanaf een centraal punt. Dit centraal punt is voorzien van Ansible Tower die een inventaris heeft van alle servers en playbooks die onder zijn verantwoordelijkheid vallen \autocite{ansibledoc}.
+Ansible maakt geen gebruik van agenten. Dit betekent dat de Ansibleserver enkel de naam en het wachtwoord dient te kennen van de servers die hij moet configureren. Het authenticeren kan op verschillende manieren. Er wordt aangeraden om gebruik te maken van een SSH-key, wat het eenvoudigst is, maar ook andere middelen zoals met een eenvoudig wachtwoord of het Kerberos-protocol worden ondersteund. De gewenste configuraties worden geschreven in playbooks met bijhorende modules. Eens een verbinding tot stand is gebracht wordt dit playbook met zijn modules verstuurd naar de te configureren server. Deze worden vervolgens op de Ansible clients uitgevoerd  en weer verwijderd. Ook Ansible bezit de functionaliteit om na te gaan of de huidige configuratie in lijn is met de ontvangen modules. Om servers te configureren met Ansible bestaan er bovendien twee manieren. Ansible playbooks kunnen in principe verstuurd worden naar de servers vanaf elke computer. Voor een grotere hoeveelheid servers is dit echter niet aangeraden en bestaat er de commerci"ele versie waarbij de playbooks worden verstuurd vanaf een centraal punt. Dit centraal punt is voorzien van Ansible Tower die een inventaris heeft van alle servers en playbooks die onder zijn verantwoordelijkheid vallen \autocite{ansibledoc}.
 
 
 \subsection{Performantie}
-  Time to establisch connection and prepare for configuration \newline
+
+Het is interessant om te weten wat de verhoudingen zijn tussen de deploy-tijd tussen Ansible en Puppet. Om dit op zo een betrouwbare mannier te kunnen verwezelijken zijn de configuraties van Ansible en Puppet zo analoog mogelijk gehouden en worden dezelfde services ge\"installeerd en geconfigureerd. Vervolgens word elke configuratie 30 keer uitgevoerd. De tijd wordt onderverdeelt in twee tijden.\newline
+ De eerste tijd is de tijd die het kost om een verbinding aan te gaan tussen de master en de client en het versturen van de configuratie. Bij Ansible kon deze tijd gewoon berekend worden op basis van de resultaten\footnote{total elapsed time - elapsed time from role(s)}, bij Puppet was dit niet mogelijk en bijgevolg zijn deze resultaten met de hand gemeten.\newline
+ De tweede tijd is de tijd die nodig is om de configuratie effectief uit te voeren. Beide waarden zijn gebasseerd op de feedback van de CMT.
+
+\textbf{Tijd tot het bekomen van een verbinding} (in seconden) \newline
 \begin{tabular}{| r |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |}
   \hline	  		
 Puppet & 9 & 6 & 6 & 11 & 6 & 7 & 8 & 6 & 9 & 9 & 7 & 7 & 8 & 6 & 6   \\ 
@@ -72,7 +84,7 @@ Puppet & 9 & 6 & 6 & 11 & 6 & 7 & 8 & 6 & 9 & 9 & 7 & 7 & 8 & 6 & 6   \\
 \end{tabular}
 
 
-Time to configure
+\textbf{Tijd tot het bekomen van een consistente staat (deploytijd)} (in seconden)
 
 \begin{tabular}{| r |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c | c c |}
   \hline			
@@ -89,9 +101,49 @@ Puppet & 51,35 & 43,56 & 46,78 & 55,18 & 40,59 & 47,01 & 35,99 & 35,07 & 43,29 &
   \hline  
 \end{tabular}
 
+
+
+\textbf{Hypothese}
+\begin{align*}
+H_0:  \mu_p = \mu_a \\
+H_a: \mu_p\neq \mu_a 
+\end{align*}
+
+
+\textbf{Significantieniveau en waarden} \newline
+\alpha = 0.05 => -1.96 en +1.96\\
+
+\begin{tabular}{ r |c |c }
+		
+& Puppet & Ansible\\\hline
+
+x &  60.7 & 49.4\\ \hline
+\sigma & 11.5 & 11.6\\ \hline
+n &  30 &  30
+\end{tabular}
+
+
+
+\textbf{Toetsingsgrootheiden}
+\begin{equation} \label{eq1}
+\begin{split}
+Z &= \tfrac{\bar x_p - \bar x_a}{\sqrt{\tfrac{\sigma_p^2}{n_p}+\tfrac{\sigma_a^2}{n_a}}}\\
+& = \tfrac{49,4 - 60,7}{\sqrt{\tfrac{11,6^2}{30}+\tfrac{11,5^2}{30}}} \\
+& = -3,789
+\end{split}
+\end{equation}
+
+\begin{align*}
+\end{align*}
+
+\textbf{Conclusie} \newline
+Z valt buiten het kritisch gebied waardoor de nulhypotese verworpen kan worden. Bijgevolg wordt aangenomen dat beide gemiddelde niet tot dezelfde verzameling behoren en dat Ansible gemiddeld trager is dan Puppet.
+
+
+
 \subsection{Belasting van het netwerk}
 
-Ansible en Puppet hebben een groot verschil in de manier van communiceren en dit weerspiegeld zicht in het gedrag van de CMT. Op afbeelding \ref{fig:netwerkverbruikpernode} bevinden zich links alle Ansible clients, te herkennen aan hun naam die begint met een A. Rechts staan alle puppet clients, te herkennen aan de PP. De grafieken weerspiegelen uitsluitend het dataverkeer tussen de server (Ansible Tower of Puppetmaster) en de desbetreffende client. Andere data, zoals bijvoorbeeld het downloaden van services of uploaden van logbestanden naar de monitoringstool zijn hierin niet opgenomen. Dit word verwezenlijkt door gebruik te maken van verschillende netwerkkaarten. Wanneer er geen deploy gebeurde was de kilobyte/ minuut op deze netwerkkaart gelijk aan nul, een bewijs dat hier geen andere data dan deze van de CMT over word verstuurd.  \newline
+Ansible en Puppet hebben een groot verschil in de manier van communiceren en dit weerspiegeld zicht in het gedrag van de CMT. Op afbeelding \ref{fig:netwerkverbruikpernode} bevinden zich links alle Ansible clients, te herkennen aan hun naam die begint met een A. Rechts staan alle puppet clients, te herkennen aan de PP. De grafieken weerspiegelen uitsluitend het dataverkeer tussen de server (Ansible Tower of Puppetmaster) en de desbetreffende client. Andere data, zoals bijvoorbeeld het downloaden van services of uploaden van logbestanden naar de monitoringstool zijn hierin niet opgenomen. Dit word verwezenlijkt door gebruik te maken van verschillende netwerkkaarten. Wanneer er geen deploy gebeurt is de kilobyte/ minuut op deze netwerkkaart gelijk aan nul, een bewijs dat hier geen andere data dan deze van de CMT over word verstuurd.  \newline
 
 De mannier van communicatie is te herkennen in de grafieken. Zo onderhoud Ansible de communicatie met de client gedurende de deploy. Hiermee wordt bedoelt dat Ansible op de hoogte is van de laatste stand van zaken op de client. Wanneer een bepaalde taak voltooid is wordt Ansibel Tower hier onmiddelijk van op de hoogte gebracht. Op afbeelding \ref{fig:netwerkverbruikpernode} komt deze mannier van werken duidelijk terug op grafiek Anode1 en Anode2. Hier is te zien hoe het netwerk voordurend belast wordt. Ook grafiek Anode3 - Anode5 zijn volgens deze logica te verklaren. Ansible verstuurd namelijk enkel data als de verandering voltooid is. Er worden dus geen onnodige berichten verstuurd. De 'val' in de grafiek Anode3 - Anode5 is dus te verklaren een trage download van een bepaalde service\footnote{Hier betreft het de service MariaDB}. De download duurde langer dan een minuut waardoor er een minuut lang niets te rapporteren viel. Deze mannier van werken is handig tijdens het schrijven van nieuwe Ansible rollen. Je krijgt namelijk live feedback tijdens het uittesten. Een nadeel hieraan is dat het netwerk geen rust krijgt. Bovendien word deze functionaliteit van 'live feedback' in productie niet vaak gebruikt. In realiteit lopen deze jobs tijdens de nacht en is het voldoende om de dag erop een algemeen overzicht te krijgen.\newline
 
@@ -117,7 +169,7 @@ Vervolgens is er ook gekeken naar de totale netwerkbelasting. Hiervoor is er per
 
 \subsection{Gebruik van het geheugen}
 
-Op grafiek \ref{fig:geheugengebruik} is per tijdseenheid het gemiddelde gebruikte ramgeheugen weergegeven. Hierop is te zien hoe Puppet opvallend meer geheugen gebruikt. Niet alleen tijdens een deploy maar ook ervoor en erna. Zelfs wanneer een Ansible client en een Puppet client juist opgezet worden met behulp van de Vagrantfile is er al een verschil in het gebruikte geheugen. Gezien het feit dat er al een verschil waar te nemen is in deze vroege levensfase van de server en het enige verschil in configuratie op dit moment de Puppet agent is werd vermoed dat het verschil hier aan te wijten is. Dit vermoeden werd gestaafd toen de puppet agent tijdelijk uitgezet werd. Het ramgeheugen daalde onmiddelijk naar gelijkwaardige waarden als deze van de Ansible client. Zonder configuratie hebben Puppet clients een gemiddeld verbruik van 47,6\% gebruikt geheugen. Bij Ansible is dit 38,2\%. Dit betekend dat met een verschil van 9,4\% er bij 500 MB, 47MB gebruikt wordt aan Puppet.
+Op grafiek \ref{fig:geheugengebruik} is per tijdseenheid het gemiddelde gebruikte ramgeheugen weergegeven. Hierop is te zien hoe Puppet opvallend meer geheugen gebruikt. Niet alleen tijdens een deploy maar ook ervoor en erna. Zelfs wanneer een Ansible client en een Puppet client juist opgezet worden met behulp van de Vagrantfile is er al een verschil in het gebruikte geheugen. Gezien het feit dat er al een verschil waar te nemen is in deze vroege levensfase van de server en het enige verschil in configuratie op dit moment de Puppet agent is werd vermoed dat het verschil hier aan te wijten is. Dit vermoeden werd gestaafd toen de puppet agent tijdelijk uitgezet werd. Het ramgeheugen daalde onmiddelijk naar gelijkwaardige waarden als deze van de Ansible client. Zonder configuratie hebben Puppet clients een gemiddeld verbruik van 58\% gebruikt geheugen. Bij Ansible is dit 47\%. Dit betekend dat met een verschil van 11\% er bij 500 MB, 55MB gebruikt wordt aan Puppet.
 
 
 \begin{figure}
@@ -125,6 +177,7 @@ Op grafiek \ref{fig:geheugengebruik} is per tijdseenheid het gemiddelde gebruikt
  \caption{Verbruikt percentage van het RAM geheugen. Gemeten bij servers met elk 500 MB. }  
   \label{fig:geheugengebruik}
 \end{figure}
+
 
 
 
