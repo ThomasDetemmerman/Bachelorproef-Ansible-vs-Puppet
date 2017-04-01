@@ -13,3 +13,6 @@ Cijfers toenemende online users
 -> niet geintergreed in multi stage env
 -> slechte feedback bij gefaalde taken
 	- hierdoor moest handmatig puppet deamon gestart worden om een configuratie binnen  	   te halen
+
+—
+puppet veraderd files enkel de lijnen die gewijzigd zijn en niet de ganse file > maar hoe bij ansible?
