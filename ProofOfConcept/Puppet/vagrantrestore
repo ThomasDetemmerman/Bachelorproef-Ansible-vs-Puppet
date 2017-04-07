@@ -1,0 +1,7 @@
+#/bin/bash
+
+vagrant snapshot restore PPnode1 t1 --no-provision
+vagrant snapshot restore PPnode2 t1 --no-provision
+vagrant snapshot restore PPnode3 t1 --no-provision
+vagrant snapshot restore PPnode4 t1 --no-provision
+vagrant snapshot restore PPnode5 t1 --no-provision

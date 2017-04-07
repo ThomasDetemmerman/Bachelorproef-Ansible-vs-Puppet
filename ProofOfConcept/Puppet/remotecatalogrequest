@@ -1,0 +1,8 @@
+#/bin/bash
+
+ssh -t vagrant@192.168.101.21 -i /Users/thomasdetemmerman/.ssh/puppetvm 'sudo puppet agent -t' &
+ssh -t vagrant@192.168.101.22 -i /Users/thomasdetemmerman/.ssh/puppetvm 'sudo puppet agent -t' &
+ssh -t vagrant@192.168.101.23 -i /Users/thomasdetemmerman/.ssh/puppetvm 'sudo puppet agent -t' &
+ssh -t vagrant@192.168.101.24 -i /Users/thomasdetemmerman/.ssh/puppetvm 'sudo puppet agent -t' &
+ssh -t vagrant@192.168.101.25 -i /Users/thomasdetemmerman/.ssh/puppetvm 'sudo puppet agent -t'
+wait
