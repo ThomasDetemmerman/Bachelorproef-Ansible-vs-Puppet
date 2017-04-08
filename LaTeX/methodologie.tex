@@ -228,9 +228,61 @@ Op grafiek \ref{fig:geheugengebruik} is per tijdseenheid het gemiddeld gebruikt 
   \label{fig:geheugengebruik}
 \end{figure}
 
+%---------------------------------------------
 
+\section{Schaalbaarheid}
+\label{sec:schaalbaarheid}
 
+\subsection{inleiding}
+\label{sec:inleiding}
+ Initieel was het de bedoeling dat het gedrag van de resources gemeten in \ref{sec:methodologie-technische-verschillen} gemeten zouden worden bij toenemende drukte door meer clients toe te voegen. Tijdens het opstellen van deze proef bleek dat dit geen bedrijfs-realistische situatie. Bij Ansible is het namelijk Ansible Tower die bepaald wanneer de clients ge\"updatet moeten worden. Bij Puppet valt dit onder de verantwoordelijkheid van de clients. Bijgevolg is de kans klein dat in het geval van Puppet alle clients tegelijk een catalogus zouden aanvragen en de Master zwaar belasten. 
+ 
+ \subsection{Tips voor de performantie van Ansible te verbeteren}
+ Standaard is Ansible geconfigureerd om 5 servers tegelijk te configureren. Dit aantal kan verhoogt worden naar de parameter forks naar 25 tot zelfs 100 te brengen. \newline
+Ansible adviseerd verder ook om gebruik te maken van \texttt{with\_items} bij het installeren van meerdere packages. Dit komt omdat bij het gebruik van \texttt{with\_items}, Ansible deze packages zal combineren in \'e\'en transactie block dewelke de performantie ten goede komt. Zo zou het dus beter zijn om listing \ref{lst:yamltwotask} beter te structuren en te schrijven zoals in listing \ref{lst:yamlonetask}. \newline
+Verder beschikt Ansible over een 'Pull-mode' waarbij elke server zelf instaat voor zijn configuratie. Elke server haalt de code op van een centraal punt en configureerd vervolgens zichzelf. Deze mannier van werken vereist wel een scriptje op elke server en doet denken aan de werking van Puppet. Een centraal management punt is in deze opstelling wel niet aanwezig en is dus af te raden voor grotere infrastructuren. Meer informatie kan gevonden worden op de site van  \textcite{AnsibleTuning} .
 
+   \lstset{language=clean,caption={Installeer de vereiste onderdelen van PHP in twee delen},label={lst:yamltwotask}}
+\begin{lstlisting}[frame=single]
+
+- name: installeer PHP
+  package:
+    name: php
+    state: present
+
+- name: installeer php-mysql
+  package:
+    name: php-mysqli
+    state: present
+\end{lstlisting}
+
+  \lstset{language=clean,caption={Installeer de vereiste onderdelen van PHP in \'e\'en keer},label={lst:yamlonetask}}
+\begin{lstlisting}[frame=single]
+- name: installeer PHP en bijhorende extensies
+  package:
+    name: {{ item }}
+    state: present
+  with_items:
+    - php
+    - php-mysqli
+\end{lstlisting}
+  \autocite{AnsibleTuning}
+  
+  
+ \subsection{Tips voor de performantie van Puppet te verbeteren}
+ Puppet is door zijn mannier van werken van nature meer geloadbalanced dan Ansible, zie ref{sec:inleiding}, toch zijn ook hier een paar zaken die de performantie ten goede komen. Het aantal aanvragen die Puppet tegelijk kan behandelen varieert van server tot server. Dit is standaard num-cpu's - 1 met meen minimum van 1 en een maximum van vier. Het aantal gebruikte cpu's staat gelijk aan het aantal aanvragen die Puppet tegelijk kan behandelen. Wanneer er meer aanvragen zijn beschikbare CPU's zal het overschot geblokkeerd worden totdat er een slot vrijkomt. Dit aantal kan handmatig verhoogd worden met behulp van de variabele \texttt{max-active-instances}. Wanneer deze naar bijvoorbeeld twee gebracht wordt zullen twee core's van de processor gebruikt worden, dit heeft tot gevolg dat er ook twee aanvragen tegelijk behandeld kunnen worden. \newline
+ Een tweede zaak is het verhogen van de 'max heap size' van JVM. Door dit te verhogen kan het JVM procesess meer geheugen opvragen van het besturingssysteem. Een meer gedetailleerde beschrijving kan gevonden worden op \textcite{PuppetTuning}
+ 
+ 
+ \subsection{Tips om performantie te verbeteren die voor beide tools van toepassing zijn}
+ De grootste bottleneck aan een goede en snelle deploy is het downloaden van de vereiste software. Heel wat verkeer moet het lokale netwerk verlaten om bestanden van een externe bron op te halen. Een oplossing hiervoor is om een lokale server op te stellen die mirrors bewaart van de (meest) gebruikte services. \autocite{AnsibleTuning}
+
+ 
+ 
+ 
+ 
+ 
+%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \section{Wat is het verloop van een dergelijke transitperiode?}
 \label{sec:methodologie-verloop-transit}
 
