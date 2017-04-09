@@ -235,12 +235,12 @@ Op grafiek \ref{fig:geheugengebruik} is per tijdseenheid het gemiddeld gebruikt 
 
 \subsection{inleiding}
 \label{sec:inleiding}
- Initieel was het de bedoeling dat het gedrag van de resources gemeten in \ref{sec:methodologie-technische-verschillen} gemeten zouden worden bij toenemende drukte door meer clients toe te voegen. Tijdens het opstellen van deze proef bleek dat dit geen bedrijfs-realistische situatie. Bij Ansible is het namelijk Ansible Tower die bepaald wanneer de clients ge\"updatet moeten worden. Bij Puppet valt dit onder de verantwoordelijkheid van de clients. Bijgevolg is de kans klein dat in het geval van Puppet alle clients tegelijk een catalogus zouden aanvragen en de Master zwaar belasten. 
+ Initieel was het de bedoeling dat het gedrag van de resources gemeten in \ref{sec:methodologie-technische-verschillen} gemeten zouden worden bij toenemende drukte door meer clients toe te voegen. Tijdens het opstellen van deze proef bleek dat dit geen bedrijfs-realistische situatie. Bij Ansible is het namelijk Ansible Tower die bepaald wanneer de clients ge\"updatet moeten worden. Bij Puppet valt dit onder de verantwoordelijkheid van de clients zelf. Bijgevolg is de kans klein dat in het geval van Puppet alle clients tegelijk een catalogus zouden aanvragen en hierdoor de Master zwaar belasten. Toch zijn er hier en daar zaken die de performantie ten goede komen. Zo blijft het downloaden van software de grootst bottleneck van een goede en snelle deploy. Heel wat verkeer moet het lokale netwerk verlaten om bestanden van een externe bron op te halen. Een oplossing hiervoor is om een lokale server op te stellen die een kopie bewaart van de (meest) gebruikte services. \autocite{AnsibleTuning}.
  
- \subsection{Tips voor de performantie van Ansible te verbeteren}
- Standaard is Ansible geconfigureerd om 5 servers tegelijk te configureren. Dit aantal kan verhoogt worden naar de parameter forks naar 25 tot zelfs 100 te brengen. \newline
+ \subsection{Tips om de performantie van Ansible te verbeteren}
+ Standaard is Ansible geconfigureerd om 5 servers tegelijk te kunnen configureren. Dit aantal kan verhoogt worden naar de parameter \texttt{forks} naar 25 tot zelfs 100 te brengen. \newline
 Ansible adviseerd verder ook om gebruik te maken van \texttt{with\_items} bij het installeren van meerdere packages. Dit komt omdat bij het gebruik van \texttt{with\_items}, Ansible deze packages zal combineren in \'e\'en transactie block dewelke de performantie ten goede komt. Zo zou het dus beter zijn om listing \ref{lst:yamltwotask} beter te structuren en te schrijven zoals in listing \ref{lst:yamlonetask}. \newline
-Verder beschikt Ansible over een 'Pull-mode' waarbij elke server zelf instaat voor zijn configuratie. Elke server haalt de code op van een centraal punt en configureerd vervolgens zichzelf. Deze mannier van werken vereist wel een scriptje op elke server en doet denken aan de werking van Puppet. Een centraal management punt is in deze opstelling wel niet aanwezig en is dus af te raden voor grotere infrastructuren. Meer informatie kan gevonden worden op de site van  \textcite{AnsibleTuning} .
+Verder beschikt Ansible over een 'Pull-mode' waarbij elke server zelf instaat voor zijn configuratie. Elke server haalt de code op van een centraal punt en configureerd vervolgens zichzelf. Deze mannier van werken vereist wel een scriptje op elke server en doet denken aan de werking van Puppet. Een centraal management punt is in deze opstelling echter niet aanwezig en is dus af te raden voor grotere infrastructuren \autocite{AnsibleTuning} .
 
    \lstset{language=clean,caption={Installeer de vereiste onderdelen van PHP in twee delen},label={lst:yamltwotask}}
 \begin{lstlisting}[frame=single]
@@ -266,31 +266,35 @@ Verder beschikt Ansible over een 'Pull-mode' waarbij elke server zelf instaat vo
     - php
     - php-mysqli
 \end{lstlisting}
-  \autocite{AnsibleTuning}
-  
-  
- \subsection{Tips voor de performantie van Puppet te verbeteren}
- Puppet is door zijn mannier van werken van nature meer geloadbalanced dan Ansible, zie ref{sec:inleiding}, toch zijn ook hier een paar zaken die de performantie ten goede komen. Het aantal aanvragen die Puppet tegelijk kan behandelen varieert van server tot server. Dit is standaard num-cpu's - 1 met meen minimum van 1 en een maximum van vier. Het aantal gebruikte cpu's staat gelijk aan het aantal aanvragen die Puppet tegelijk kan behandelen. Wanneer er meer aanvragen zijn beschikbare CPU's zal het overschot geblokkeerd worden totdat er een slot vrijkomt. Dit aantal kan handmatig verhoogd worden met behulp van de variabele \texttt{max-active-instances}. Wanneer deze naar bijvoorbeeld twee gebracht wordt zullen twee core's van de processor gebruikt worden, dit heeft tot gevolg dat er ook twee aanvragen tegelijk behandeld kunnen worden. \newline
- Een tweede zaak is het verhogen van de 'max heap size' van JVM. Door dit te verhogen kan het JVM procesess meer geheugen opvragen van het besturingssysteem. Een meer gedetailleerde beschrijving kan gevonden worden op \textcite{PuppetTuning}
- 
- 
- \subsection{Tips om performantie te verbeteren die voor beide tools van toepassing zijn}
- De grootste bottleneck aan een goede en snelle deploy is het downloaden van de vereiste software. Heel wat verkeer moet het lokale netwerk verlaten om bestanden van een externe bron op te halen. Een oplossing hiervoor is om een lokale server op te stellen die mirrors bewaart van de (meest) gebruikte services. \autocite{AnsibleTuning}
 
+  
+  
+ \subsection{Tips om de performantie van Puppet te verbeteren}
+ Puppet is door zijn mannier van werken van nature meer geloadbalanced dan Ansible, zie \ref{sec:inleiding}, toch zijn ook hier een paar zaken die de performantie ten goede komen. Het aantal aanvragen die Puppet tegelijk kan behandelen varieert van server tot server. Dit is standaard 'num-cpu's - 1' met een minimum van 1 en een maximum van vier. Het aantal gebruikte cpu's staat gelijk aan het aantal aanvragen die Puppet tegelijk kan behandelen. Wanneer er meer aanvragen zijn dan beschikbare CPU's zal het overschot aan aanvragen geblokkeerd worden totdat er een slot vrijkomt. Dit aantal kan handmatig verhoogd worden met behulp van de variabele \texttt{max-active-instances}. Wanneer deze naar bijvoorbeeld twee gebracht wordt zullen twee core's van de processor gebruikt worden, dit heeft tot gevolg dat er ook twee aanvragen tegelijk behandeld kunnen worden. \newline
+ Een tweede zaak is het verhogen van de \texttt{max heap size} van JVM. Door dit te verhogen kan het JVM proces meer geheugen opvragen bij het besturingssysteem \autocite{PuppetTuning}.
  
  
- 
- 
- 
-%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+ %---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \section{Wat is het verloop van een dergelijke transitperiode?}
 \label{sec:methodologie-verloop-transit}
 
 
 
+\begin{wrapfigure}{R}{0.4\textwidth}
+\centering
+\includegraphics[width=0.4\textwidth]{img/vicieuzecirkel.PNG}
+\caption{\label{fig:vicieuzecirkel}Vicieuze cirkel van twee CMT's hetzelfde bestand proberen te configureren.}
+\end{wrapfigure}
 
-
-
+Het is vanzelfsprekend dat de mannier van Ansible integreren afhankelijk is van bedrijf tot bedrijf. Toch is dit in het geval van de VRT vlot verlopen. Ansible en Puppet kunnen namelijk perfect naast elkaar in dezelfde infrastructuur bestaan. Dit is ideaal voor een geleidelijke overgang. E\'en en dezelfde server kan bovendien geconfigureerd worden door zowel Puppet als Ansible. Dit heeft als voordeel dat niet alle modules geschreven in Puppet onmiddellijk vertaald hoeven te worden. Enkele rollen kunnen geschreven zijn voor Ansible terwijl een ander deel nog onder de bevoegdheid van Puppet valt. Belangrijk hierbij is wel dat Puppet en Ansible verschillende configuraties behandelen. Wanneer beide CMT's eenzelfde configuratie uitvoeren kan er door subtiele verschillen een vicieuze cirkel ontstaan.\newline
+Beeld u zich de situatie in zoals op figuur \ref{fig:vicieuzecirkel}. In ansible staat een bestand met een extra spatie, hier noemen we deze voor het gemak 'foo1'. Bij puppet staat deze extra spatie er niet, deze wordt 'foo2' genoemd. 
+\begin{enumerate}
+\item Puppet configureert de service met bestand foo2 en start deze op.
+\item  Eventjes later stelt Ansible vast dat de configuratie niet meer overeenkomt met deze beschreven in het playbook. Hij wijzigt foo2 naar foo1 en herstart de service zodat aanpassingen doorgevoerd zouden worden.
+\item  Op een later ogenblik zal Puppet dit waarnemen en het bestand terugdraaien naar foo1, opnieuw gevolgd door een gerstart van de gerelateerde service.
+\end{enumerate}
+Het is vanzelfsprekend dat dit zorgt voor onnodige aanpassingen met eventueel ongewenste of onverwachte gevolgen zoals het voortdurend herstarten van een service.\newline
+Twee CMT's die dezelfde server op hetzelfde moment configureren zouden elkaar niet mogen hinderen. Ten hoogste duurt de configuratie iets langer omdat er een lock bestaat op de package managers waardoor de ene CMT op de andere dient te wachten.
 
 
 
