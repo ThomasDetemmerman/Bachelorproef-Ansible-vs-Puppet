@@ -1,16 +1,34 @@
 
 
 
-\chapter*{Lijst van woorden en afkortingen}
-\printglossary[type=\acronymtype,title=Abbreviations]
-\printglossary[title=Nomenclature]
+%-------------------------------- acroniemen
+\newacronym{CMT}{CMT}{Configuration management tool}
 
-\begin{tabular}{l  l }
-\textbf{Deploytijd} & De tijd die nodig is tot het bekomen van een consistente staat. \\ &Connectie tijd niet meegerekend. \\ \\
-\textbf{Connetietijd} & De tijd die de CMT nodig heef totdat deze effectief over kan gaan tot configureren. \\ &  Hieronder vallen zaken zoals het maken van een verbinding, het verzamelen  \\ & van gegevens en opstellen van een gepersonaliseerde configuratie... \\ \\
-\textbf{CMT} & Configuration management tool \\ \\
-\textbf{fork} & Het aanmaken van een child process door zichzelf te dupliceren \autocite{forkmeaning} \\ \\
-\textbf{Package manager} & Een mechanisme die het mogelijk maakt om software te installeren op UNIX gebaseerde systemen.\\ \textit{(voorbeelden: yum, apt, dpkg,...} \\
-\end{tabular}
+
+%--------------------------------- woordenlijst
+\newglossaryentry{packagemanager}{
+	name = Package manager ,
+	description = Een mechanisme die het mogelijk maakt om software te installeren op UNIX gebaseerde systemen. \textit{(voorbeelden: yum, apt, dpkg,...} 
+}
+
+\newglossaryentry{deploytijd}{
+	name = Deploytijd ,
+	description =  De tijd die de CMT nodig heef totdat deze effectief over kan gaan tot configureren.  Hieronder vallen zaken zoals het maken van een verbinding, het verzamelen van gegevens en opstellen van een gepersonaliseerde configuratie... 
+}
+
+\newglossaryentry{connectietijd}{
+	name = Connectietijd ,
+	description = To Do
+}
+
+\newglossaryentry{fork}{
+	name = fork ,
+	description = Het aanmaken van een child process door zichzelf te dupliceren \autocite{forkmeaning}
+}
+
+\printglossary[type=\acronymtype,title=Acroniemen]
+\printglossary
+
+
 
 

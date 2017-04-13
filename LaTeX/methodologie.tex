@@ -15,7 +15,7 @@
 \label{sec:methodologie-redenen-omschakeling}
 
 TO DO
-\gls{CMT} \gls{ny}
+
 - slechte monitoring
 - slecht geautomatiseert 
 - geen multi environment
@@ -68,7 +68,7 @@ Ansible maakt geen gebruik van agenten. Dit betekent dat de Ansibleserver enkel 
 
 Het is interessant om te weten wat de verhoudingen zijn tussen de deploy-tijd tussen Ansible en Puppet. Om dit op een betrouwbaar mogelijke manier te kunnen verwezenlijken, zijn de configuraties van Ansible en Puppet zo analoog mogelijk gehouden en worden dus dezelfde services ge\"installeerd en geconfigureerd. Vervolgens wordt elke configuratie 30 keer uitgevoerd. De tijd kan worden onderverdeeld in twee delen.\newline
 Het eerste deel van de tijd zal de connectietijd genoemd worden. Dit is de tijd die het kost tot er effectief overgegaan kan worden tot configureren. Hieronder zitten zaken zoals het opstellen van een verbinding, het verzamelen van nodige gegevens en het versturen van een gepersonaliseerde configuratie. Bij Ansible kon deze tijd gewoon berekend worden op basis van de resultaten\footnote{connectietijd = totaal verstreken tijd -  \unexpanded{$ \sum  $} (tijd playbooks)}. Bij Puppet is dit echter niet mogelijk en bijgevolg zijn deze resultaten met de hand gemeten.\newline
- De tweede tijd is de tijd die nodig is om de configuratie effectief uit te voeren. Beide waarden zijn gebaseerd op de feedback van de corresponderende CMT.
+ De tweede tijd is de tijd die nodig is om de configuratie effectief uit te voeren. Beide waarden zijn gebaseerd op de feedback van de corresponderende \gls{CMT}.
 
 \textbf{Tijd tot het bekomen van een verbinding (connectietijd)} (in seconden) \newline
 \begin{tabular}{| r |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |}
@@ -109,7 +109,7 @@ Puppet & 51,35 & 43,56 & 46,78 & 55,18 & 40,59 & 47,01 & 35,99 & 35,07 & 43,29 &
   \label{fig:deploytime_fullconfig}
 \end{figure}
 
-Aangezien grafiek \ref{fig:deploytime_fullconfig} geen duidelijk verschil toont tussen beide CMT's zal met behulp van de Z-toets aangetoond worden of er al dan niet een statistisch verschil is.
+Aangezien grafiek \ref{fig:deploytime_fullconfig} geen duidelijk verschil toont tussen beide \gls{CMT}'s zal met behulp van de Z-toets aangetoond worden of er al dan niet een statistisch verschil is.
 
 \underline{Hypothese}
 \begin{align*}
@@ -147,7 +147,7 @@ Z valt buiten het kritisch gebied waardoor de nulhypotese verworpen kan worden. 
 
 De verschillen worden echter nog groter wanneer de test gedaan wordt met een gedeeltelijke configuratie. Hiermee wordt bedoeld dat er is vertrokken van servers die reeds geconfigureerd zijn en slechts enkele aanpassingen moeten doorgevoerd worden. Deze aanpassingen zijn een service starten en de inhoud van de webpagina veranderen. De resultaten lopen niet door elkaar waardoor een Z-toets niet echt nodig is. Ansible deed gemiddeld 19,10 seconden voor de deploy met een vrij grote variatie van 33,40 seconden. Puppet haalde maar een vrij consistente 3,10 seconden met een variatie van 0,35. \newline
 
-In laatste instantie is er gekeken naar de tijd die het zou kosten tot de CMT vaststelt dat de server reeds volledig is geconfigureerd en dat geen aanpassingen nodig zijn. Hierbij resulteert Ansible op een gemiddelde van 18 seconden met opnieuw een vrij grote variatie van 18,25 seconden. Ook hier doet Puppet het opnieuw beter waarbij er minder dan een seconde nodig heeft om vast te stellen dan dat geen aanpassingen nodig zijn. Uiteraard zijn al deze waarden afhankelijk van de configuratie maar ze geven wel een duidelijke indicatie van de verschillen tussen beide CMT's.
+In laatste instantie is er gekeken naar de tijd die het zou kosten tot de \gls{CMT} vaststelt dat de server reeds volledig is geconfigureerd en dat geen aanpassingen nodig zijn. Hierbij resulteert Ansible op een gemiddelde van 18 seconden met opnieuw een vrij grote variatie van 18,25 seconden. Ook hier doet Puppet het opnieuw beter waarbij er minder dan een seconde nodig heeft om vast te stellen dan dat geen aanpassingen nodig zijn. Uiteraard zijn al deze waarden afhankelijk van de configuratie maar ze geven wel een duidelijke indicatie van de verschillen tussen beide \gls{CMT}'s.
 
 \textbf{Opmerking:} De connectietijd is niet meegerekend in deze metingen. Het omvat hier uitsluitend de deploytijd.
 \subsubsection{Connectietijd}
@@ -192,7 +192,7 @@ Z ligt in het aanvaardingsgebied waardoor we de nulhypothese, die stelt dat beid
 %%---------------------------------------------------- einde performantie
 \subsection{Belasting van het netwerk}
 
-Ansible en Puppet hebben een groot verschil in de manier van communiceren en dit weerspiegelt zich in het gedrag van de CMT. De grafieken op afbeeldingen \ref{fig:netwerkverbruik} en \ref{fig:deploytypes} weerspiegelen uitsluitend het dataverkeer tussen de server (Ansible Tower of Puppetmaster) en de desbetreffende client. Andere data, zoals bijvoorbeeld het downloaden van services of uploaden van logbestanden naar de monitoringstool, zijn hierin \underline{niet} opgenomen. Dit wordt verwezenlijkt door gebruik te maken van verschillende netwerkkaarten. Wanneer er geen deploy gebeurt, is de kilobyte/ minuut op deze netwerkkaart gelijk aan nul; een bewijs dat hier geen andere data dan deze van de CMT over wordt verstuurd.  \newline
+Ansible en Puppet hebben een groot verschil in de manier van communiceren en dit weerspiegelt zich in het gedrag van de \gls{CMT}. De grafieken op afbeeldingen \ref{fig:netwerkverbruik} en \ref{fig:deploytypes} weerspiegelen uitsluitend het dataverkeer tussen de server (Ansible Tower of Puppetmaster) en de desbetreffende client. Andere data, zoals bijvoorbeeld het downloaden van services of uploaden van logbestanden naar de monitoringstool, zijn hierin \underline{niet} opgenomen. Dit wordt verwezenlijkt door gebruik te maken van verschillende netwerkkaarten. Wanneer er geen deploy gebeurt, is de kilobyte/ minuut op deze netwerkkaart gelijk aan nul; een bewijs dat hier geen andere data dan deze van de \gls{CMT} over wordt verstuurd.  \newline
 
 De manier van communicatie is te herkennen in de grafieken. Zo onderhoudt Ansible de communicatie met de client gedurende de deploy. Hiermee wordt bedoeld dat Ansible op de hoogte is van de laatste stand van zaken op de client. Wanneer een bepaalde taak voltooid is, wordt Ansibel Tower hier onmiddellijk van op de hoogte gebracht. Zoals te zien is op grafiek \ref{fig:deploytypes} is er geregeld communicatie tussen beide servers. Weliswaar is er enkel communicatie wanneer iets voltooid is; er is dus geen onnodige communicatie. Zo is ook te zien hoe op t6 de communicatie nul is. Ansible had voor die periode niets te melden\footnote{Hier betreft het de service MariaDB die werd ge\"installeerd}. \newline
  Deze manier van werken is handig tijdens het schrijven van nieuwe Ansible rollen. Je krijgt namelijk live feedback tijdens het uittesten. Een nadeel is wel dat het netwerk geen rust krijgt. Bovendien wordt deze functionaliteit van 'live feedback' in productie niet vaak gebruikt. In realiteit lopen deze jobs tijdens de nacht en is het voldoende om de dag daarna een algemeen overzicht te krijgen.\newline
@@ -284,10 +284,10 @@ Verder beschikt Ansible over een 'Pull-mode' waarbij elke server zelf instaat vo
 \begin{wrapfigure}{R}{0.4\textwidth}
 \centering
 \includegraphics[width=0.4\textwidth]{img/vicieuzecirkel.PNG}
-\caption{\label{fig:vicieuzecirkel}Vicieuze cirkel van twee CMT's hetzelfde bestand proberen te configureren.}
+\caption{\label{fig:vicieuzecirkel}Vicieuze cirkel van twee \gls{CMT}'s hetzelfde bestand proberen te configureren.}
 \end{wrapfigure}
 
-Het is vanzelfsprekend dat de mannier van Ansible integreren afhankelijk is van bedrijf tot bedrijf. Toch is dit in het geval van de VRT vlot verlopen. Ansible en Puppet kunnen namelijk perfect naast elkaar in dezelfde infrastructuur bestaan. Dit is ideaal voor een geleidelijke overgang. E\'en en dezelfde server kan bovendien geconfigureerd worden door zowel Puppet als Ansible. Dit heeft als voordeel dat niet alle modules geschreven in Puppet onmiddellijk vertaald hoeven te worden. Enkele rollen kunnen geschreven zijn voor Ansible terwijl een ander deel nog onder de bevoegdheid van Puppet valt. Belangrijk hierbij is wel dat Puppet en Ansible verschillende configuraties behandelen. Wanneer beide CMT's eenzelfde configuratie uitvoeren kan er door subtiele verschillen een vicieuze cirkel ontstaan.\newline
+Het is vanzelfsprekend dat de mannier van Ansible integreren afhankelijk is van bedrijf tot bedrijf. Toch is dit in het geval van de VRT vlot verlopen. Ansible en Puppet kunnen namelijk perfect naast elkaar in dezelfde infrastructuur bestaan. Dit is ideaal voor een geleidelijke overgang. E\'en en dezelfde server kan bovendien geconfigureerd worden door zowel Puppet als Ansible. Dit heeft als voordeel dat niet alle modules geschreven in Puppet onmiddellijk vertaald hoeven te worden. Enkele rollen kunnen geschreven zijn voor Ansible terwijl een ander deel nog onder de bevoegdheid van Puppet valt. Belangrijk hierbij is wel dat Puppet en Ansible verschillende configuraties behandelen. Wanneer beide \gls{CMT}'s eenzelfde configuratie uitvoeren kan er door subtiele verschillen een vicieuze cirkel ontstaan.\newline
 Beeld u zich de situatie in zoals op figuur \ref{fig:vicieuzecirkel}. In ansible staat een bestand met een extra spatie, hier noemen we deze voor het gemak 'foo1'. Bij puppet staat deze extra spatie er niet, deze wordt 'foo2' genoemd. 
 \begin{enumerate}
 \item Puppet configureert de service met bestand foo2 en start deze op.
@@ -295,7 +295,7 @@ Beeld u zich de situatie in zoals op figuur \ref{fig:vicieuzecirkel}. In ansible
 \item  Op een later ogenblik zal Puppet dit waarnemen en het bestand terugdraaien naar foo1, opnieuw gevolgd door een gerstart van de gerelateerde service.
 \end{enumerate}
 Het is vanzelfsprekend dat dit zorgt voor onnodige aanpassingen met eventueel ongewenste of onverwachte gevolgen zoals het voortdurend herstarten van een service.\newline
-Twee CMT's die dezelfde server op hetzelfde moment configureren zouden elkaar niet mogen hinderen. Ten hoogste duurt de configuratie iets langer omdat er een lock bestaat op de package managers waardoor de ene CMT op de andere dient te wachten.
+Twee \gls{CMT}'s die dezelfde server op hetzelfde moment configureren zouden elkaar niet mogen hinderen. Ten hoogste duurt de configuratie iets langer omdat er een lock bestaat op de \gls{packagemanager}s waardoor de ene \gls{CMT} op de andere dient te wachten.
 
 
 
