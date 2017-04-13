@@ -34,9 +34,9 @@ TO DO
 \begin{tabular}{ r |c c }
 & \textbf{Ansible} & \textbf{Puppet} \\
   \hline	  		
-Programmeerparadigma\footnote{synoniemen zijn ook programmeerstijl of programmeermodel, voorbeelden zijn object-georienteerd, procedureel, imperatief..., \autocite{journalofinformation} }  & declaratief & declaratief  \\
+\gls{deploytijd}  & declaratief & declaratief  \\
    \hline
- Programmeertaal & YAML & eigen DSL  \\
+ Programmeertaal & YAML & eigen \gls{dsl}  \\
      \hline
    Communicatieprotocol & SSH & HTTPS \\
    \hline
@@ -67,10 +67,10 @@ Ansible maakt geen gebruik van agenten. Dit betekent dat de Ansibleserver enkel 
 \subsection{Performantie}
 
 Het is interessant om te weten wat de verhoudingen zijn tussen de deploy-tijd tussen Ansible en Puppet. Om dit op een betrouwbaar mogelijke manier te kunnen verwezenlijken, zijn de configuraties van Ansible en Puppet zo analoog mogelijk gehouden en worden dus dezelfde services ge\"installeerd en geconfigureerd. Vervolgens wordt elke configuratie 30 keer uitgevoerd. De tijd kan worden onderverdeeld in twee delen.\newline
-Het eerste deel van de tijd zal de connectietijd genoemd worden. Dit is de tijd die het kost tot er effectief overgegaan kan worden tot configureren. Hieronder zitten zaken zoals het opstellen van een verbinding, het verzamelen van nodige gegevens en het versturen van een gepersonaliseerde configuratie. Bij Ansible kon deze tijd gewoon berekend worden op basis van de resultaten\footnote{connectietijd = totaal verstreken tijd -  \unexpanded{$ \sum  $} (tijd playbooks)}. Bij Puppet is dit echter niet mogelijk en bijgevolg zijn deze resultaten met de hand gemeten.\newline
+Het eerste deel van de tijd zal de \gls{connectietijd} genoemd worden. Dit is de tijd die het kost tot er effectief overgegaan kan worden tot configureren. Hieronder zitten zaken zoals het opstellen van een verbinding, het verzamelen van nodige gegevens en het versturen van een gepersonaliseerde configuratie. Bij Ansible kon deze tijd gewoon berekend worden op basis van de resultaten\footnote{connectietijd = totaal verstreken tijd -  \unexpanded{$ \sum  $} (tijd playbooks)}. Bij Puppet is dit echter niet mogelijk en bijgevolg zijn deze resultaten met de hand gemeten.\newline
  De tweede tijd is de tijd die nodig is om de configuratie effectief uit te voeren. Beide waarden zijn gebaseerd op de feedback van de corresponderende \gls{CMT}.
 
-\textbf{Tijd tot het bekomen van een verbinding (connectietijd)} (in seconden) \newline
+\textbf{Tijd tot het bekomen van een verbinding (\gls{connectietijd})} (in seconden) \newline
 \begin{tabular}{| r |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |}
   \hline	  		
 Puppet & 9 & 6 & 6 & 11 & 6 & 7 & 8 & 6 & 9 & 9 & 7 & 7 & 8 & 6 & 6   \\ 
@@ -84,7 +84,7 @@ Puppet & 9 & 6 & 6 & 11 & 6 & 7 & 8 & 6 & 9 & 9 & 7 & 7 & 8 & 6 & 6   \\
 \end{tabular}
 
 
-\textbf{Tijd tot het bekomen van een consistente staat (deploytijd)} (in seconden)
+\textbf{Tijd tot het bekomen van een consistente staat (\gls{deploytijd})} (in seconden)
 
 \begin{tabular}{| r |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c | c c |}
   \hline			
@@ -102,7 +102,7 @@ Puppet & 51,35 & 43,56 & 46,78 & 55,18 & 40,59 & 47,01 & 35,99 & 35,07 & 43,29 &
 \end{tabular}
 
 
-\subsubsection{Deploytijd}
+\subsubsection{\gls{deploytijd}}
 \begin{figure}
   \includegraphics[width=\linewidth]{img/deploytime_fullconfig.png} 
   \caption{Tijd tot het bekomen van een consistente staat, vertrekkende van een 'lege' server.}  
@@ -149,8 +149,8 @@ De verschillen worden echter nog groter wanneer de test gedaan wordt met een ged
 
 In laatste instantie is er gekeken naar de tijd die het zou kosten tot de \gls{CMT} vaststelt dat de server reeds volledig is geconfigureerd en dat geen aanpassingen nodig zijn. Hierbij resulteert Ansible op een gemiddelde van 18 seconden met opnieuw een vrij grote variatie van 18,25 seconden. Ook hier doet Puppet het opnieuw beter waarbij er minder dan een seconde nodig heeft om vast te stellen dan dat geen aanpassingen nodig zijn. Uiteraard zijn al deze waarden afhankelijk van de configuratie maar ze geven wel een duidelijke indicatie van de verschillen tussen beide \gls{CMT}'s.
 
-\textbf{Opmerking:} De connectietijd is niet meegerekend in deze metingen. Het omvat hier uitsluitend de deploytijd.
-\subsubsection{Connectietijd}
+\textbf{Opmerking:} De \gls{connectietijd} is niet meegerekend in deze metingen. Het omvat hier uitsluitend de \gls{deploytijd}.
+\subsubsection{\gls{connectietijd}}
 Ook hier lopen de resultaten door elkaar zoals te zien is op grafiek \ref{fig:connectiontime}, bovendien liggen de gemiddelden hier veel dichter bij elkaar. Om vast te stellen of er een significant verschil is, zal er opnieuw gebruik gemaakt worden van de Z toets.
 \begin{figure}
   \includegraphics[width=\linewidth]{img/connectiontime.png} 
@@ -239,7 +239,7 @@ Op grafiek \ref{fig:geheugengebruik} is per tijdseenheid het gemiddeld gebruikt 
  Initieel was het de bedoeling dat het gedrag van de resources gemeten in \ref{sec:methodologie-technische-verschillen} gemeten zouden worden bij toenemende drukte door meer clients toe te voegen. Tijdens het opstellen van deze proef bleek dat dit geen bedrijfs-realistische situatie. Bij Ansible is het namelijk Ansible Tower die bepaald wanneer de clients ge\"updatet moeten worden. Bij Puppet valt dit onder de verantwoordelijkheid van de clients zelf. Bijgevolg is de kans klein dat in het geval van Puppet alle clients tegelijk een catalogus zouden aanvragen en hierdoor de Master zwaar belasten. Toch zijn er hier en daar zaken die de performantie ten goede komen. Zo blijft het downloaden van software de grootst bottleneck van een goede en snelle deploy. Heel wat verkeer moet het lokale netwerk verlaten om bestanden van een externe bron op te halen. Een oplossing hiervoor is om een lokale server op te stellen die een kopie bewaart van de (meest) gebruikte services. \autocite{AnsibleTuning}.
  
  \subsection{Tips om de performantie van Ansible te verbeteren}
- Standaard is Ansible geconfigureerd om 5 servers tegelijk te kunnen configureren. Dit aantal kan verhoogt worden naar de parameter \texttt{forks} naar 25 tot zelfs 100 te brengen. \newline
+ Standaard is Ansible geconfigureerd om 5 servers tegelijk te kunnen configureren. Dit aantal kan verhoogt worden naar de parameter \texttt{\gls{fork}s} naar 25 tot zelfs 100 te brengen. \newline
 Ansible adviseerd verder ook om gebruik te maken van \texttt{with\_items} bij het installeren van meerdere packages. Dit komt omdat bij het gebruik van \texttt{with\_items}, Ansible deze packages zal combineren in \'e\'en transactie block dewelke de performantie ten goede komt. Zo zou het dus beter zijn om listing \ref{lst:yamltwotask} beter te structuren en te schrijven zoals in listing \ref{lst:yamlonetask}. \newline
 Verder beschikt Ansible over een 'Pull-mode' waarbij elke server zelf instaat voor zijn configuratie. Elke server haalt de code op van een centraal punt en configureerd vervolgens zichzelf. Deze mannier van werken vereist wel een scriptje op elke server en doet denken aan de werking van Puppet. Een centraal management punt is in deze opstelling echter niet aanwezig en is dus af te raden voor grotere infrastructuren \autocite{AnsibleTuning} .
 
