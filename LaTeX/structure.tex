@@ -14,10 +14,14 @@
 %% Licentie: 
 %%   CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
 %%=============================================================================
+%%--------------- glossary
 
-%%----------------
+
+
 % eigen aangemaakt
 \usepackage{longtable}
+\usepackage[acronym]{glossaries}
+
 \usepackage{wrapfig}
 \usepackage{listings}  
 \usepackage[final]{pdfpages}
@@ -36,6 +40,20 @@
 }
 
 \usepackage{mathtools}
+
+% -------------------------------------------------------glossary
+\newacronym{CMT}{CMT}{Configuration management tool}
+
+
+% nomenclature:
+
+\newglossaryentry{CMT}{
+  name = CMT ,
+  description = Configuration management tool
+}
+
+\makeglossaries
+%%----------------
 
 %%-----------------------------------------------------------------------------
 %% Packages

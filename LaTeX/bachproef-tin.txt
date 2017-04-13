@@ -1,0 +1,2628 @@
+Faculteit Bedrijf en Organisatie
+
+Technische voor-en nadelen van Puppet en Ansible. Verloop en redenen van een omschakeling.
+
+Thomas Detemmerman
+
+Scriptie voorgedragen tot het bekomen van de graad van
+professionele bachelor in de toegepaste informatica
+
+Promotor:
+Harm De Weirdt
+Co-promotor:
+Tom De Wispelaere
+
+Instelling: VRT
+Academiejaar: 2016-2017
+Tweede examenperiode
+
+Faculteit Bedrijf en Organisatie
+
+Technische voor-en nadelen van Puppet en Ansible. Verloop en redenen van een omschakeling.
+
+Thomas Detemmerman
+
+Scriptie voorgedragen tot het bekomen van de graad van
+professionele bachelor in de toegepaste informatica
+
+Promotor:
+Harm De Weirdt
+Co-promotor:
+Tom De Wispelaere
+
+Instelling: VRT
+Academiejaar: 2016-2017
+Tweede examenperiode
+
+Samenvatting
+
+TO DO
+
+Voorwoord
+
+Drie jaar geleden begon ik aan de hogeschool van Gent met een duidelijke voorkeur
+voor informatica. Nu, drie jaar later, is diezelfde passie alleen maar groter geworden.
+Gedurende mijn studententijd vond ik voldoening in de meeste asptecten die informatica
+boodt waaronder zaken zoals programmeren, artificiële intelligentie, netwerkbeheer en
+systeembeheer. Ondanks het feit dat ik al deze zaken interessant vond, was er één onderdeel
+die geleidelijkaan mijn voorkeur zou krijgen en dit werd het beheren van servers.
+Hier werd al snel duidelijk dat goede configuration management tools een absolute meerwaarde konden bieden. Zo herinner ik me nog mijn eerste project waarbij de opdracht was
+om een webserver op te zetten. Ik maakte toen gebruik van Puppet terwijl ik amper de
+kracht en het potentieel van dit soort technologieën begreep. Inmiddels heb ik de kans
+gehad om hieromtrend uitgebreide ervaring op te doen dankzij mijn docent dhr. Van
+Vreckem en mijn stage op de VRT. Dit heeft ertoe geleid om ook mijn bachelorproef rond
+dit fasinerende onderwerp te voeren.
+
+Een goede bachelorproef wordt niet alleen geschreven. Hierbij werd ik ondersteund door
+heel wat mensen dewelke ik zeer dankbaar ben. Bij deze wil ik dan ook de volgende
+mensen persoonlijk bedanken voor hun bijdrage:
+
+mevr. Lambrecht Carine
+Bedankt voor het verzorgen van het linguïstisch aspect van de
+bachelorproef en bieden van morele steun.
+dhr. De Wispelaere Tom
+
+Bedankt voor het voorzien van uitgebreide feedback, het bedenken van
+oplossingen en de aanbreng van nieuwe ideeën.
+dhr. De Weirdt Harm
+Bedankt dat ik bij u terecht kon voor vragen en uw mening over de stand
+van zaken gedurende de bachelorproef.
+dhr. Dierick Gerben
+Bedankt voor het interessante gesprek betreffende de veiligheid en risico’s
+omtrend deze techonologieën.
+dhr. Adams Pieter
+Bedankt voor dat ik bij u terecht kon voor de technische vragen.
+
+Inhoudsopgave
+
+1
+
+Inleiding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+
+1.1
+
+Stand van zaken
+
+1.1.1
+
+Profiel van Puppet . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+
+1.1.2
+
+Profiel van Ansible . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+
+1.2
+
+Opzet van deze bachelorproef
+
+11
+
+1.3
+
+Probleemstelling en Onderzoeksvragen
+
+13
+
+1.3.1
+
+Wat zijn de redenen van een omschakeling? . . . . . . . . . . . . . . . . . . . . . . 13
+
+1.3.2
+
+Wat zijn de technische voor-en nadelen van Puppet en Ansible? . . . . . 13
+
+1.3.3
+
+Wat is het verloop van een dergelijke transitperiode? . . . . . . . . . . . . . . . 13
+
+2
+
+Methodologie . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+
+2.1
+
+Wat zijn de redenen van een omschakeling?
+
+9
+
+15
+
+2.2
+
+Technische analyse van Ansible en Puppet?
+
+15
+
+2.2.1
+
+Overzicht van Puppet en Ansible . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+
+2.2.2
+
+Werking van Puppet . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+
+2.2.3
+
+Werking van Ansible . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+
+2.2.4
+
+Performantie . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+
+2.2.5
+
+Belasting van het netwerk . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+
+2.2.6
+
+Gebruik van het geheugen . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+
+2.3
+
+Schaalbaarheid
+
+2.3.1
+
+inleiding . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+
+2.3.2
+
+Tips om de performantie van Ansible te verbeteren . . . . . . . . . . . . . . . . . 24
+
+2.3.3
+
+Tips om de performantie van Puppet te verbeteren . . . . . . . . . . . . . . . . . 24
+
+2.4
+
+Wat is het verloop van een dergelijke transitperiode?
+
+3
+
+Conclusie . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+
+4
+
+Bijlagen: ruwe data . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+
+4.1
+
+Netwerkverkeer
+
+4.1.1
+
+Puppet . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+
+4.1.2
+
+Ansible . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+
+4.2
+
+Geheugengebruik
+
+4.2.1
+
+Puppet . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+
+4.2.2
+
+Ansible . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+
+4.3
+
+Deploytijden
+
+23
+
+25
+
+31
+
+33
+
+34
+
+Bibliografie . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+
+1. Inleiding
+
+1.1
+
+Stand van zaken
+Bedrijven kunnen tegenwoordig niet zonder IT-infrastructuur. Deze infrastructuur kan
+zeer uitgebreid en complex zijn. Bovendien moet ze ook nog schalen naarmate het bedrijf
+groeit. Als systeembeheerder heb je diverse taken zoals incident management, het volgen
+van de laatste technologische trends of maatregelen treffen tegen cyberdreigingen. Het
+opzetten en configureren van de zoveelste identieke server is een groot tijd- en geldverlies.
+Daarom werden configuration management tools in het leven geroepen. De eerst bekende
+tool was Puppet. Deze technologie stelt ons in staat om configuraties op declaratieve
+wijze te programmeren (Puppet, g.d.-i). Eens de gewenste configuratie geprogrammeerd is,
+kunnen extra gelijkaardige servers veel sneller opgezet worden. Puppet is daar altijd al
+marktleider in geweest. Dit is ook te zien op grafiek 1.1. Maar daar komt nu verandering
+in. Er is de laatste jaren meer concurrentie op de markt gekomen waaronder relatief
+bekenden zoals Salt en Chef. Echter, één van deze nieuwe CMT ’s1 doet het opvallend
+beter op gebied van populariteit en dat is Ansible inc. Zoals op de grafiek te zien is, heeft
+Ansible in 2015 de leiding genomen. Het was bovendien ook in dat jaar dat Ansible werd
+vernoemd door multinationals waaronder Gartner, die over Ansible schreef in een artikel
+over ’Cool Vendors in DevOps’ (Ronni J. Colville, 2015). Verder was het RedHat (2015)
+die aankondigde dat er een akkoord was om Ansible over te nemen. Grafiek 1.1 toont
+hoe vaak Ansible en Puppet gedownload zijn op een Debian distributie en voorlopig laat
+Ansible zijn concurrenten ver achter zich. Maar wat zijn Puppet en Ansible nu eigenlijk?
+
+1 Configuration
+
+management tool
+
+1.1 Stand van zaken
+
+10
+
+Figuur 1.1: Deze grafiek toont het aantal keer dat een bepaald softwarepakket geïnstalleerd
+is op een Debian distributie. (Debian, 2017)
+
+1.2 Opzet van deze bachelorproef
+1.1.1
+
+11
+
+Profiel van Puppet
+Puppet is een open source CMT die werd ontwikkeld in 2005 door Luke Kanies (Puppet,
+g.d.-f) met als doel om op een betrouwbare manier datacenters te kunnen automatiseren
+en controleren. Dit zou het hele proces van services installeren moeten versnellen om
+zo tijd te winnen(Puppet, g.d.-a). Het kan zowel gaan om Linux servers als Windows
+servers (Puppet, g.d.-d). Om dit te kunnen verwezenlijken maakt Puppet gebruik van het
+server/client model. De server wordt in dit model de Puppetmaster genoemd. Dit kunnen
+er één of meerdere zijn. De client wordt de Puppetagent genoemd. Zowel op de master als
+op de agent dient Puppet geïnstalleerd te zijn om te kunnen functioneren. (Puppet, g.d.-g)
+(Puppet, g.d.-c)
+
+1.1.2
+
+Profiel van Ansible
+Michael DeHaan is iemand die zeer vertrouwd was met Puppet. In zijn ervaring vond hij dat
+mensen moeilijkheden ondervonden op gebied van eenvoud en automatisatie. Bovendien
+waren er bedrijven die verschillende tools combineerden. Daarom wou Michael DeHaan
+een CMT bouwen die zorgde voor een duidelijk configuratiebeheer, eenvoudig deployen
+van nieuwe servers en als het nodig was de mogelijkheid bood tot ad-hoc commando’s.
+Met dit idee is hij samen met met Saïd Ziouani in 2012 het open source project Ansible
+gestart (Geerling, 2016). Ook Ansible werkt volgens dit server/client model. Opvallend
+is wel dat elke computer waarop Ansible draait in principe kan fungeren als server. In
+bedrijven zoals de VRT wordt er wel gekozen voor een centraal punt. Dit wordt dan
+Ansible Tower genoemd. In tegenstelling tot Puppet dient er bij Ansible geen additionele
+software geïnstalleerd te worden op de clients. Dit komt het principe van eenvoudig
+deployen ten goede.
+
+1.2
+
+Opzet van deze bachelorproef
+De laatste jaren is er een opwaartse trend in de digitalisering van de wereld. Imec deed
+een onderzoek naar hoe mensen deze digitale bronnen consumeren. Hieruit bleek dat
+televisie niet langer de alleenheerser is en dat steeds meer programma’s worden bekeken
+via sites en app’s. Zo deed Imec (2017) een onderzoek naar het het digitale gebruik van
+de Belgische bevolking. Hieruit bleek dat de populariteit van de televisie als favoriet
+nieuwsmedium in 2016 gezakt met 3,3% t.o.v. het jaar daarvoor wat resulteert in een
+22,4%. Dit terwijl de smartphone, computer en tablet gezamelijk 29,7% halen. Het is
+vanzelfsprekend dat het mediahuis VRT deze trend moet volgen. Bovendien wordt er een
+geheel nieuw gebouw verwacht dat ook het datacenter zal herbergen. Zo komt de VRT
+voor complexe vraagstukken te staan zoals: ”hoe groot moet dit datacenter worden en
+komen er extra locaties bij met back-up servers?”. Deze vragen moeten al een antwoord
+hebben voor de aanvang van het nieuwe gebouw.
+
+Al deze servers zijn van vitaal belang en zorgen voor een correcte werking van het me-
+
+1.2 Opzet van deze bachelorproef
+
+12
+
+Figuur 1.2: Organigram waarbinnen dit onderzoek zich afspeelt.
+
+diabedrijf. Ze stockeren petabytes aan data en zijn verantwoordelijk voor een correcte
+uitzending van programma’s. Veel afdelingen binnen de VRT maken bovendien gebruik
+van multi-stage omgevingen zoals testing, staging, productie... Het is dus belangrijk dat
+een geschikte CMT gebruikt wordt en dat deze perfect geïntegreerd is met de bestaande
+en toekomstige infrastructuur. In dit onderzoek vallen kleinere CMT’s zoals Chef en Salt
+buiten de scope en zal de focus liggen op Puppet en Ansible.
+
+Dit onderzoek vindt plaats op MediaIT, een afdeling binnen het mediahuis VRT zoals
+weerspiegeld is op het organigram in figuur 1.2. Het is één van de afdelingen die verantwoordelijk is voor een goede en correcte werking van de servers. Zij gebruiken momenteel
+Puppet maar deze voldoet niet aan de verwachtingen van de bussiness. Zo is Puppet onder
+andere niet geïntegreerd met de multi-stage omgevingen wat het testen bemoeilijkt. Verder
+is er een beperkte functionaliteit voor het monitoren van deploy’s en daarom is er dan ook
+besloten om de huidige Puppet-infrastructuur te vervangen door Ansible.
+
+Deze bachelorproef zal in detail beschrijven en uitleggen wat er precies misgelopen is.
+Vervolgens zal er gekeken worden of Ansible deze problemen überhaupt kan oplossen
+en hoe dit dan het best gedaan wordt. Ook zal er een analyse gebeuren die de technische
+verschillen blootlegt. Dit rapport wil een hulp bieden aan bedrijven die dezelfde stappen
+overwegen zodat het op voorhand duidelijk is wat er verwacht kan worden, wat de mogelijkheden zijn en waar een CMT te kort schiet.
+Ansible is sinds enige tijd aan een stevige opmars bezig maar er zijn voldoende voorbeelden van opensource (en andere) projecten die na een initiële hype snel in mekaar zakten.
+Ondertussen heeft Ansible tal van mooie referenties achter zich en heeft het positieve
+analyses gekregen van belangrijke partijen zoals RedHat en Gartner. Is Ansible echter
+noemenswaardig beter dan bijvoorbeeld Puppet die reeds een lange bewezen staat van
+dienst heeft (meer dan 12 jaar) en een grote community die het project ondersteunt?
+
+1.3 Probleemstelling en Onderzoeksvragen
+
+1.3
+
+13
+
+Probleemstelling en Onderzoeksvragen
+De overschakeling van Puppet naar Ansible is geen kleine stap en kan mogelijk voor veel
+complicaties zorgen. Daarom weet men best op voorhand wat er te wachten staat en zullen
+er in dit onderzoek verschillende relevante zaken onderzocht worden die kunnen worden
+opgedeeld in de volgende drie grote categorieën.
+
+1.3.1
+
+Wat zijn de redenen van een omschakeling?
+Het is belangrijk te weten wat de drijfveren waren voor de beslissing om Puppet te
+vervangen door Ansible en dat is precies waar deze eerste categorie toe dient. Om
+een profiel van de situatie op te kunnen stellen zal een interview plaatsvinden met de
+verantwoordelijken binnen de VRT om zo te achterhalen waar Puppet te kort schoot
+en waarom men denkt dat Ansible hier een oplossing biedt. Als bedrijven hun situatie
+herkennen in dit profiel, is het geadviseerd om te overwegen of een overstap ook voor hen
+al dan niet aan te raden is.
+
+1.3.2
+
+Wat zijn de technische voor-en nadelen van Puppet en Ansible?
+In deze tweede categorie zal er een vergelijkende studie plaatsvinden waarbij technische
+aspecten zoals performantie, schaalbaarheid en veiligheid vergeleken worden.
+Ten eerste wordt de performantie onderzocht. Hieronder wordt verstaan de tijd die nodig is
+tot het bekomen van een consistente staat en deze zal onderzocht worden in twee situaties.
+Bij de eerste is er namelijk nog geen configuratie aanwezig en dient alles nog geïnstalleerd
+en geconfigureerd te worden. Bij de tweede situatie is er wel al een configuratie aanwezig
+en is het de bedoeling dat de CMT enkel de nodige aanpassingen doorvoert en niet alles
+opnieuw configureert.
+Ten tweede is er de schaalbaarheid. Onder schaalbaarheid wordt verstaan: het vermogen
+om grote vraag te verwerken zonder kwaliteit te verliezen (informit). We zullen monitoren
+hoe Ansible en Puppet hun resources verdelen bij een toenemende drukte, hier onder de
+vorm van meer servers en uitgebreidere configuraties.
+Er wordt afgesloten met een analyse over de veiligheid. Hierbij zal er een literatuurstudie
+plaatsvinden met onderzoek naar welke veiligheidsproblemen reeds gekend zijn en wat de
+impact hiervan is op een bedrijfsnetwerk. CMT’s hebben namelijk administrator rechten
+tot verschillende servers die ze dienen te configureren. Wanneer de server waarop een
+CMT draait besmet is, kunnen de gevolgen catastrofaal zijn.
+
+1.3.3
+
+Wat is het verloop van een dergelijke transitperiode?
+Problemen die bij de vervanging van Puppet door Ansible optreden, zullen gerapporteerd
+worden en er zal onderzocht worden waarom deze optraden. Al dan niet gevonden
+
+1.3 Probleemstelling en Onderzoeksvragen
+
+14
+
+oplossingen zullen beschreven en uitgelegd worden zodat andere bedrijven zich goed
+bewust zijn van wat er te wachten staat en hoe ze eventueel sommige voorvallen best
+kunnen oplossen. Welke incidenten zich zullen voordoen, valt uiteraard moeilijk te
+voorspellen.
+
+2. Methodologie
+
+2.1
+
+Wat zijn de redenen van een omschakeling?
+TO DO - slechte monitoring - slecht geautomatiseert - geen multi environment - expert
+vertrokken - gui veel werk en complex - oorspronkelijk geen modules, refactor, in feite nu
+weer refactor - updates zorgen voor compatiblieteistproblemen (denk ik) - puppet client
+niet ouder dan puppet master maar omgekeerd denkik wel (op te zoeken)
+
+2.2
+2.2.1
+
+Technische analyse van Ansible en Puppet?
+Overzicht van Puppet en Ansible
+Ansible
+declaratief
+Programmeertaal
+YAML
+Communicatieprotocol
+SSH
+open poortenb 22/tcp (client)
+
+Programmeerparadigmaa
+
+Puppet
+declaratief
+eigen DSL
+HTTPS
+8140/tcp (master)
+
+a synoniemen
+
+zijn ook programmeerstijl of programmeermodel, voorbeelden zijn object-georienteerd,
+procedureel, imperatief..., (Stanchev, Green Jr, & Dimitrov, 2003)
+b Dit zijn de minimale vereisten van open poorten. Voor sommige features dienen meer poorten open te
+staan. Bijvoorbeeld 443 voor Ansible Tower of 8140 op elke Puppetclient voor de Puppet kick functionaliteit
+(Puppet, g.d.-b)
+
+Puppet (g.d.-j), Weirdt (2014), Ansible (g.d.-b)
+
+2.2 Technische analyse van Ansible en Puppet?
+
+16
+
+Figuur 2.1: aanvraag van een catalogus bij de Puppetmaster door een Puppetclient. De
+Puppetagent is een deamon (stukje software) die op de Puppetclient draait.
+2.2.2
+
+Werking van Puppet
+Tussen de master en de client bestaat er een vertrouwensrelatie die onderhouden wordt
+door certificaten. Het is de Puppetmaster die verantwoordelijk is voor het verlenen van
+deze certificaten. Pas als deze in orde zijn kan Puppet aan de configuraties van de clients
+beginnen. De code die je schrijft wordt een manifest genoemd. Wanneer een Puppetagent
+wil controleren of hij nog up-to-date is, zal hij een catalogus aanvragen bij de Puppetmaster.
+Een dergelijke catalogus is in feite een manifest dat de Puppetmaster compileert. Deze
+catalogus is bovendien uniek voor elke Puppetagent. Dit komt omdat er bij het compileren
+van het manifest naar de catalogus rekening gehouden wordt met diverse parameters zoals
+de functie van de server of de distributie van het besturingssysteem dat op die server draait
+(Puppet, g.d.-e). Eens de Puppetagent zijn persoonlijke catalogus ontvangen heeft, zal
+deze voor zichzelf controleren of er verschillen zijn tussen zijn huidige configuratie en de
+staat die beschreven staat in de catalogus. Indien er afwijkingen zijn, worden deze ook
+automatisch opgelost (Puppet, g.d.-g).
+
+2.2.3
+
+Werking van Ansible
+Ansible maakt geen gebruik van agenten. Dit betekent dat de Ansibleserver enkel de
+naam en het wachtwoord dient te kennen van de servers die hij moet configureren. Het
+authenticeren kan op verschillende manieren. Er wordt aangeraden om gebruik te maken
+van een SSH-key, wat het eenvoudigst is, maar ook andere middelen zoals een eenvoudig
+wachtwoord of het Kerberos-protocol worden ondersteund. De gewenste configuraties
+worden geschreven in playbooks met bijhorende modules. Eens een verbinding tot stand is
+gebracht, wordt dit playbook met zijn modules verstuurd naar de te configureren server.
+Deze worden vervolgens op de Ansible clients uitgevoerd en weer verwijderd. Ook
+Ansible bezit de functionaliteit om na te gaan of de huidige configuratie in lijn is met
+
+2.2 Technische analyse van Ansible en Puppet?
+
+17
+
+de ontvangen modules. Om servers te configureren met Ansible bestaan er bovendien
+twee manieren. Ansible playbooks kunnen in principe verstuurd worden naar de servers
+vanaf elke computer. Voor een grotere hoeveelheid servers is dit echter niet aangeraden
+en bestaat er de commerciële versie waarbij de playbooks worden verstuurd vanaf een
+centraal punt. Dit centraal punt is voorzien van Ansible Tower die een inventaris heeft van
+alle servers en playbooks die onder zijn verantwoordelijkheid vallen (Ansible, g.d.-b).
+
+2.2.4
+
+Performantie
+Het is interessant om te weten wat de verhoudingen zijn tussen de deploy-tijd tussen Ansible
+en Puppet. Om dit op een betrouwbaar mogelijke manier te kunnen verwezenlijken, zijn
+de configuraties van Ansible en Puppet zo analoog mogelijk gehouden en worden dus
+dezelfde services geïnstalleerd en geconfigureerd. Vervolgens wordt elke configuratie 30
+keer uitgevoerd. De tijd kan worden onderverdeeld in twee delen.
+Het eerste deel van de tijd zal de connectietijd genoemd worden. Dit is de tijd die het kost
+tot er effectief overgegaan kan worden tot configureren. Hieronder zitten zaken zoals het
+opstellen van een verbinding, het verzamelen van nodige gegevens en het versturen van
+een gepersonaliseerde configuratie. Bij Ansible kon deze tijd gewoon berekend worden
+op basis van de resultaten1 . Bij Puppet is dit echter niet mogelijk en bijgevolg zijn deze
+resultaten met de hand gemeten.
+De tweede tijd is de tijd die nodig is om de configuratie effectief uit te voeren. Beide
+waarden zijn gebaseerd op de feedback van de corresponderende CMT.
+Tijd tot het bekomen van een verbinding (connectietijd) (in seconden)
+Puppet 9 6 6 11 6 7 8
+6 9 9 7 7 8 6
+6
+9 10 8 8 7 10 8
+6 5 5 5 5 7 6 15
+Ansible 9 5 5 7 4 5 6
+5 4 11 6 4 8 10 7
+5 6 4 9 5 11 13 13 8 12 8 7 7 8 10
+Tijd tot het bekomen van een consistente staat (deploytijd) (in seconden)
+Puppet 51,35 43,56
+42,20 96,83
+47,43 56,98
+Ansible
+67
+60
+52
+53
+96
+73
+
+46,78 55,18 40,59
+32,33 49,99 40,32
+59,97 61,28 53,98
+51
+59
+51
+54
+52
+62
+61
+62
+59
+
+47,01 35,99 35,07
+55,62 52,82 42,72
+56,56 53,57 49,01
+51
+59
+57
+68
+51
+59
+64
+65
+64
+
+43,29 42,28
+44,21 43,13
+50,21 51,30
+45
+90
+53
+45
+76
+61
+
+Deploytijd
+
+Aangezien grafiek 2.2 geen duidelijk verschil toont tussen beide CMT’s zal met behulp
+van de Z-toets aangetoond worden of er al dan niet een statistisch verschil is.
+1 connectietijd
+
+= totaal verstreken tijd - ∑ (tijd playbooks)
+
+2.2 Technische analyse van Ansible en Puppet?
+
+18
+
+Figuur 2.2: Tijd tot het bekomen van een consistente staat, vertrekkende van een ’lege’
+server.
+Hypothese
+H0 : µ p = µa
+Ha : µ p 6= µa
+Significantieniveau en waarden
+
+α = 0.05 => -1.96 en +1.96
+
+x̄
+σ
+n
+
+Puppet Ansible
+60.7
+49.4
+11.5
+11.6
+30
+30
+
+Toetsingsgrootheden
+Z=
+
+=
+
+x̄ p −x̄a
+s
+
+σ p2 σa2
+n p + na
+
+r 49,4−60,7
+11,62 11,52
+30 + 30
+
+(2.1)
+
+= −3, 789
+Conclusie
+Z valt buiten het kritisch gebied waardoor de nulhypotese verworpen kan worden. Bijgevolg wordt aangenomen dat beide gemiddelden niet tot dezelfde verzameling behoren.
+Er kan dus worden geconcludeerd dat wanneer er wordt vertrokken van een lege server,
+Ansible er gemiddeld langer over doet dan Puppet. Dit is in dit geval een verschil van 11,3
+seconden.
+
+De verschillen worden echter nog groter wanneer de test gedaan wordt met een gedeeltelijke configuratie. Hiermee wordt bedoeld dat er is vertrokken van servers die reeds
+
+2.2 Technische analyse van Ansible en Puppet?
+
+19
+
+Figuur 2.3: Tijd tot het initialiseren van een deploy
+geconfigureerd zijn en slechts enkele aanpassingen moeten doorgevoerd worden. Deze
+aanpassingen zijn een service starten en de inhoud van de webpagina veranderen. De
+resultaten lopen niet door elkaar waardoor een Z-toets niet echt nodig is. Ansible deed
+gemiddeld 19,10 seconden voor de deploy met een vrij grote variatie van 33,40 seconden.
+Puppet haalde maar een vrij consistente 3,10 seconden met een variatie van 0,35.
+
+In laatste instantie is er gekeken naar de tijd die het zou kosten tot de CMT vaststelt dat
+de server reeds volledig is geconfigureerd en dat geen aanpassingen nodig zijn. Hierbij
+resulteert Ansible op een gemiddelde van 18 seconden met opnieuw een vrij grote variatie
+van 18,25 seconden. Ook hier doet Puppet het opnieuw beter waarbij er minder dan een
+seconde nodig heeft om vast te stellen dan dat geen aanpassingen nodig zijn. Uiteraard zijn
+al deze waarden afhankelijk van de configuratie maar ze geven wel een duidelijke indicatie
+van de verschillen tussen beide CMT’s.
+Opmerking: De connectietijd is niet meegerekend in deze metingen. Het omvat hier
+uitsluitend de deploytijd.
+Connectietijd
+
+Ook hier lopen de resultaten door elkaar zoals te zien is op grafiek 2.3, bovendien liggen
+de gemiddelden hier veel dichter bij elkaar. Om vast te stellen of er een significant verschil
+is, zal er opnieuw gebruik gemaakt worden van de Z toets.
+Hypothese
+H0 : µ p = µa
+Ha : µ p 6= µa
+Significantieniveau en waarden
+
+α = 0.05 => -1.96 en +1.96
+
+2.2 Technische analyse van Ansible en Puppet?
+x̄
+σ
+n
+
+20
+
+Puppet Ansible
+6,27
+6,57
+4,10
+6,11
+30
+30
+
+Toetsingsgrootheden
+Z=
+
+=
+
+x̄ p −x̄a
+s
+
+σ p2 σa2
+n p + na
+
+r 6,27−6,57
+4,102 6,112
+30 + 30
+
+(2.2)
+
+= 1, 27
+Conclusie
+Z ligt in het aanvaardingsgebied waardoor we de nulhypothese, die stelt dat beide gemiddelden gelijk zijn, kunnen aanvaarden. Er is bijgevolg geen statistisch verschil tussen beide
+waarden.
+
+2.2.5
+
+Belasting van het netwerk
+Ansible en Puppet hebben een groot verschil in de manier van communiceren en dit
+weerspiegelt zich in het gedrag van de CMT. De grafieken op afbeeldingen 2.4 en 2.5
+weerspiegelen uitsluitend het dataverkeer tussen de server (Ansible Tower of Puppetmaster)
+en de desbetreffende client. Andere data, zoals bijvoorbeeld het downloaden van services
+of uploaden van logbestanden naar de monitoringstool, zijn hierin niet opgenomen. Dit
+wordt verwezenlijkt door gebruik te maken van verschillende netwerkkaarten. Wanneer
+er geen deploy gebeurt, is de kilobyte/ minuut op deze netwerkkaart gelijk aan nul; een
+bewijs dat hier geen andere data dan deze van de CMT over wordt verstuurd.
+
+De manier van communicatie is te herkennen in de grafieken. Zo onderhoudt Ansible de
+communicatie met de client gedurende de deploy. Hiermee wordt bedoeld dat Ansible
+op de hoogte is van de laatste stand van zaken op de client. Wanneer een bepaalde taak
+voltooid is, wordt Ansibel Tower hier onmiddellijk van op de hoogte gebracht. Zoals te
+zien is op grafiek 2.5 is er geregeld communicatie tussen beide servers. Weliswaar is er
+enkel communicatie wanneer iets voltooid is; er is dus geen onnodige communicatie. Zo
+is ook te zien hoe op t6 de communicatie nul is. Ansible had voor die periode niets te
+melden2 .
+Deze manier van werken is handig tijdens het schrijven van nieuwe Ansible rollen. Je
+krijgt namelijk live feedback tijdens het uittesten. Een nadeel is wel dat het netwerk geen
+rust krijgt. Bovendien wordt deze functionaliteit van ’live feedback’ in productie niet vaak
+gebruikt. In realiteit lopen deze jobs tijdens de nacht en is het voldoende om de dag daarna
+een algemeen overzicht te krijgen.
+2 Hier
+
+betreft het de service MariaDB die werd geïnstalleerd
+
+2.2 Technische analyse van Ansible en Puppet?
+
+21
+
+Figuur 2.4: Totaal verbruikte netwerkcapaciteit per client gedurende het deployen. Dit
+bevat enkel communicatie tussen master en client.
+Bij Puppet is dit anders. Hierbij is er enkel communicatie tussen de server en de client bij
+het begin en op einde van de deploy. Opmerkelijk hierbij is dat er twee types te herkennen
+zijn. Op figuur 2.5 zijn deze Puppet type A en B genoemd. Bij Puppet type A is te zien
+hoe de deploy bestaat uit twee reeksen terwijl dit bij type B uit drie reeksen bestaat. De
+oorzaak van deze derde reeks is niet gekend. Het opnieuw versturen van de tweede reeks
+was tijdelijk een piste maar dit is vermoedelijk niet het geval. Moest er een tcp-pakketje
+verloren gegaan zijn, zou uitsluitend dat pakketje opnieuw verstuurd worden en niet de hele
+reeks. Verder heeft de poging om de inhoud van de pakketjes te lezen tot niet veel geleid.
+De verbinding is namelijk geëncrypteerd door het HTTPS-protocol met als gevolg dat
+tools zoals Wireshark of tcpdump geen oplossing konden bieden over de inhoud hiervan.
+Een nadeel aan het feit dat er enkel in het begin en ophet einde communicatie is, is dat
+er op de master geen live feedback voor testen gevolgd kan worden. Dit kan echter wel
+opgelost worden door in te loggen op de client en hier de live feedback volgen met het
+commando ’puppet agent -t’. Het wordt wel nog steeds pas op het einde van de deploy
+terug naar de master gestuurd.
+
+Vervolgens is er ook gekeken naar de totale netwerkbelasting. Hiervoor is er per client
+een cumulatie genomen van de kilobytes/minuut gedurende de gehele deploy. Deze
+waarden zijn terug te vinden in grafiek 2.4. Hier heeft Ansible een gemiddelde van 5802,29
+kilobytes/deploy. Puppet heeft bij deploy’s van type A (bestaande uit twee reeksen) een
+gemiddelde van 9392,5 kilobytes/deploy en bij type B (bestaande uit drie reeksen) 13742,35
+kilobytes/deploy. Gezamelijk heeft Puppet een gemiddelde van 11777,90 kilobytes/deploy.
+
+2.2.6
+
+Gebruik van het geheugen
+Op grafiek 2.6 is per tijdseenheid het gemiddeld gebruikt ramgeheugen weergegeven.
+Hierop is te zien hoe Puppet opvallend meer geheugen gebruikt. Niet alleen tijdens
+een deploy maar ook ervoor en erna. Zelfs wanneer een Ansible client en een Puppet
+client juist opgezet worden met behulp van de Vagrantfile, is er al een verschil in het
+
+2.2 Technische analyse van Ansible en Puppet?
+
+22
+
+Figuur 2.5: Drie types van communicatie. Aantal kilobytes per tijdseenheid op een netwerkkaart die uitsluitend bedoeld is voor communicatie met Ansible Tower / Puppetmaster.
+
+2.3 Schaalbaarheid
+
+23
+
+Figuur 2.6: Verbruikt percentage van het RAM geheugen. Gemeten bij servers met elk
+500 MB.
+gebruikte geheugen. Gezien het feit dat er al een verschil waar te nemen is in deze
+vroege levensfase van de server en het enige verschil in configuratie op dit moment de
+Puppetagent is, werd vermoed dat het verschil hier aan te wijten is. Dit vermoeden werd
+gestaafd toen de Puppetagent tijdelijk uitgezet werd. Het ramgeheugen daalde onmiddellijk
+naar gelijkwaardige waarden als deze van de Ansibleclient. Zonder configuratie gebruiken
+Puppetclients gemiddeld 58% geheugen van de 500MB ram. Bij Ansible is dit 47%.
+Dit betekent dat met een verschil van 11%, er bij 500 MB 55MB meer RAM-geheugen
+gebruikt wordt bij Puppet.
+
+2.3
+2.3.1
+
+Schaalbaarheid
+inleiding
+Initieel was het de bedoeling dat het gedrag van de resources gemeten in 2.2 gemeten
+zouden worden bij toenemende drukte door meer clients toe te voegen. Tijdens het
+opstellen van deze proef bleek dat dit geen bedrijfs-realistische situatie. Bij Ansible is het
+namelijk Ansible Tower die bepaald wanneer de clients geüpdatet moeten worden. Bij
+Puppet valt dit onder de verantwoordelijkheid van de clients zelf. Bijgevolg is de kans
+klein dat in het geval van Puppet alle clients tegelijk een catalogus zouden aanvragen en
+hierdoor de Master zwaar belasten. Toch zijn er hier en daar zaken die de performantie ten
+goede komen. Zo blijft het downloaden van software de grootst bottleneck van een goede
+en snelle deploy. Heel wat verkeer moet het lokale netwerk verlaten om bestanden van een
+externe bron op te halen. Een oplossing hiervoor is om een lokale server op te stellen die
+een kopie bewaart van de (meest) gebruikte services. (Ansible, g.d.-a).
+
+2.3 Schaalbaarheid
+2.3.2
+
+24
+
+Tips om de performantie van Ansible te verbeteren
+Standaard is Ansible geconfigureerd om 5 servers tegelijk te kunnen configureren. Dit
+aantal kan verhoogt worden naar de parameter forks naar 25 tot zelfs 100 te brengen.
+Ansible adviseerd verder ook om gebruik te maken van with_items bij het installeren
+van meerdere packages. Dit komt omdat bij het gebruik van with_items, Ansible deze
+packages zal combineren in één transactie block dewelke de performantie ten goede komt.
+Zo zou het dus beter zijn om listing 2.1 beter te structuren en te schrijven zoals in listing
+2.2.
+Verder beschikt Ansible over een ’Pull-mode’ waarbij elke server zelf instaat voor zijn
+configuratie. Elke server haalt de code op van een centraal punt en configureerd vervolgens
+zichzelf. Deze mannier van werken vereist wel een scriptje op elke server en doet denken
+aan de werking van Puppet. Een centraal management punt is in deze opstelling echter
+niet aanwezig en is dus af te raden voor grotere infrastructuren (Ansible, g.d.-a) .
+Listing 2.1: Installeer de vereiste onderdelen van PHP in twee delen
+
+1
+2 − name : i n s t a l l e e r PHP
+3
+package :
+4
+name : php
+5
+state : present
+6
+7 − name : i n s t a l l e e r php−mysql
+8
+package :
+9
+name : php−m y s q l i
+10
+state : present
+
+Listing 2.2: Installeer de vereiste onderdelen van PHP in één keer
+1 − name : i n s t a l l e e r PHP en b i j h o r e n d e e x t e n s i e s
+2
+package :
+3
+name : { { i t e m } }
+4
+state : present
+5
+with _ i t e m s :
+6
+− php
+7
+− php−m y s q l i
+
+2.3.3
+
+Tips om de performantie van Puppet te verbeteren
+Puppet is door zijn mannier van werken van nature meer geloadbalanced dan Ansible,
+zie 2.3.1, toch zijn ook hier een paar zaken die de performantie ten goede komen. Het
+aantal aanvragen die Puppet tegelijk kan behandelen varieert van server tot server. Dit is
+standaard ’num-cpu’s - 1’ met een minimum van 1 en een maximum van vier. Het aantal
+gebruikte cpu’s staat gelijk aan het aantal aanvragen die Puppet tegelijk kan behandelen.
+Wanneer er meer aanvragen zijn dan beschikbare CPU’s zal het overschot aan aanvragen
+geblokkeerd worden totdat er een slot vrijkomt. Dit aantal kan handmatig verhoogd worden
+met behulp van de variabele max-active-instances. Wanneer deze naar bijvoorbeeld
+twee gebracht wordt zullen twee core’s van de processor gebruikt worden, dit heeft tot
+gevolg dat er ook twee aanvragen tegelijk behandeld kunnen worden.
+
+2.4 Wat is het verloop van een dergelijke transitperiode?
+
+25
+
+Een tweede zaak is het verhogen van de max heap size van JVM. Door dit te verhogen
+kan het JVM proces meer geheugen opvragen bij het besturingssysteem (Puppet, g.d.-h).
+
+2.4
+
+Wat is het verloop van een dergelijke transitperiode?
+Het is vanzelfsprekend dat de mannier van Ansible
+integreren afhankelijk is van bedrijf tot bedrijf. Toch
+is dit in het geval van de VRT vlot verlopen. Ansible
+en Puppet kunnen namelijk perfect naast elkaar in dezelfde infrastructuur bestaan. Dit is ideaal voor een
+geleidelijke overgang. Eén en dezelfde server kan
+bovendien geconfigureerd worden door zowel Puppet als Ansible. Dit heeft als voordeel dat niet alle
+modules geschreven in Puppet onmiddellijk vertaald
+hoeven te worden. Enkele rollen kunnen geschreven Figuur 2.7: Vicieuze cirkel van twee
+zijn voor Ansible terwijl een ander deel nog onder CMT’s hetzelfde bestand proberen
+de bevoegdheid van Puppet valt. Belangrijk hierbij te configureren.
+is wel dat Puppet en Ansible verschillende configuraties behandelen. Wanneer beide CMT’s eenzelfde configuratie uitvoeren kan er door
+subtiele verschillen een vicieuze cirkel ontstaan.
+Beeld u zich de situatie in zoals op figuur 2.7. In ansible staat een bestand met een extra
+spatie, hier noemen we deze voor het gemak ’foo1’. Bij puppet staat deze extra spatie er
+niet, deze wordt ’foo2’ genoemd.
+1. Puppet configureert de service met bestand foo2 en start deze op.
+2. Eventjes later stelt Ansible vast dat de configuratie niet meer overeenkomt met deze
+beschreven in het playbook. Hij wijzigt foo2 naar foo1 en herstart de service zodat
+aanpassingen doorgevoerd zouden worden.
+3. Op een later ogenblik zal Puppet dit waarnemen en het bestand terugdraaien naar
+foo1, opnieuw gevolgd door een gerstart van de gerelateerde service.
+Het is vanzelfsprekend dat dit zorgt voor onnodige aanpassingen met eventueel ongewenste
+of onverwachte gevolgen zoals het voortdurend herstarten van een service.
+Twee CMT’s die dezelfde server op hetzelfde moment configureren zouden elkaar niet
+mogen hinderen. Ten hoogste duurt de configuratie iets langer omdat er een lock bestaat
+op de package managers waardoor de ene CMT op de andere dient te wachten.
+
+3. Conclusie
+
+TO DO
+
+Lijst van woorden en afkortingen
+
+Deploytijd
+
+De tijd die nodig is tot het bekomen van een consistente staat.
+Connectie tijd niet meegerekend.
+
+Connetietijd
+
+De tijd die de CMT nodig heef totdat deze effectief over kan gaan tot co
+Hieronder vallen zaken zoals het maken van een verbinding, het verzam
+van gegevens en opstellen van een gepersonaliseerde configuratie...
+
+CMT
+
+Configuration management tool
+
+fork
+
+Het aanmaken van een child process door zichzelf te dupliceren (Linux
+
+Package manager
+Een mechanisme die het mogelijk maakt om software te installeren op U
+(voorbeelden: yum, apt, dpkg,...
+
+4. Bijlagen: ruwe data
+
+4.1
+4.1.1
+
+Netwerkverkeer
+Puppet
+T1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+T2
+3270
+5115
+5079
+3248
+3203
+3202
+5102
+5092
+3222
+5063
+5085
+5080
+5074
+1641
+5084
+5158
+3210
+5086
+5087
+5059
+
+T3
+1873
+0
+0
+2228
+1870
+1875
+0
+0
+1858
+0
+0
+0
+0
+3512
+0
+0
+1864
+0
+0
+0
+
+T4
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+T5
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+13
+0
+0
+0
+0
+13
+13
+13
+
+T6
+0
+0
+13
+13
+0
+13
+0
+0
+0
+0
+13
+13
+0
+13
+13
+13
+13
+0
+0
+0
+
+T7
+0
+0
+0
+0
+0
+4278
+4257
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+4281
+4272
+
+T8
+4259
+0
+0
+4280
+0
+0
+0
+8760
+8612
+8779
+0
+4261
+5156
+4270
+4272
+4248
+4257
+4285
+875
+0
+
+T9
+0
+4257
+0
+0
+4253
+4477
+4199
+0
+0
+0
+4227
+0
+4009
+0
+875
+4337
+0
+0
+3463
+4344
+
+T10
+4182
+0
+8765
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+3463
+0
+0
+0
+0
+0
+
+T11
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+T12
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+9384
+0
+
+T13
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+gemiddelde
+13584
+13584
+9372
+13857
+9769
+9326
+13845
+13558
+13852
+13692
+13842
+9325
+9354
+14252
+9436
+13707
+13756
+9344
+13719
+13719
+
+4.1 Netwerkverkeer
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+4.1.2
+
+5097
+3011
+5077
+5091
+3210
+5092
+5084
+5076
+5093
+5072
+5082
+
+0
+2054
+0
+0
+1870
+0
+0
+0
+0
+0
+0
+
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+T3
+0
+0
+0
+2153
+619
+2713
+490
+0
+168
+168
+1792
+0
+168
+498
+2474
+168
+0
+1452
+0
+0
+2234
+0
+168
+413
+0
+1444
+505
+168
+0
+
+T4
+1133
+2302
+2248
+316
+1877
+0
+1955
+2748
+2315
+2098
+664
+2466
+2355
+1971
+0
+2312
+930
+909
+883
+2458
+252
+2530
+2317
+2096
+2484
+1091
+2031
+2293
+858
+
+32
+13
+0
+13
+13
+0
+13
+13
+13
+13
+13
+13
+
+0
+13
+0
+0
+13
+0
+0
+0
+0
+0
+0
+
+4247
+0
+0
+4285
+4256
+0
+0
+4268
+0
+0
+4285
+
+875
+0
+0
+0
+0
+5163
+4271
+4482
+5134
+0
+4334
+
+3325
+4265
+4273
+0
+0
+3317
+0
+0
+3333
+4288
+0
+
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+T9
+0
+0
+787
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1461
+0
+1109
+422
+981
+59
+0
+47
+389
+0
+1425
+0
+654
+
+T10
+1071
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+382
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+T11
+422
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+T12
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+13688
+13557
+9343
+9363
+9389
+9349
+13585
+9368
+13839
+13573
+9373
+
+Ansible
+T1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+T2
+1811
+1838
+1832
+1852
+1830
+1858
+1830
+1824
+1855
+1826
+1859
+1865
+1846
+1819
+1852
+1832
+1852
+419
+1865
+1879
+1826
+1844
+1865
+1831
+1839
+1872
+1889
+1859
+1845
+
+T5
+1401
+0
+0
+0
+0
+0
+0
+0
+0
+342
+0
+0
+0
+0
+0
+0
+1629
+1566
+1692
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1599
+
+T6
+0
+0
+0
+0
+0
+762
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+T7
+0
+1371
+0
+0
+1455
+688
+1428
+1431
+360
+0
+1442
+1375
+0
+1428
+1450
+358
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1434
+0
+1015
+0
+
+T8
+0
+52
+663
+1429
+0
+0
+47
+52
+1123
+1434
+0
+59
+1436
+0
+0
+1109
+0
+1426
+0
+1048
+462
+1391
+1464
+1482
+1095
+0
+0
+414
+796
+
+T13
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+gemiddelde
+5838
+5563
+5530
+5750
+5781
+6021
+5750
+6055
+5821
+5868
+5757
+5765
+5805
+5716
+5776
+5779
+5872
+5772
+5931
+5807
+5755
+5824
+5814
+5869
+5807
+5841
+5850
+5749
+5752
+
+4.2 Geheugengebruik
+0
+0
+
+4.2
+4.2.1
+
+1862
+1845
+
+2115
+1949
+
+361
+27
+
+0
+0
+
+0
+1070
+
+1070 402
+418 0
+
+0
+0
+
+0
+0
+
+0
+0
+
+0
+0
+
+Geheugengebruik
+Puppet
+38.02
+37.42
+37.70
+36.67
+36.99
+36.80
+38
+36.69
+37.33
+37.03
+37
+37
+37.03
+36.69
+37.69
+37.31
+36.99
+36.69
+37.67
+37.33
+36.89
+37.77
+
+4.2.2
+
+0
+534
+
+33
+
+48.85
+46.06
+42.26
+41.61
+41.3
+41.61
+48.7
+41.75
+45.9
+41.58
+42.37
+41.61
+48.05
+41.63
+48.63
+45.07
+42.2
+41.3
+48.66
+48.02
+44.85
+48.71
+
+64.39
+57.93
+57.95
+58.03
+48.8
+57.52
+61.46
+57.98
+64.3
+48.73
+59.58
+57.97
+64.32
+57.97
+63.75
+61.34
+57.28
+48.8
+60.56
+64.34
+57.86
+64.35
+
+58.46
+57.77
+55.13
+56.97
+57.57
+54.85
+60.96
+51.38
+57.66
+57.59
+55.64
+54.09
+57.52
+55.94
+58.6
+56.72
+55.5
+64.3
+58.47
+56.08
+48.88
+57.59
+
+67.23
+65.97
+66
+65.13
+65.01
+61.38
+66.70
+66.52
+67.31
+57.75
+58.48
+66.49
+67.27
+65.91
+65.06
+67.33
+65.74
+57.73
+65.7
+65.73
+66.55
+66.52
+
+68.15
+68.31
+67.53
+66.72
+67.31
+66.61
+62.36
+68.44
+67.22
+67.14
+67.23
+68.04
+68.38
+67.98
+66.85
+68.22
+67.32
+64.5
+66.31
+66.51
+68.41
+68.03
+
+63.54
+63.2
+67.56
+62.52
+63
+62.32
+54.25
+62.63
+53.91
+67.95
+67.08
+66.36
+62.5
+68.05
+62.89
+57.82
+49.68
+65.60
+62.3
+57.94
+57.49
+67.90
+
+57.98
+53.36
+62.64
+53.49
+51.31
+53.7
+42.47
+47.55
+39.16
+62.56
+62.18
+51.82
+45.87
+58.06
+47.65
+46.82
+42.23
+66.38
+49.6
+43.94
+44.51
+57.86
+
+39.22
+38.66
+45.18
+42.39
+41.55
+39.34
+39.19
+38.74
+
+28.45
+28.48
+29.17
+28.41
+28.44
+28.69
+28.42
+28.43
+28.42
+28.41
+28.14
+
+46.62
+33.23
+46.64
+31.28
+41.05
+46.71
+31.46
+34.86
+38.58
+33.97
+42.31
+
+38.17
+40.31
+44.1
+46.75
+39.67
+41.26
+38.67
+39.87
+37.19
+38.63
+36.57
+
+50.78
+41.26
+50.83
+44.14
+50.74
+50.8
+49.11
+50.74
+34.72
+49.6
+41.56
+
+49.33
+50.89
+52.12
+50.86
+50.82
+48.44
+50.86
+50.85
+50.79
+50.86
+50.33
+
+40.54
+49.7
+32.17
+49.93
+48.81
+31.66
+52.09
+48.82
+53.09
+55.29
+54.77
+
+31.5
+40.63 31.49
+
+55.44
+53.87
+39.09
+38.66
+43.89
+38.99
+41.8
+39.37
+62.41
+38.51
+38.84
+38.18
+52.6
+
+Ansible
+
+32.9 31.6
+33.43 31.51
+41.17
+31.49
+49.02
+40.42
+41.76
+
+31.43
+31.82
+31.72
+31.21
+
+38.93
+38.71
+
+38.83
+38.65
+
+38.49
+38.76
+53.99 38.83
+
+38.71
+
+5810
+5843
+
+4.3 Deploytijden
+27.77
+27.8
+27.84
+27.84
+27.82
+27.82
+28.15
+27.84
+27.83
+28.09
+27.9
+
+4.3
+
+30.66
+40.44
+40.54
+29.36
+33.44
+40.76
+41.08
+30.76
+37.97
+42.83
+40.79
+
+34
+45.93
+37.76
+46.02
+46.03
+47.45
+34.26
+34.30
+46.02
+40.13
+35.52
+40.65
+
+40.55
+50.21
+35.36
+43.23
+38.56
+50.26
+50.27
+43.56
+45.08
+50.24
+50.3
+
+50.22
+50.25
+50.27
+50.35
+50.27
+52.57
+52.62
+50.32
+50.32
+50.32
+50.35
+
+50.24
+51.82
+50.29
+52.6
+50.3
+51.02
+41.39
+51.91
+50.28
+48.39
+50.89
+
+50.27
+46.83
+54.06
+48.49
+48.29
+32.66
+31.26
+40.24
+48.38
+32.78
+41.84
+
+48.3 31.49
+31.22
+41.29 31.21
+31.52
+31.38
+
+31.21
+31.46
+32.22
+31.27
+
+Deploytijden
+Deploytijd
+Puppet Ansible
+8.9
+9
+5.68
+5
+6
+5
+11.18
+7
+6.23
+4
+7.3
+5
+7.71
+6
+6.06
+5
+8.58
+4
+8.64
+11
+6.61
+6
+6.57
+4
+7.68
+8
+6.35
+10
+5.64
+7
+8.76
+5
+9.56
+6
+8.23
+4
+8
+9
+7.41
+5
+11
+10
+13
+8
+13
+6
+8
+5
+12
+5
+8
+5
+7
+5
+
+Full config
+Puppet Ansible
+51.35
+67
+43.56
+60
+46.78
+51
+40.59
+59
+55.18
+51
+47.01
+51
+35.99
+59
+35.07
+57
+43.29
+45
+42.28
+90
+42.2
+52
+96.83
+53
+32.33
+54
+49.99
+52
+40.32
+62
+55.62
+68
+52.82
+51
+42.72
+59
+44.21
+53
+43.13
+45
+47.43
+96
+56.98
+73
+59.97
+61
+61.28
+62
+53.98
+59
+56.56
+64
+53.57
+65
+
+Partial config
+Ansible Puppet
+14
+2.92
+20
+3
+23
+2.96
+23
+2.98
+14
+2.91
+19
+5.86
+30
+3.11
+15
+2.93
+21
+2.88
+22
+3.24
+14
+3.19
+14
+4.36
+20
+2.95
+25
+2.93
+13
+2.97
+14
+2.9
+13
+2.96
+18
+2.85
+16
+2.95
+24
+2.87
+19
+2.87
+15
+2.87
+23
+3.09
+13
+2.95
+14
+2.93
+32
+2.96
+14
+2.93
+
+No config
+Puppet Ansible
+0.41
+19
+0.38
+11
+0.34
+12
+0.37
+18
+0.39
+22
+0.38
+20
+0.4
+9
+0.43
+11
+0.42
+16
+0.38
+10
+0.62
+11
+0.36
+10
+0.38
+15
+0.36
+17
+0.36
+19
+0.4
+15
+0.35
+22
+0.42
+16
+0.59
+16
+0.39
+19
+0.4
+19
+0.38
+19
+0.42
+10
+0.44
+9
+0.44
+10
+0.4
+11
+0.9
+10
+
+4.3 Deploytijden
+7
+8
+10
+
+7
+6
+15
+
+35
+49.01
+50.21
+51.3
+
+64
+76
+61
+
+14
+25
+32
+
+2.88
+2.8
+3.1
+
+0.42
+0.42
+
+11
+11
+
+Bibliografie
+
+Ansible. (g.d.-a). Ansible Performance Tuning. Verkregen van https://www.ansible.com/
+blog/ansible-performance-tuning
+Ansible. (g.d.-b). How Ansible works. Verkregen van https://www.ansible.com/howansible-works
+Debian. (2017). Debian Popularity Contest. Verkregen van http://popcon.debian.org
+Geerling, J. (2016). Ansible For DevOps. Leanpub.
+Imec. (2017). digimeter 2016.
+Linux. (2017, Maart). Linux Programmer’s Manual. Verkregen van http://man7.org/linux/
+man-pages/man2/fork.2.html
+Puppet. (g.d.-a). Verkregen van https://puppet.com/product/how-puppet-works
+Puppet. (g.d.-b). Verkregen van https://docs.puppet.com/puppet/3.6/man/kick.html
+Puppet. (g.d.-c). FAQ. Verkregen van https://puppet.com/product/faq
+Puppet. (g.d.-d). Installing Puppet Enterprise for a Windows environment. Verkregen van
+https://docs.puppet.com/pe/latest/windows_installing.html
+Puppet. (g.d.-e). Language: Basics. Verkregen van https://docs.puppet.com/puppet/4.9/
+lang_summary.html
+Puppet. (g.d.-f). Leadershipt. Verkregen van https://puppet.com/company/leadership
+Puppet. (g.d.-g). Puppet Documentation. Verkregen van docs.puppet.com
+Puppet. (g.d.-h). Puppet Server: Tuning Guide. Verkregen van https://docs.puppet.com/
+puppetserver/latest/tuning_guide.html
+Puppet. (g.d.-i). Puppet’s Declarative Language: Modeling Instead of Scripting. Verkregen
+van https://puppet.com/blog/puppet?s-declarative-language-modeling-instead-ofscripting
+Puppet. (g.d.-j). Why Puppet has its own configuration language. Verkregen van https:
+//puppet.com/blog/why-puppet-has-its-own-configuration-language
+
+BIBLIOGRAFIE
+
+38
+
+RedHat. (2015, oktober). Verkregen van https : / / www. redhat . com / en / about / press releases/red-hat-acquire-it-automation-and-devops-leader-ansible
+Ronni J. Colville, L. L. (2015, april). Verkregen van https : / / www. gartner. com / doc /
+3034319/cool-vendors-devops
+Stanchev, P., Green Jr, D., & Dimitrov, B. (2003). High level color similarity retrieval.
+Weirdt, H. D. (2014). Configuratieafhankelijkheden gebruiken om gedistribueerde applicaties efficiënt te beheren (masterscriptie, KU Leuven).
+
+Lijst van figuren
+
+1.1 Deze grafiek toont het aantal keer dat een bepaald softwarepakket
+geïnstalleerd is op een Debian distributie. (Debian, 2017) . . . . . . . . . . . . . 10
+1.2
+
+Organigram waarbinnen dit onderzoek zich afspeelt. . . . . . . . . . . . . 12
+
+2.1 aanvraag van een catalogus bij de Puppetmaster door een Puppetclient. De Puppetagent is een deamon (stukje software) die op de
+Puppetclient draait. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+2.2 Tijd tot het bekomen van een consistente staat, vertrekkende van een
+’lege’ server. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+2.3
+
+Tijd tot het initialiseren van een deploy . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+
+2.4 Totaal verbruikte netwerkcapaciteit per client gedurende het deployen. Dit bevat enkel communicatie tussen master en client. . . . . . . . 21
+2.5 Drie types van communicatie. Aantal kilobytes per tijdseenheid op
+een netwerkkaart die uitsluitend bedoeld is voor communicatie met Ansible
+Tower / Puppetmaster. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+2.6 Verbruikt percentage van het RAM geheugen. Gemeten bij servers
+met elk 500 MB. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+2.7 Vicieuze cirkel van twee CMT’s hetzelfde bestand proberen te configureren. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+
+
