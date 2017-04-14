@@ -25,10 +25,12 @@ TO DO
 - updates zorgen voor compatiblieteistproblemen (denk ik)
 - puppet client niet ouder dan puppet master maar omgekeerd denkik wel (op te zoeken)
 
-\section{Technische analyse van Ansible en Puppet?}
+\section{Technische werking van Ansible en Puppet?}
 \label{sec:methodologie-technische-verschillen}
 
 \subsection{Overzicht van Puppet en Ansible}
+
+
 
 \begin{minipage}{15cm}
 \begin{tabular}{ r |c c }
@@ -40,6 +42,8 @@ TO DO
      \hline
    Communicatieprotocol & SSH & HTTPS \\
    \hline
+  Push / Pull principe (standaard)\footnote{Beide technologie\"en zijn in staat om zowel volgens push als pull methode te functioneren. Zo heeft Ansible 'pull-mode' en Puppet 'Puppet kick' \autocite{ansiblepull]} \autocite{puppetkick}} & \gls{push} & \gls{pull} \\
+   \hline
    open poorten\footnote{Dit zijn de minimale vereisten van open poorten. Voor sommige features dienen meer poorten open te staan. Bijvoorbeeld 443 voor Ansible Tower of 8140 op elke Puppetclient voor de Puppet kick functionaliteit \autocite{puppetkick} }  & 22/tcp (client) & 8140/tcp (master)\\
   \end{tabular}
   \end{minipage}   
@@ -50,7 +54,7 @@ TO DO
 
 \subsection{Werking van Puppet}
 
-Tussen de master en de client bestaat er een vertrouwensrelatie die onderhouden wordt door certificaten. Het is de Puppetmaster die verantwoordelijk is voor het verlenen van deze certificaten. Pas als deze in orde zijn kan Puppet  aan de configuraties van de clients beginnen. De code die je schrijft wordt een manifest genoemd. Wanneer een Puppetagent wil controleren of hij nog up-to-date is, zal hij een catalogus aanvragen bij de Puppetmaster. Een dergelijke catalogus is in feite een manifest dat de Puppetmaster compileert. Deze catalogus is bovendien uniek voor elke Puppetagent. Dit komt omdat er bij het compileren van het manifest naar de catalogus rekening gehouden wordt met diverse parameters zoals de functie van de server of de distributie van het besturingssysteem dat op die server draait \autocite{Puppetlanguagecatalog}. Eens de Puppetagent zijn persoonlijke catalogus ontvangen heeft, zal deze voor zichzelf controleren of er verschillen zijn tussen zijn huidige configuratie en de staat die beschreven staat in de catalogus. Indien er afwijkingen zijn, worden deze ook automatisch opgelost \autocite{puppetdoc}.
+Tussen de master en de client bestaat er een vertrouwensrelatie die onderhouden wordt door certificaten. Het is de Puppetmaster die verantwoordelijk is voor het verlenen van deze certificaten. Pas als deze in orde zijn kan Puppet  aan de configuraties van de clients beginnen. De verzameling van alle geschreven code wordt een manifest genoemd. Wanneer een Puppetagent wil controleren of hij nog up-to-date is, zal hij een catalogus aanvragen bij de Puppetmaster. Een dergelijke catalogus is in feite een manifest dat de Puppetmaster compileert. Deze catalogus is bovendien uniek voor elke Puppetagent. Dit komt omdat er bij het compileren van het manifest naar de catalogus rekening gehouden wordt met diverse parameters zoals de functie van de server of de distributie van het besturingssysteem dat op die server draait \autocite{Puppetlanguagecatalog}. Eens de Puppetagent zijn persoonlijke catalogus ontvangen heeft, zal deze voor zichzelf controleren of er verschillen zijn tussen zijn huidige configuratie en de staat die beschreven staat in de catalogus. Indien er afwijkingen zijn, worden deze ook automatisch opgelost \autocite{puppetdoc}.
 
 \begin{figure}  \begin{center}
   \includegraphics[width=250px]{img/aanvraagCatalogus.png}
@@ -61,45 +65,49 @@ Tussen de master en de client bestaat er een vertrouwensrelatie die onderhouden 
 
 \subsection{Werking van Ansible}
 
-Ansible maakt geen gebruik van agenten. Dit betekent dat de Ansibleserver enkel de naam en het wachtwoord dient te kennen van de servers die hij moet configureren. Het authenticeren kan op verschillende manieren. Er wordt aangeraden om gebruik te maken van een SSH-key, wat het eenvoudigst is, maar ook andere middelen zoals een eenvoudig wachtwoord of het Kerberos-protocol worden ondersteund. De gewenste configuraties worden geschreven in playbooks met bijhorende modules. Eens een verbinding tot stand is gebracht, wordt dit playbook met zijn modules verstuurd naar de te configureren server. Deze worden vervolgens op de Ansible clients uitgevoerd  en weer verwijderd. Ook Ansible bezit de functionaliteit om na te gaan of de huidige configuratie in lijn is met de ontvangen modules. Om servers te configureren met Ansible bestaan er bovendien twee manieren. Ansible playbooks kunnen in principe verstuurd worden naar de servers vanaf elke computer. Voor een grotere hoeveelheid servers is dit echter niet aangeraden en bestaat er de commerci"ele versie waarbij de playbooks worden verstuurd vanaf een centraal punt. Dit centraal punt is voorzien van Ansible Tower die een inventaris heeft van alle servers en playbooks die onder zijn verantwoordelijkheid vallen \autocite{ansibledoc}.
+In tegenstelling tot Puppet maakt Ansible geen gebruik agents. Dit betekent dat de Ansibleserver enkel de naam en het wachtwoord dient te kennen van de servers die hij moet configureren. Het authenticeren kan op verschillende manieren. Er wordt aangeraden om gebruik te maken van een SSH-key, wat het eenvoudigst is, maar ook andere middelen zoals een eenvoudig wachtwoord of het Kerberos-protocol worden ondersteund. De gewenste configuraties worden geschreven in playbooks met bijhorende modules. Eens een verbinding tot stand is gebracht, wordt dit playbook met zijn modules verstuurd naar de te configureren server. Deze worden vervolgens op de Ansible clients uitgevoerd  en weer verwijderd. Ook Ansible bezit de functionaliteit om na te gaan of de huidige configuratie in lijn is met de ontvangen modules. Om servers te configureren met Ansible bestaan er bovendien twee manieren. Ansible playbooks kunnen in principe verstuurd worden naar de servers vanaf elke computer. Voor een grotere hoeveelheid servers is dit echter moeilijk onderhoudbaar en onoverzichtelijk. Hiervoor bestaat er de commerci\"ele versie waarbij de playbooks worden verstuurd vanaf een centraal punt. Dit centraal punt is voorzien van Ansible Tower die een inventaris heeft van alle servers en playbooks die onder zijn verantwoordelijkheid vallen. Verschillende gebruikers kunnen vervolgens verschillende toegangsrechten krijgen zodat personen enkel servers kunnen configureren die onder hun bevoegdheid vallen \autocite{ansibledoc}.
+
+%------------------------------------
+
+\section{Technische analyse van Ansible en Puppet?}
+\label{sec:technischeanalyse}
+\subsection{Opstelling van de test omgeving}
+\label{sec:opstellingtestevn}
+\subsubsection{Architectuur van de opstelling}
+
+\begin{wrapfigure}{R}{0.3\textwidth}
+\centering
+\includegraphics[width=0.25\textwidth]{img/infrastructruur.png}
+\caption{\label{fig:infrastructuur} Server A, de master, configureert server B - D, de clients.}
+\end{wrapfigure}
 
 
+Deze opstelling is gerealiseerd door gebruik te maken van twee Vagrant bestanden. Voor elk Vagrant bestand word eerst de master aangemaakt, gevolgd door X aantal client's. Vagrant zorgt ervoor dat elke client  verbonden wordt met New Relic, de gekozen tool om de servers te monitoren. In het geval van Puppet wordt hierbij ook nog de Puppet agent ge\"installeerd. Elke client, zowel in de Ansible- als de Puppetinfrastructuur, is gebaseerd op dezelfde basebox en krijgen dezelfde resources toegekend. De masters beschikten over meer resources.\newline
+
+\fbox{\begin{minipage}{15em}
+\textbf{Technische specificaties clients}\newline
+Basebox: bertvv/centos72\newline
+Aantal CPU's: 1\newline
+Geheugen: 500 MB
+\end{minipage}}
+
+\subsubsection{Configuraties van de deploy's}
+
+
+Voor de testen in sectie \ref{sec:technischeanalyse} is er gekozen om gebruik te maken van een LAMP-stack. Dit is zowel voor Ansible als Puppet gebeurt. Bovendien is er getracht geweest om in de mate van het mogelijke beide configuraties zo analoog mogelijk te houden. Om dit te realiseren wordt er httpd, php, php-mysql en mariaDB-server ge\"installeerd. Vervolgens wordt er een webpagina op de site geplaatst. Deze is geschreven in PHP en controleert of alle zaken werken naar behoren. Om af te sluiten wordt HTTP doorgelaten door de firewall, de service httpd gestart en MariaDB gestopt. \newline
+
+Opmerking: De reden dat MariaDB op dit moment niet gestart wordt is vanwege de \gls{partialconfig}. Hierbij wordt gekeken hoelang het duurt om bij een bestaande configuratie enkele aanpassingen door te voeren. Het is dus pas hier dat MariaDB gestart wordt.
+
+
+
+ 
 \subsection{Performantie}
 
-Het is interessant om te weten wat de verhoudingen zijn tussen de deploy-tijd tussen Ansible en Puppet. Om dit op een betrouwbaar mogelijke manier te kunnen verwezenlijken, zijn de configuraties van Ansible en Puppet zo analoog mogelijk gehouden en worden dus dezelfde services ge\"installeerd en geconfigureerd. Vervolgens wordt elke configuratie 30 keer uitgevoerd. De tijd kan worden onderverdeeld in twee delen.\newline
-Het eerste deel van de tijd zal de \gls{connectietijd} genoemd worden. Dit is de tijd die het kost tot er effectief overgegaan kan worden tot configureren. Hieronder zitten zaken zoals het opstellen van een verbinding, het verzamelen van nodige gegevens en het versturen van een gepersonaliseerde configuratie. Bij Ansible kon deze tijd gewoon berekend worden op basis van de resultaten\footnote{connectietijd = totaal verstreken tijd -  \unexpanded{$ \sum  $} (tijd playbooks)}. Bij Puppet is dit echter niet mogelijk en bijgevolg zijn deze resultaten met de hand gemeten.\newline
- De tweede tijd is de tijd die nodig is om de configuratie effectief uit te voeren. Beide waarden zijn gebaseerd op de feedback van de corresponderende \gls{CMT}.
-
-\textbf{Tijd tot het bekomen van een verbinding (\gls{connectietijd})} (in seconden) \newline
-\begin{tabular}{| r |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |}
-  \hline	  		
-Puppet & 9 & 6 & 6 & 11 & 6 & 7 & 8 & 6 & 9 & 9 & 7 & 7 & 8 & 6 & 6   \\ 
-\hline
-& 9 & 10 & 8 & 8 & 7 & 10 & 8 & 6 & 5 & 5 & 5 & 5 & 7 & 6 & 15\\
-   \hline    \hline
-  Ansible & 9 & 5 & 5 & 7 & 4 & 5 & 6 & 5 & 4 & 11 & 6 & 4 & 8 & 10 & 7 \\ 
-\hline
-   & 5 & 6 & 4 & 9 & 5 & 11 & 13 & 13 & 8 & 12 & 8 &	7 & 7 & 8  & 10 \\
-  \hline  
-\end{tabular}
+Het is interessant om te weten wat de verhouding is tussen de gemiddelde deploytijd van Ansible en Puppet. Om dit op een zo betrouwbaar mogelijke manier te kunnen verwezenlijken, zijn de configuraties van Ansible en Puppet zo analoog mogelijk gehouden zoals te lezen was in sectie \ref{sec:opstellingtestevn}. Vervolgens wordt elke configuratie 30 keer uitgevoerd. De tijd kan worden onderverdeeld in twee delen.\newline
+Het eerste deel van de tijd zal de \gls{connectietijd} genoemd worden. Dit is de tijd die het kost alvorens er effectief overgegaan kan worden tot configureren. Hieronder zitten zaken zoals het opstellen van een verbinding, het verzamelen van nodige gegevens en het versturen van een gepersonaliseerde configuratie. Bij Ansible kon deze tijd gewoon berekend worden op basis van de resultaten\footnote{connectietijd = totaal verstreken tijd -  \unexpanded{$ \sum  $} (tijd playbooks)}. Bij Puppet is dit echter niet mogelijk en bijgevolg zijn deze resultaten met de hand gemeten.\newline
+ De tweede tijd is de \gls{deploytijd}. Dit is de tijd die nodig is om de configuratie effectief uit te voeren. Beide waarden zijn gebaseerd op de feedback van de corresponderende \gls{CMT}.
 
 
-\textbf{Tijd tot het bekomen van een consistente staat (\gls{deploytijd})} (in seconden)
-
-\begin{tabular}{| r |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c |c | c c |}
-  \hline			
-  
-Puppet & 51,35 & 43,56 & 46,78 & 55,18 & 40,59 & 47,01 & 35,99 & 35,07 & 43,29 & 42,28  \\ \hline
-           & 42,20 & 96,83 & 32,33 & 49,99 & 40,32 & 55,62 & 52,82 & 42,72 & 44,21 & 43,13 \\ \hline
-            & 47,43 & 56,98	& 59,97 & 61,28 & 53,98	& 56,56 & 53,57 & 49,01 & 50,21 & 51,30 \\ \hline
-              \hline 
-   
-  Ansible & 67 & 60 & 51 & 59 & 51 & 51 & 59 & 57 & 45 & 90 \\ \hline
-                & 52  & 53 & 54 & 52 & 62 & 68 & 51 & 59 & 53 & 45  \\ \hline
-                & 96 & 73 & 61 & 62	& 59 & 64	& 65 & 64 & 76 & 61  \\ \hline
-                
-  \hline  
-\end{tabular}
 
 
 \subsubsection{\gls{deploytijd}}
@@ -111,36 +119,7 @@ Puppet & 51,35 & 43,56 & 46,78 & 55,18 & 40,59 & 47,01 & 35,99 & 35,07 & 43,29 &
 
 Aangezien grafiek \ref{fig:deploytime_fullconfig} geen duidelijk verschil toont tussen beide \gls{CMT}'s zal met behulp van de Z-toets aangetoond worden of er al dan niet een statistisch verschil is.
 
-\underline{Hypothese}
-\begin{align*}
-H_0:  \mu_p = \mu_a \\
-H_a: \mu_p\neq \mu_a 
-\end{align*}
-
-
-\underline{Significantieniveau en waarden} \newline
-
- $\alpha$ = 0.05 => -1.96 en +1.96 \newline
-
-		\begin{tabular}{ r |c |c }
-			& Puppet & Ansible\\\hline
-			\unexpanded{$ \bar x  $} &  60.7 & 49.4\\ \hline
-			$\sigma$ & 11.5 & 11.6\\ \hline
-			n &  30 &  30
-
-\end{tabular}
-
-
-\underline{Toetsingsgrootheden}
-\begin{equation} \label{eq1}
-\begin{split}
-Z &= \tfrac{\bar x_p - \bar x_a}{\sqrt{\tfrac{\sigma_p^2}{n_p}+\tfrac{\sigma_a^2}{n_a}}}\\
-& = \tfrac{49,4 - 60,7}{\sqrt{\tfrac{11,6^2}{30}+\tfrac{11,5^2}{30}}} \\
-& = -3,789
-\end{split}
-\end{equation}
-
-
+\ref{wis:hypothesedeploytijd}
 
 \underline{Conclusie} \newline
 Z valt buiten het kritisch gebied waardoor de nulhypotese verworpen kan worden. Bijgevolg wordt aangenomen dat beide gemiddelden niet tot dezelfde verzameling behoren. Er kan dus worden geconcludeerd dat wanneer er wordt vertrokken van een lege server, Ansible er gemiddeld langer over doet dan Puppet. Dit is in dit geval een verschil van 11,3 seconden. \newline
@@ -160,33 +139,8 @@ Ook hier lopen de resultaten door elkaar zoals te zien is op grafiek \ref{fig:co
 
 
 
-\underline{Hypothese}
-\begin{align*}
-H_0:  \mu_p = \mu_a \\
-H_a: \mu_p\neq \mu_a 
-\end{align*}
-\underline{Significantieniveau en waarden} \newline
+\ref{wis:hypotheseconnectietijd}
 
- $\alpha$ = 0.05 => -1.96 en +1.96 \newline
-
-		\begin{tabular}{ r |c |c }
-			& Puppet & Ansible\\\hline
-			\unexpanded{$ \bar x  $} &  6,27 & 6,57\\ \hline
-			$\sigma$ & 4,10 & 6,11\\ \hline
-			n &  30 &  30
-
-\end{tabular}
-
-
-\underline{Toetsingsgrootheden}
-\begin{equation} \label{eq1}
-\begin{split}
-Z &= \tfrac{\bar x_p - \bar x_a}{\sqrt{\tfrac{\sigma_p^2}{n_p}+\tfrac{\sigma_a^2}{n_a}}}\\
-& = \tfrac{ 6,27 - 6,57}{\sqrt{\tfrac{ 4,10 ^2}{30}+\tfrac{ 6,11^2}{30}}} \\
-& = 1,27
-\end{split}
-\end{equation}
-\underline{Conclusie}\newline
 Z ligt in het aanvaardingsgebied waardoor we de nulhypothese, die stelt dat beide gemiddelden gelijk zijn, kunnen aanvaarden. Er is bijgevolg geen statistisch verschil tussen beide waarden.
 
 %%---------------------------------------------------- einde performantie
@@ -198,7 +152,7 @@ De manier van communicatie is te herkennen in de grafieken. Zo onderhoudt Ansibl
  Deze manier van werken is handig tijdens het schrijven van nieuwe Ansible rollen. Je krijgt namelijk live feedback tijdens het uittesten. Een nadeel is wel dat het netwerk geen rust krijgt. Bovendien wordt deze functionaliteit van 'live feedback' in productie niet vaak gebruikt. In realiteit lopen deze jobs tijdens de nacht en is het voldoende om de dag daarna een algemeen overzicht te krijgen.\newline
 
 Bij Puppet is dit anders. Hierbij is er enkel communicatie tussen de server en de client bij het begin en op einde van de deploy. Opmerkelijk hierbij is dat er twee types te herkennen zijn. Op figuur \ref{fig:deploytypes} zijn deze Puppet type A en B genoemd. Bij Puppet type A is te zien hoe de deploy bestaat uit twee reeksen terwijl dit bij type B uit drie reeksen bestaat. De oorzaak van deze derde reeks is niet gekend. Het opnieuw versturen van de tweede reeks was tijdelijk een piste maar dit is vermoedelijk niet het geval. Moest er een tcp-pakketje verloren gegaan zijn, zou uitsluitend dat pakketje opnieuw verstuurd worden en niet de hele reeks. Verder heeft de poging om de inhoud van de pakketjes te lezen tot niet veel geleid. De verbinding is namelijk ge\"encrypteerd door het HTTPS-protocol met als gevolg dat tools zoals Wireshark of tcpdump geen oplossing konden bieden over de inhoud hiervan.\newline
-Een nadeel aan het feit dat er enkel in het begin en ophet einde communicatie is, is dat er op de master geen live feedback voor testen gevolgd kan worden. Dit kan echter wel opgelost worden door in te loggen op de client en hier de live feedback volgen met het commando 'puppet agent -t'. Het wordt wel nog steeds pas op het einde van de deploy terug naar de master gestuurd.
+Een nadeel aan het feit dat er enkel in het begin en ophet einde communicatie is, is dat er op de master geen live feedback voor testen gevolgd kan worden. Dit kan echter wel opgelost worden door in te loggen op de client en hier de live feedback volgen met het commando "\texttt{puppet agent -t}". Het wordt wel nog steeds pas op het einde van de deploy terug naar de master gestuurd.
  \newline
 
 

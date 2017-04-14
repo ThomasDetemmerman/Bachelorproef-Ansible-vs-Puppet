@@ -7,27 +7,49 @@
 
 %--------------------------------- woordenlijst
 \newglossaryentry{packagemanager}{
-	name = Package manager ,
+	name = {Package manager},
+	text = package manager,
 	description = Een mechanisme die het mogelijk maakt om software te installeren op UNIX gebaseerde systemen. \textit{(voorbeelden: yum, apt, dpkg,...} 
 }
 
 \newglossaryentry{deploytijd}{
-	name = Deploytijd ,
+	name = {Deploytijd},
+	text = deploytijd,
 	description =  De tijd die de CMT nodig heef totdat deze effectief over kan gaan tot configureren.  Hieronder vallen zaken zoals het maken van een verbinding, het verzamelen van gegevens en opstellen van een gepersonaliseerde configuratie... 
 }
 
 \newglossaryentry{connectietijd}{
-	name = Connectietijd ,
-	description = To Do
+	name = Connectietijd,
+	text = connectietijd,
+	description = {Dit is de tijd die het kost alvorens er effectief overgegaan kan worden tot configureren. Hieronder zitten zaken zoals het opstellen van een verbinding, het verzamelen van nodige gegevens en het versturen van een gepersonaliseerde configuratie.}
+}
+
+\newglossaryentry{partialconfig}{
+	name = {Gedeeltelijke configuratie},
+	text = gedeeltelijke configuratie,
+	description = {Er is reeds een configuratie aanwezig op de server maar deze is niet meer up-to-date. Bijgevolg moet er een deel opnieuw geconfigureerd worden.}
 }
 
 \newglossaryentry{fork}{
-	name = fork ,
+	name = Fork,
+	text = fork,
 	description = Het aanmaken van een child process door zichzelf te dupliceren \autocite{forkmeaning}
 }
 \newglossaryentry{programmeerparadigma}{
-	name = Programmeerparadigma ,
+	name = Programmeerparadigma,
 	description = Synoniemen zijn ook programmeerstijl of programmeermodel, voorbeelden zijn object-georienteerd, procedureel, imperatief..., \autocite{journalofinformation} 
+}
+
+\newglossaryentry{push}{
+	name = Push,
+	text = push,
+	description = {Een mannier van communiceren waarbij de actie gestart wordt vanuit een centraal punt, de zender. \autocite{pushpullmeaning}}
+}
+
+\newglossaryentry{pull}{
+	name = Pull,
+	text = pull,
+	description = {Een mannier van communiceren waarbij de actie gestart wordt vanuit de clients, de ontvangers \autocite{pushpullmeaning}}
 }
 
 

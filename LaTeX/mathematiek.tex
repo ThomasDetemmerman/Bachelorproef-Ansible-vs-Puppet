@@ -1,0 +1,71 @@
+%%=============================================================================
+%% Mathematiek
+%%=============================================================================
+
+\chapter{Bijlage A: Mathematische berekeningen}
+\label{ch:mathematiek}
+
+\section{Hypothese deploytijd (volledige configuratie)}
+\label{wis:hypothesedeploytijd}
+
+Gebruikte dataset \ref{dataset:deploytijden}
+
+\underline{Hypothese}
+\begin{align*}
+H_0:  \mu_p = \mu_a \\
+H_a: \mu_p\neq \mu_a 
+\end{align*}
+\underline{Significantieniveau en waarden} \newline
+
+ $\alpha$ = 0.05 => -1.96 en +1.96 \newline
+
+		\begin{tabular}{ r |c |c }
+			& Puppet & Ansible\\\hline
+			\unexpanded{$ \bar x  $} &  60.7 & 49.4\\ \hline
+			$\sigma$ & 11.5 & 11.6\\ \hline
+			n &  30 &  30
+
+\end{tabular}
+
+
+\underline{Toetsingsgrootheden}
+\begin{equation} \label{eq1}
+\begin{split}
+Z &= \tfrac{\bar x_p - \bar x_a}{\sqrt{\tfrac{\sigma_p^2}{n_p}+\tfrac{\sigma_a^2}{n_a}}}\\
+& = \tfrac{49,4 - 60,7}{\sqrt{\tfrac{11,6^2}{30}+\tfrac{11,5^2}{30}}} \\
+& = -3,789
+\end{split}
+\end{equation}
+
+%-----------------------------------------------------------------------------------------------------------------
+\section{Hypothese connectietijd}
+\label{wis:hypotheseconnectietijd}
+
+Gebruikte dataset \ref{dataset:deploytijden}
+
+\underline{Hypothese}
+\begin{align*}
+H_0:  \mu_p = \mu_a \\
+H_a: \mu_p\neq \mu_a 
+\end{align*}
+\underline{Significantieniveau en waarden} \newline
+
+ $\alpha$ = 0.05 => -1.96 en +1.96 \newline
+
+		\begin{tabular}{ r |c |c }
+			& Puppet & Ansible\\\hline
+			\unexpanded{$ \bar x  $} &  6,27 & 6,57\\ \hline
+			$\sigma$ & 4,10 & 6,11\\ \hline
+			n &  30 &  30
+
+\end{tabular}
+
+
+\underline{Toetsingsgrootheden}
+\begin{equation} \label{eq1}
+\begin{split}
+Z &= \tfrac{\bar x_p - \bar x_a}{\sqrt{\tfrac{\sigma_p^2}{n_p}+\tfrac{\sigma_a^2}{n_a}}}\\
+& = \tfrac{ 6,27 - 6,57}{\sqrt{\tfrac{ 4,10 ^2}{30}+\tfrac{ 6,11^2}{30}}} \\
+& = 1,27
+\end{split}
+\end{equation}
