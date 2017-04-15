@@ -56,18 +56,14 @@ Michael DeHaan is iemand die zeer vertrouwd was met Puppet. In zijn ervaring von
 \label{sec:opzet-bachelorproef}
 
 
-Dit onderzoek vindt plaats op MediaIT, een afdeling binnen het mediahuis VRT. Het is \'e\'en van de afdelingen die verantwoordelijk is voor een goede en correcte werking van de servers. Zij staan momenteel voor twee grote uitdagingen. Ten eerste kampen ze met de tekortkomingen van Puppet en ten tweede moeten ze voldoen aan de verwachtingen van de bussiness die steeds meer online te werk gaat. \newline
+Dit onderzoek vindt plaats op MediaIT, een afdeling binnen het mediahuis VRT. Het is \'e\'en van de afdelingen die verantwoordelijk is voor een goede en correcte werking van de servers. Zij staan momenteel voor twee grote uitdagingen. Namelijk de tekortkomingen van Puppet en de digitaliserende wereld.
 
-Ten eerste is de huidige integratie van Puppet niet optimaal. Zo wordt er binnen de VRT gebruik gemaakt van multistage omgevingen zoals staging en productie. Deze mannier van werken is niet met Puppet ge\"integreert wat het testen bemoeilijkt. Maar ook andere zaken spelen parten zoals de complexiteit van Puppet en de beperkte functionaliteit tot het monitoren van deploy's.
+Ten eerste is de huidige integratie van Puppet niet optimaal. Zo wordt er binnen de VRT gebruik gemaakt van multistage omgevingen zoals staging en productie. Deze mannier van werken is niet met Puppet ge\"integreert wat het testen bemoeilijkt. Maar ook andere zaken spelen parten zoals de complexiteit van Puppet en de beperkte functionaliteit tot het monitoren van configuraties.
 
 Ten tweede moet de VRT ook voortdurend vernieuwen. Zo komt er een geheel nieuw gebouw bij die onder andere het nieuwe datacenter zal herbergen. Dit terwijl een deel van het oude datatcenter naar de cloud zal verhuizen. Maar niet enkel binnen de VRT veranderen zaken, ook het kijkgedrag van de Vlaamse bevolking is veranderd. Televisie is namelijk niet langer de alleenheerser en steeds meer programma's worden bekeken via sites en app's. Zo deed \textcite{digimeter} een onderzoek naar het het digitale gebruik van de Belgische bevolking. Hieruit bleek dat de populariteit van de televisie als favoriet nieuwsmedium  in 2016 gezakt met 3,3\% t.o.v. het jaar daarvoor wat resulteert in een 22,4\%. Dit terwijl de smartphone, computer en tablet gezamelijk 29,7\% halen. Het is vanzelfsprekend dat het mediahuis VRT deze trend moet volgen.
 
-Het is dus belangrijk dat een geschikte \gls{CMT} gebruikt wordt en dat deze perfect ge\"integreerd is met de bestaande en toekomstige infrastructuur.
-In dit onderzoek vallen kleinere \gls{CMT}'s zoals Chef en Salt buiten de scope en zal de focus liggen op Puppet en Ansible. \newline
+Het is dus belangrijk dat een geschikte \gls{CMT} gebruikt wordt en dat deze perfect ge\"integreerd is met de bestaande \'en toekomstige infrastructuur. De CMT moet dus een onderscheid kunnen maken tussen de verschillende omgevingen waarin de servers zich kunnen bevinden (productie, staging,...), zal optimaal moeten opereren in het toekomstige hybride infrastructuur, zal configuraties moeten monitoren, maar boven dit alles zal het eenvoudig in gebruik moeten zijn.\newline
 
-Ansible is sinds enige tijd aan een stevige opmars bezig maar er zijn voldoende voorbeelden van opensource (en andere) projecten die na een initi\"ele hype snel in mekaar zakten. Ondertussen heeft Ansible tal van mooie referenties achter zich waarbij deze van NASA nog het meest voor de verbeelding spreekt. Zij gebruikten Ansible om hun datacenter te migreren naar de cloud \autocite{nasacasestudy}.  Verder heeft Ansible ook heel wat positieve analyses gekregen van belangrijke partijen zoals RedHat en Gartner. Is Ansible echter noemenswaardig beter dan bijvoorbeeld Puppet die reeds een lange bewezen staat van dienst heeft (meer dan 12 jaar) en een grote community die het project ondersteunt?\newline
-
-Deze bachelorproef zal in detail beschrijven en uitleggen wat er precies misgelopen is. Vervolgens zal er gekeken worden of Ansible deze problemen \"uberhaupt kan oplossen en hoe dit dan het best gedaan wordt. Ook zal er een analyse gebeuren die de technische verschillen blootlegt.  Dit rapport wil een hulp bieden aan bedrijven die dezelfde stappen overwegen zodat het op voorhand duidelijk is wat er verwacht kan worden, wat de mogelijkheden zijn en waar een \gls{CMT} te kort schiet. 
 
 
 
@@ -77,20 +73,9 @@ Deze bachelorproef zal in detail beschrijven en uitleggen wat er precies misgelo
 \section{Probleemstelling en Onderzoeksvragen}
 \label{sec:onderzoeksvragen}
 
-%% TODO:
-%% Uit je probleemstelling moet duidelijk zijn dat je onderzoek een meerwaarde
-%% heeft voor een concrete doelgroep (bv. een bedrijf).
-%%
-%% Wees zo concreet mogelijk bij het formuleren van je
-%% onderzoeksvra(a)g(en). Een onderzoeksvraag is trouwens iets waar nog
-%% niemand op dit moment een antwoord heeft (voor zover je kan nagaan).
+Ansible is sinds enige tijd aan een stevige opmars bezig maar er zijn voldoende voorbeelden van opensource (en andere) projecten die na een initi\"ele hype snel in mekaar zakten. Ondertussen heeft Ansible tal van mooie referenties achter zich waarbij deze van NASA nog het meest voor de verbeelding spreekt. Zij gebruikten Ansible om hun datacenter te migreren naar de cloud \autocite{nasacasestudy}.  Verder heeft Ansible ook heel wat positieve analyses gekregen van belangrijke partijen zoals RedHat en Gartner. Is Ansible echter noemenswaardig beter dan Puppet die reeds een lange bewezen staat van dienst heeft (meer dan 12 jaar) en een grote community die het project ondersteunt?
 
-
-%% TODO: Het is gebruikelijk aan het einde van de inleiding een overzicht te
-%% geven van de opbouw van de rest van de tekst. Deze sectie bevat al een aanzet
-%% die je kan aanvullen/aanpassen in functie van je eigen tekst.
-
-De overschakeling van Puppet naar Ansible is geen kleine stap en kan mogelijk voor veel complicaties zorgen. Daarom weet men best op voorhand wat er te wachten staat en zullen er in dit onderzoek verschillende relevante zaken onderzocht worden die kunnen worden opgedeeld in de volgende drie grote categorie\"en. 
+De overschakeling van Puppet naar Ansible is geen kleine stap en kan mogelijk voor veel complicaties zorgen. Daarom wilt dit rapport een hulp bieden aan bedrijven die dezelfde stappen overwegen zodat het op voorhand duidelijk is wat er verwacht kan worden, wat de mogelijkheden zijn en waar een \gls{CMT} te kort schiet. Dit zal onderzocht worden door middel van de volgende drie grote categorie\"en. 
 
 
 \subsection{Wat zijn de redenen van een omschakeling?}
