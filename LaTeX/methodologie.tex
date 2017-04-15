@@ -15,7 +15,7 @@
 \label{sec:methodologie-redenen-omschakeling}
 
 TO DO
-
+- hoe eenvoudig ansible is om te leren
 - slechte monitoring
 - slecht geautomatiseert 
 - geen multi environment
@@ -36,7 +36,7 @@ TO DO
 \begin{tabular}{ r |c c }
 & \textbf{Ansible} & \textbf{Puppet} \\
   \hline	  		
-\gls{deploytijd}  & declaratief & declaratief  \\
+\gls{programmeerparadigma}  & declaratief & declaratief  \\
    \hline
  Programmeertaal & YAML & eigen \gls{dsl}  \\
      \hline
@@ -103,34 +103,49 @@ Opmerking: De reden dat MariaDB op dit moment niet gestart wordt is vanwege de \
  
 \subsection{Performantie}
 
-Het is interessant om te weten wat de verhouding is tussen de gemiddelde deploytijd van Ansible en Puppet. Om dit op een zo betrouwbaar mogelijke manier te kunnen verwezenlijken, zijn de configuraties van Ansible en Puppet zo analoog mogelijk gehouden zoals te lezen was in sectie \ref{sec:opstellingtestevn}. Vervolgens wordt elke configuratie 30 keer uitgevoerd. De tijd kan worden onderverdeeld in twee delen.\newline
+Het is interessant om te weten wat de verhouding is tussen de gemiddelde \gls{configuratietijd} van Ansible en Puppet. Om dit op een zo betrouwbaar mogelijke manier te kunnen verwezenlijken, zijn de configuraties van Ansible en Puppet zo analoog mogelijk gehouden zoals te lezen was in sectie \ref{sec:opstellingtestevn}. Vervolgens wordt elke configuratie 30 keer uitgevoerd. De tijd kan worden onderverdeeld in twee delen.\newline
 Het eerste deel van de tijd zal de \gls{connectietijd} genoemd worden. Dit is de tijd die het kost alvorens er effectief overgegaan kan worden tot configureren. Hieronder zitten zaken zoals het opstellen van een verbinding, het verzamelen van nodige gegevens en het versturen van een gepersonaliseerde configuratie. Bij Ansible kon deze tijd gewoon berekend worden op basis van de resultaten\footnote{connectietijd = totaal verstreken tijd -  \unexpanded{$ \sum  $} (tijd playbooks)}. Bij Puppet is dit echter niet mogelijk en bijgevolg zijn deze resultaten met de hand gemeten.\newline
- De tweede tijd is de \gls{deploytijd}. Dit is de tijd die nodig is om de configuratie effectief uit te voeren. Beide waarden zijn gebaseerd op de feedback van de corresponderende \gls{CMT}.
+ De tweede tijd is de \gls{configuratietijd}. Dit is de tijd die nodig is om de configuratie effectief uit te voeren. Beide waarden zijn gebaseerd op de feedback van de corresponderende \gls{CMT}.
 
 
 
 
-\subsubsection{\gls{deploytijd}}
+\subsubsection{\gls{configuratietijd}}
 \begin{figure}
   \includegraphics[width=\linewidth]{img/deploytime_fullconfig.png} 
   \caption{Tijd tot het bekomen van een consistente staat, vertrekkende van een 'lege' server.}  
   \label{fig:deploytime_fullconfig}
 \end{figure}
 
-Aangezien grafiek \ref{fig:deploytime_fullconfig} geen duidelijk verschil toont tussen beide \gls{CMT}'s zal met behulp van de Z-toets aangetoond worden of er al dan niet een statistisch verschil is.
+Aangezien grafiek \ref{fig:deploytime_fullconfig} geen duidelijk verschil toont tussen beide \gls{CMT}'s zal met behulp van de Z-toets aangetoond worden of er al dan niet een statistisch verschil is. Deze berekingen kunnen teruggevonden worden in bijlage A: hypothese configuratietijd.
 
-\ref{wis:hypothesedeploytijd}
-
-\underline{Conclusie} \newline
-Z valt buiten het kritisch gebied waardoor de nulhypotese verworpen kan worden. Bijgevolg wordt aangenomen dat beide gemiddelden niet tot dezelfde verzameling behoren. Er kan dus worden geconcludeerd dat wanneer er wordt vertrokken van een lege server, Ansible er gemiddeld langer over doet dan Puppet. Dit is in dit geval een verschil van 11,3 seconden. \newline
+Hierbij blijkt dat Z buiten het kritisch gebied valt waardoor de nulhypotese verworpen kan worden. Bijgevolg wordt aangenomen dat beide gemiddelden niet tot dezelfde verzameling behoren. Er kan dus worden geconcludeerd dat wanneer er wordt vertrokken van een lege server, Ansible er gemiddeld langer over doet dan Puppet. Dit is in dit geval een verschil van 11,3 seconden. 
 
 De verschillen worden echter nog groter wanneer de test gedaan wordt met een gedeeltelijke configuratie. Hiermee wordt bedoeld dat er is vertrokken van servers die reeds geconfigureerd zijn en slechts enkele aanpassingen moeten doorgevoerd worden. Deze aanpassingen zijn een service starten en de inhoud van de webpagina veranderen. De resultaten lopen niet door elkaar waardoor een Z-toets niet echt nodig is. Ansible deed gemiddeld 19,10 seconden voor de deploy met een vrij grote variatie van 33,40 seconden. Puppet haalde maar een vrij consistente 3,10 seconden met een variatie van 0,35. \newline
 
 In laatste instantie is er gekeken naar de tijd die het zou kosten tot de \gls{CMT} vaststelt dat de server reeds volledig is geconfigureerd en dat geen aanpassingen nodig zijn. Hierbij resulteert Ansible op een gemiddelde van 18 seconden met opnieuw een vrij grote variatie van 18,25 seconden. Ook hier doet Puppet het opnieuw beter waarbij er minder dan een seconde nodig heeft om vast te stellen dan dat geen aanpassingen nodig zijn. Uiteraard zijn al deze waarden afhankelijk van de configuratie maar ze geven wel een duidelijke indicatie van de verschillen tussen beide \gls{CMT}'s.
 
-\textbf{Opmerking:} De \gls{connectietijd} is niet meegerekend in deze metingen. Het omvat hier uitsluitend de \gls{deploytijd}.
-\subsubsection{\gls{connectietijd}}
-Ook hier lopen de resultaten door elkaar zoals te zien is op grafiek \ref{fig:connectiontime}, bovendien liggen de gemiddelden hier veel dichter bij elkaar. Om vast te stellen of er een significant verschil is, zal er opnieuw gebruik gemaakt worden van de Z toets.
+\textbf{Opmerking:} De \gls{connectietijd} is niet meegerekend in deze metingen. Het omvat hier uitsluitend de \gls{configuratietijd}.
+
+De reden dat Ansible trager is dan Puppet wordt gewijd aan de manier van communiceren op het netwerk. Puppet verstuurt namelijk een volledige configuratie bij de start. Ansible doet dit niet en verstuurd commando per commando. Bovendien wordt tussen elk commando de verbinding ge\"initialiseerd en opnieuw verbroken. Deze veronderstelling werd gestaaft met de volgende test:
+
+\begin{addmargin}[2em]{0cm}
+\underline{Hypothese A}: Ansible verstuurt commando per commando.\newline
+\underline{Hypothese P}: Puppet verstuurt een gehele configuratie op het momend van de initialisatie.
+
+\underline{Test}: De verbinding wordt verbroken tijdens het configureren.
+
+\underline{Verwachting A}: Nadat de verbinding verbroken is wordt geen nieuw commando gestart.\newline
+\underline{Verwachting P}: De configuratie gaat zonder problemen verder.
+
+\underline{Resultaat A}: De configuratie valt stil. Opmerkelijk hierbij is dat de configuratie niet stopt. De master heeft echter niet door dat de verbinding verbroken is en verondersteld dat de client eenvoudigweg nog bezig is met configuren. Als later de verbinding hersteld wordt, gaat de configuratie opnieuw verder.\newline
+\underline{Resultaat P}: De configuratie gaat ongestoord verder.
+\end{addmargin}
+
+
+
+\subsubsection{Connectietijd}
+Ook hier lopen de resultaten door elkaar zoals te zien is op grafiek \ref{fig:deploytime}, bovendien liggen de gemiddelden hier veel dichter bij elkaar. Om vast te stellen of er een significant verschil is, zal er opnieuw gebruik gemaakt worden van de Z toets.
 \begin{figure}
   \includegraphics[width=\linewidth]{img/connectiontime.png} 
   \caption{Tijd tot het initialiseren van een deploy}  
@@ -151,7 +166,7 @@ Ansible en Puppet hebben een groot verschil in de manier van communiceren en dit
 De manier van communicatie is te herkennen in de grafieken. Zo onderhoudt Ansible de communicatie met de client gedurende de deploy. Hiermee wordt bedoeld dat Ansible op de hoogte is van de laatste stand van zaken op de client. Wanneer een bepaalde taak voltooid is, wordt Ansibel Tower hier onmiddellijk van op de hoogte gebracht. Zoals te zien is op grafiek \ref{fig:deploytypes} is er geregeld communicatie tussen beide servers. Weliswaar is er enkel communicatie wanneer iets voltooid is; er is dus geen onnodige communicatie. Zo is ook te zien hoe op t6 de communicatie nul is. Ansible had voor die periode niets te melden\footnote{Hier betreft het de service MariaDB die werd ge\"installeerd}. \newline
  Deze manier van werken is handig tijdens het schrijven van nieuwe Ansible rollen. Je krijgt namelijk live feedback tijdens het uittesten. Een nadeel is wel dat het netwerk geen rust krijgt. Bovendien wordt deze functionaliteit van 'live feedback' in productie niet vaak gebruikt. In realiteit lopen deze jobs tijdens de nacht en is het voldoende om de dag daarna een algemeen overzicht te krijgen.\newline
 
-Bij Puppet is dit anders. Hierbij is er enkel communicatie tussen de server en de client bij het begin en op einde van de deploy. Opmerkelijk hierbij is dat er twee types te herkennen zijn. Op figuur \ref{fig:deploytypes} zijn deze Puppet type A en B genoemd. Bij Puppet type A is te zien hoe de deploy bestaat uit twee reeksen terwijl dit bij type B uit drie reeksen bestaat. De oorzaak van deze derde reeks is niet gekend. Het opnieuw versturen van de tweede reeks was tijdelijk een piste maar dit is vermoedelijk niet het geval. Moest er een tcp-pakketje verloren gegaan zijn, zou uitsluitend dat pakketje opnieuw verstuurd worden en niet de hele reeks. Verder heeft de poging om de inhoud van de pakketjes te lezen tot niet veel geleid. De verbinding is namelijk ge\"encrypteerd door het HTTPS-protocol met als gevolg dat tools zoals Wireshark of tcpdump geen oplossing konden bieden over de inhoud hiervan.\newline
+Bij Puppet is dit anders. Hierbij is er enkel communicatie tussen de server en de client bij het begin en op einde van de deploy.  Opmerkelijk hierbij is dat er twee types te herkennen zijn. Op figuur \ref{fig:deploytypes} zijn deze Puppet type A en B genoemd. Bij Puppet type A is te zien hoe de deploy bestaat uit twee reeksen. Hierbij wordt in het begin de \gls{catalog} opgehaald en op het einde wordt een rapport terug gekoppeld naar de master \autocite{puppetarchitecture}. Dit terwijl bij type B uit drie reeksen bestaat. De oorzaak van deze derde reeks is niet gekend. Het opnieuw versturen van de tweede reeks was tijdelijk een piste maar dit is vermoedelijk niet het geval. Moest er een tcp-pakketje verloren gegaan zijn, zou uitsluitend dat pakketje opnieuw verstuurd worden en niet de hele reeks. Verder heeft de poging om de inhoud van de pakketjes te lezen tot niet veel geleid. De verbinding is namelijk ge\"encrypteerd door het HTTPS-protocol met als gevolg dat tools zoals Wireshark of tcpdump geen oplossing konden bieden over de inhoud hiervan.\newline
 Een nadeel aan het feit dat er enkel in het begin en ophet einde communicatie is, is dat er op de master geen live feedback voor testen gevolgd kan worden. Dit kan echter wel opgelost worden door in te loggen op de client en hier de live feedback volgen met het commando "\texttt{puppet agent -t}". Het wordt wel nog steeds pas op het einde van de deploy terug naar de master gestuurd.
  \newline
 
@@ -190,12 +205,16 @@ Op grafiek \ref{fig:geheugengebruik} is per tijdseenheid het gemiddeld gebruikt 
 
 \subsection{inleiding}
 \label{sec:inleiding}
- Initieel was het de bedoeling dat het gedrag van de resources gemeten in \ref{sec:methodologie-technische-verschillen} gemeten zouden worden bij toenemende drukte door meer clients toe te voegen. Tijdens het opstellen van deze proef bleek dat dit geen bedrijfs-realistische situatie. Bij Ansible is het namelijk Ansible Tower die bepaald wanneer de clients ge\"updatet moeten worden. Bij Puppet valt dit onder de verantwoordelijkheid van de clients zelf. Bijgevolg is de kans klein dat in het geval van Puppet alle clients tegelijk een catalogus zouden aanvragen en hierdoor de Master zwaar belasten. Toch zijn er hier en daar zaken die de performantie ten goede komen. Zo blijft het downloaden van software de grootst bottleneck van een goede en snelle deploy. Heel wat verkeer moet het lokale netwerk verlaten om bestanden van een externe bron op te halen. Een oplossing hiervoor is om een lokale server op te stellen die een kopie bewaart van de (meest) gebruikte services. \autocite{AnsibleTuning}.
+
+Het zou niet bedrijfs-realistisch zijn om het gedrag van de resources  - gemeten in \ref{sec:methodologie-technische-verschillen} - te meten bij toenemende drukte door meer clients toe te voegen. Bij Ansible is het namelijk Ansible Tower die bepaalt wanneer de clients ge\"update moeten worden. Bij Puppet valt dit onder de verantwoordelijkheid van de clients zelf. Bijgevolg is de kans klein dat, in het geval van Puppet, alle clients tegelijk een catalogus zouden aanvragen en hierdoor de Master zwaar zouden belasten.
+
+ Toch zijn er hier en daar zaken die de performantie ten goede komen. Zo blijft het downloaden van software de grootste bottleneck van een goede en snelle deploy. Heel wat verkeer moet het lokale netwerk verlaten om bestanden van een externe bron op te halen. Een oplossing hiervoor is om een lokale server op te stellen die een kopie bewaart van de (meest) gebruikte services. \autocite{AnsibleTuning}.
  
  \subsection{Tips om de performantie van Ansible te verbeteren}
- Standaard is Ansible geconfigureerd om 5 servers tegelijk te kunnen configureren. Dit aantal kan verhoogt worden naar de parameter \texttt{\gls{fork}s} naar 25 tot zelfs 100 te brengen. \newline
-Ansible adviseerd verder ook om gebruik te maken van \texttt{with\_items} bij het installeren van meerdere packages. Dit komt omdat bij het gebruik van \texttt{with\_items}, Ansible deze packages zal combineren in \'e\'en transactie block dewelke de performantie ten goede komt. Zo zou het dus beter zijn om listing \ref{lst:yamltwotask} beter te structuren en te schrijven zoals in listing \ref{lst:yamlonetask}. \newline
-Verder beschikt Ansible over een 'Pull-mode' waarbij elke server zelf instaat voor zijn configuratie. Elke server haalt de code op van een centraal punt en configureerd vervolgens zichzelf. Deze mannier van werken vereist wel een scriptje op elke server en doet denken aan de werking van Puppet. Een centraal management punt is in deze opstelling echter niet aanwezig en is dus af te raden voor grotere infrastructuren \autocite{AnsibleTuning} .
+ Standaard is Ansible geconfigureerd om 5 servers tegelijk te kunnen configureren. Dit aantal kan verhoogd worden door de parameter \texttt{\gls{fork}s} naar 25 tot zelfs 100 te brengen. 
+ 
+Ansible adviseert verder ook om gebruik te maken van \texttt{with\_items} bij het installeren van meerdere packages. Door het gebruik van \texttt{with\_items} zal Ansible deze packages combineren in \'e\'en transactie blok wat de performantie ten goede komt. Zo zou het dus beter zijn om listing \ref{lst:yamltwotask} te structuren zoals listing \ref{lst:yamlonetask}. 
+
 
    \lstset{language=clean,caption={Installeer de vereiste onderdelen van PHP in twee delen},label={lst:yamltwotask}}
 \begin{lstlisting}[frame=single]
@@ -222,10 +241,10 @@ Verder beschikt Ansible over een 'Pull-mode' waarbij elke server zelf instaat vo
     - php-mysqli
 \end{lstlisting}
 
-  
+  Verder beschikt Ansible over een 'Pull-mode' waarbij elke server zelf instaat voor zijn configuratie. Elke server haalt de code op van een centraal punt en configureerd vervolgens zichzelf. Deze mannier van werken vereist wel een scriptje op elke server en doet denken aan de werking van Puppet. Een centraal management punt is in deze opstelling echter niet aanwezig en is dus af te raden voor grotere infrastructuren \autocite{AnsibleTuning} .
   
  \subsection{Tips om de performantie van Puppet te verbeteren}
- Puppet is door zijn mannier van werken van nature meer geloadbalanced dan Ansible, zie \ref{sec:inleiding}, toch zijn ook hier een paar zaken die de performantie ten goede komen. Het aantal aanvragen die Puppet tegelijk kan behandelen varieert van server tot server. Dit is standaard 'num-cpu's - 1' met een minimum van 1 en een maximum van vier. Het aantal gebruikte cpu's staat gelijk aan het aantal aanvragen die Puppet tegelijk kan behandelen. Wanneer er meer aanvragen zijn dan beschikbare CPU's zal het overschot aan aanvragen geblokkeerd worden totdat er een slot vrijkomt. Dit aantal kan handmatig verhoogd worden met behulp van de variabele \texttt{max-active-instances}. Wanneer deze naar bijvoorbeeld twee gebracht wordt zullen twee core's van de processor gebruikt worden, dit heeft tot gevolg dat er ook twee aanvragen tegelijk behandeld kunnen worden. \newline
+ Puppet is door zijn manier van werken 'van nature' meer geloadbalanced dan Ansible, zie \ref{sec:inleiding}. Toch zijn ook hier een paar zaken die de performantie ten goede komen. Het aantal aanvragen dat Puppet tegelijk kan behandelen varieert van server tot server. Dit is standaard '(aantal CPU's) - 1' met een minimum van \'e\'en en een maximum van vier. Het aantal gebruikte CPU's staat gelijk aan het aantal aanvragen dat Puppet tegelijk kan behandelen. Wanneer er meer aanvragen zijn dan beschikbare CPU's zal het overschot aan aanvragen geblokkeerd worden tot er een slot vrijkomt. Dit aantal kan handmatig verhoogd worden met behulp van de variabele \texttt{max-active-instances}. Wanneer deze naar bijvoorbeeld twee gebracht wordt, zullen twee core's van de processor gebruikt worden, wat tot gevolg heeft dat er ook twee aanvragen tegelijk behandeld kunnen worden. \newline
  Een tweede zaak is het verhogen van de \texttt{max heap size} van JVM. Door dit te verhogen kan het JVM proces meer geheugen opvragen bij het besturingssysteem \autocite{PuppetTuning}.
  
  
@@ -241,15 +260,19 @@ Verder beschikt Ansible over een 'Pull-mode' waarbij elke server zelf instaat vo
 \caption{\label{fig:vicieuzecirkel}Vicieuze cirkel van twee \gls{CMT}'s hetzelfde bestand proberen te configureren.}
 \end{wrapfigure}
 
-Het is vanzelfsprekend dat de mannier van Ansible integreren afhankelijk is van bedrijf tot bedrijf. Toch is dit in het geval van de VRT vlot verlopen. Ansible en Puppet kunnen namelijk perfect naast elkaar in dezelfde infrastructuur bestaan. Dit is ideaal voor een geleidelijke overgang. E\'en en dezelfde server kan bovendien geconfigureerd worden door zowel Puppet als Ansible. Dit heeft als voordeel dat niet alle modules geschreven in Puppet onmiddellijk vertaald hoeven te worden. Enkele rollen kunnen geschreven zijn voor Ansible terwijl een ander deel nog onder de bevoegdheid van Puppet valt. Belangrijk hierbij is wel dat Puppet en Ansible verschillende configuraties behandelen. Wanneer beide \gls{CMT}'s eenzelfde configuratie uitvoeren kan er door subtiele verschillen een vicieuze cirkel ontstaan.\newline
-Beeld u zich de situatie in zoals op figuur \ref{fig:vicieuzecirkel}. In ansible staat een bestand met een extra spatie, hier noemen we deze voor het gemak 'foo1'. Bij puppet staat deze extra spatie er niet, deze wordt 'foo2' genoemd. 
+Het is vanzelfsprekend dat de manier om Ansible te integreren afhankelijk is van bedrijf tot bedrijf. In het geval van de VRT verloopt dit vlot. \textbf{Ansible en Puppet kunnen namelijk perfect naast elkaar in dezelfde infrastructuur bestaan.} Dit is ideaal voor een geleidelijke overgang. E\'en en dezelfde server kan bovendien geconfigureerd worden door zowel Puppet als Ansible. Dit heeft als voordeel dat niet alle modules geschreven in Puppet onmiddellijk vertaald hoeven te worden naar Ansible. Enkele rollen kunnen geschreven zijn voor Ansible terwijl een ander deel nog onder de bevoegdheid van Puppet valt.
+
+ Belangrijk hierbij is wel dat Puppet en Ansible verschillende configuraties dienen te behandelen. Wanneer beide \gls{CMT}'s eenzelfde configuratie uitvoeren, kan er door subtiele verschillen een vicieuze cirkel ontstaan.
+Veronderstel een situatie zoals in figuur \ref{fig:vicieuzecirkel}. In Ansible staat een bestand met een extra spatie, hier noemen we deze voor het gemak 'foo1'. Bij puppet staat deze extra spatie er niet, deze wordt 'foo2' genoemd. 
 \begin{enumerate}
-\item Puppet configureert de service met bestand foo2 en start deze op.
-\item  Eventjes later stelt Ansible vast dat de configuratie niet meer overeenkomt met deze beschreven in het playbook. Hij wijzigt foo2 naar foo1 en herstart de service zodat aanpassingen doorgevoerd zouden worden.
+\item Puppet configureert de service met bestand foo1 en start deze op.
+\item  Eventjes later stelt Ansible vast dat de configuratie niet meer overeenkomt met deze beschreven in het playbook. Hij wijzigt foo1 naar foo2 en herstart de service zodat aanpassingen doorgevoerd zouden worden.
 \item  Op een later ogenblik zal Puppet dit waarnemen en het bestand terugdraaien naar foo1, opnieuw gevolgd door een gerstart van de gerelateerde service.
 \end{enumerate}
-Het is vanzelfsprekend dat dit zorgt voor onnodige aanpassingen met eventueel ongewenste of onverwachte gevolgen zoals het voortdurend herstarten van een service.\newline
-Twee \gls{CMT}'s die dezelfde server op hetzelfde moment configureren zouden elkaar niet mogen hinderen. Ten hoogste duurt de configuratie iets langer omdat er een lock bestaat op de \gls{packagemanager}s waardoor de ene \gls{CMT} op de andere dient te wachten.
+Het is vanzelfsprekend dat dit voor onnodige aanpassingen zorgt met eventueel ongewenste of onverwachte gevolgen, zoals het voortdurend herstarten van een service.
+
+In de testopstelling is gekeken geweest naar het gedrag van beide \gls{CMT}'s wanneer deze op hetzelfde moment dezelfe server trachten te configureren. Dit veroorzaakte niet voor problemen.
+Het enigste wat dit als nadelig gevolg kan hebben is dat de configuratie langer duurt dan normaal. Wanneer \gls{CMT} A een lock heeft op de \gls{packagemanager}, dan zal \gls{CMT} B moeten wachten tot deze vrij komt. Dit veroorzaakt een vertraging maar geen problemen.
 
 
 

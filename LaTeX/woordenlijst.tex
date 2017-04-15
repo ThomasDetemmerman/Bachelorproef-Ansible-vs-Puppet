@@ -6,22 +6,28 @@
 \newacronym{dsl}{DSL}{Domain specific language}
 
 %--------------------------------- woordenlijst
+\newglossaryentry{catalog}{
+	name = Catalogus,
+	text = catalogus,
+	description = Eng: Catalog. Een catalogus beschrijft de gewenste configuratie voor een specifieke computer \autcite{puppetdoc}
+}
+
 \newglossaryentry{packagemanager}{
 	name = {Package manager},
 	text = package manager,
 	description = Een mechanisme die het mogelijk maakt om software te installeren op UNIX gebaseerde systemen. \textit{(voorbeelden: yum, apt, dpkg,...} 
 }
 
-\newglossaryentry{deploytijd}{
-	name = {Deploytijd},
-	text = deploytijd,
-	description =  De tijd die de CMT nodig heef totdat deze effectief over kan gaan tot configureren.  Hieronder vallen zaken zoals het maken van een verbinding, het verzamelen van gegevens en opstellen van een gepersonaliseerde configuratie... 
+\newglossaryentry{configuratietijd}{
+	name = {Configuratietijd},
+	text = configuratietijd,
+	description = {De tijd die de configuration management tool nodig heef tot het bekomen van een volledig geconfigureerde server.}
 }
 
 \newglossaryentry{connectietijd}{
 	name = Connectietijd,
 	text = connectietijd,
-	description = {Dit is de tijd die het kost alvorens er effectief overgegaan kan worden tot configureren. Hieronder zitten zaken zoals het opstellen van een verbinding, het verzamelen van nodige gegevens en het versturen van een gepersonaliseerde configuratie.}
+	description = {Dit is de tijd die het kost alvorens er effectief overgegaan kan worden tot configureren. Hieronder zitten zaken zoals het opstellen van een verbinding, het verzamelen van de nodige gegevens en het versturen van een gepersonaliseerde configuratie.}
 }
 
 \newglossaryentry{partialconfig}{
