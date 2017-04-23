@@ -38,7 +38,9 @@ TO DO
   \hline	  		
 \gls{programmeerparadigma}  & declaratief & declaratief  \\
    \hline
- Programmeertaal & YAML & eigen \gls{dsl}  \\
+ Geschreven in & YAML & eigen \gls{dsl}  \\
+     \hline
+      Gecompileerd naar & Python & Ruby \\
      \hline
    Communicatieprotocol & SSH & HTTPS \\
    \hline
@@ -72,11 +74,19 @@ In tegenstelling tot Puppet maakt Ansible geen gebruik agents. Dit betekent dat 
 \label{sec:opstellingtestevn}
 \subsubsection{Architectuur van de opstelling}
 
-\begin{wrapfigure}{R}{0.4\textwidth}
-	\centering
-	\includegraphics[width=0.4\textwidth]{img/infrastructruur.png}
-	\caption{\label{fig:infrastructuur} Server A, de master, configureert server B - D, de clients.}
+%\begin{wrapfigure}{R}{0.4\textwidth}
+%	\centering
+%	\includegraphics[width=0.4\textwidth]{img/infrastructruur.png}
+%	\caption{\label{fig:infrastructuur} Server A, de master, configureert server B - D, de clients.}
+%\end{wrapfigure}
+
+\begin{wrapfigure}{R}{0.25\textwidth}
+	\includegraphics[width=0.9\linewidth]{img/infrastructruur.png} 
+	\caption{Infrastructuur.}
+	\label{fig:infrastructuur}
 \end{wrapfigure}
+
+
 
 Deze opstelling is gerealiseerd door gebruik te maken van twee Vagrant bestanden. Voor elk Vagrant bestand word eerst de master aangemaakt, gevolgd door X aantal client's. Vagrant zorgt ervoor dat elke client  verbonden wordt met New Relic, de gekozen tool om de servers te monitoren. In het geval van Puppet wordt hierbij ook nog de Puppet agent ge\"installeerd. Elke client, zowel in de Ansible- als de Puppetinfrastructuur, is gebaseerd op dezelfde basebox en krijgen dezelfde resources toegekend. De masters beschikten over meer resources.
 
@@ -89,20 +99,16 @@ Geheugen: 500 MB
 
 \subsubsection{Configuraties van de deploy's}
 
-
+Opmerking: De reden dat MariaDB op dit moment niet gestart wordt is vanwege de \gls{partialconfig}. Hierbij wordt gekeken hoelang het duurt om bij een bestaande configuratie enkele aanpassingen door te voeren. Het is dus pas bij de testen van \gls{partialconfig} dat MariaDB gestart wordt.
 Voor de testen in sectie \ref{sec:technischeanalyse} is er gekozen om gebruik te maken van een LAMP-stack. Dit is zowel voor Ansible als Puppet gebeurt. Bovendien is er getracht geweest om in de mate van het mogelijke beide configuraties zo analoog mogelijk te houden. Om dit te realiseren wordt er httpd, php, php-mysql en mariaDB-server ge\"installeerd. Vervolgens wordt er een webpagina op de site geplaatst. Deze is geschreven in PHP en controleert of alle zaken werken naar behoren. Om af te sluiten wordt HTTP doorgelaten door de firewall, de service httpd gestart en MariaDB gestopt. 
 
 Deze configuraties kunnen teruggevonden worden op gitbub op de volgende links\footnote{Mogelijk komt beschreven configuratie in dit artikel niet volledig overeen met de code in de Github repositories. Deze repositories worden namelijk ook gebruik voor andere testen  binnen dit onderzoek.}:\newline
 \textbf{Ansible:} https://github.com/ThomasDetemmerman/AnsibleTower \newline
 \textbf{Puppet:} https://github.com/ThomasDetemmerman/PuppetMaster
-	
-Opmerking: De reden dat MariaDB op dit moment niet gestart wordt is vanwege de \gls{partialconfig}. Hierbij wordt gekeken hoelang het duurt om bij een bestaande configuratie enkele aanpassingen door te voeren. Het is dus pas bij de testen van \gls{partialconfig} dat MariaDB gestart wordt.
-
 
 \subsection{Belasting van het netwerk}
-
 Ansible en Puppet hebben een groot verschil in de manier van communiceren en dit weerspiegelt zich in het gedrag van de \gls{CMT}. De grafieken op afbeeldingen \ref{fig:netwerkverbruik} en \ref{fig:deploytypes} weerspiegelen uitsluitend het dataverkeer tussen de server (Ansible Tower of Puppetmaster) en de desbetreffende client. Andere data, zoals bijvoorbeeld het downloaden van services of uploaden van logbestanden naar de monitoringstool, zijn hierin \underline{niet} opgenomen. Dit wordt verwezenlijkt door gebruik te maken van verschillende netwerkkaarten. Wanneer er geen deploy gebeurt, is de kilobyte/ minuut op deze netwerkkaart gelijk aan nul; een bewijs dat hier geen andere data dan deze van de \gls{CMT} over wordt verstuurd.  
-
+	
 De manier van communicatie is te herkennen in de grafieken. Zo onderhoudt Ansible de communicatie met de client gedurende de deploy. Hiermee wordt bedoeld dat Ansible op de hoogte is van de laatste stand van zaken op de client. Wanneer een bepaalde taak voltooid is, wordt Ansibel Tower hier onmiddellijk van op de hoogte gebracht. Zoals te zien is op grafiek \ref{fig:deploytypes} is er geregeld communicatie tussen beide servers. Weliswaar is er enkel communicatie wanneer iets voltooid is; er is dus geen onnodige communicatie. Zo is ook te zien hoe op t6 de communicatie nul is. Ansible had voor die periode niets te melden\footnote{Hier betreft het de service MariaDB die werd ge\"installeerd}. 
 
 Deze manier van werken is handig tijdens het testen van nieuwe Ansible rollen. Je krijgt namelijk live feedback tijdens het uittesten. Een nadeel is wel dat het netwerk geen rust krijgt. Bovendien wordt deze functionaliteit van 'live feedback' niet gebruikt voor rollen in productie. Deze lopen doorgaans tijdens de nacht en is het voldoende om de dag daarna een algemeen overzicht te krijgen. 
