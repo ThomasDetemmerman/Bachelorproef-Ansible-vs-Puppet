@@ -25,17 +25,23 @@
 %% Wie zijn bachelorproef in het Nederlands schrijft, kan dit negeren en heel
 %% deze sectie verwijderen.
 
-\IfLanguageName{english}{%
-\selectlanguage{dutch}
-\chapter*{Samenvatting}
-TO DO
-\selectlanguage{english}
-}{}
+
 
 %%---------- Samenvatting -----------------------------------------------------
 %%
 %% De samenvatting in de hoofdtaal van het document
 
-\chapter*{\IfLanguageName{dutch}{Samenvatting}{Abstract}}
+\chapter*{Samenvatting}
+% Nood: waarom moest dit onderzocht worden?
+Puppet is een vaak gebruikte tool om servers te configureren. De laatste tijd zijn er echter meer concurrenten op de markt gekomen waaronder Ansible. Ansible zou ten opzichte van Puppet verschillende voordelen bieden. Om van dit soort technologieën te wisselen gaat echter veel werkuren vooraf. Er wordt dus beter goed nagedacht of een dergelijke overschakeling ook effectief bestaande problemen zal oplossen.
 
-TO DO
+%% - Nood: waarom moest dit onderzocht worden?
+Daarom zal dit rapport in de eerste plaats beschrijven wat mogelijke problemen zijn. Waar Puppet te kort schiet en of Ansible deze problemen \"uberhaupt oplost. Dit rapport is van toepassing voor bedrijven die zich hierin herkennen.
+
+%% - Object: wat staat in dit document geschreven?
+In dit rapport worden drie zaken onderzocht. Zoals reeds vermeld worden eerst mogelijke problemen, tekortkomingen of moeilijkheden beschreven. Verder in het onderzoek is er een deep-dive in de technische werking van Ansible en Puppet en hoe deze toch sterk verschillen in de manier van werken om toch dezelfde uitkomst te hebben. Uiteindelijk wordt er afgesloten {\color{red}met een analyse over het beveiligen van dit soort technologie\"en}
+
+%% - Taak: wat heb je precies gedaan?
+Dit onderzoek loopt binnen het mediabedrijf VRT waarbij een dergelijke overgang plaatsvindt. De bestaande kennis en ervaringen van mensen uit de praktijk worden hierin verwerkt. Door deze kennis te combineren met testen uit te voeren op een proof of concept die een Puppet en Ansible infrastructuur simuleren zijn de volgende resultaten bekomen geweest.
+
+

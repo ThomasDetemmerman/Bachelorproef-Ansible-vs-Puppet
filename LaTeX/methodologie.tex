@@ -222,6 +222,10 @@ Ook hier lopen de resultaten door elkaar zoals te zien is op grafiek \ref{fig:co
 
 Op grafiek \ref{fig:geheugengebruik} is per tijdseenheid het gemiddeld gebruikt ramgeheugen weergegeven. Hierop is te zien hoe Puppet opvallend meer geheugen gebruikt. Niet alleen tijdens een deploy maar ook ervoor en erna. Zelfs wanneer een Ansible client en een Puppet client juist opgezet worden met behulp van Vagrant, is er al een verschil in het gebruikte geheugen. Gezien het feit dat er al een verschil waar te nemen is in deze vroege levensfase van de server en het enige verschil in configuratie op dit moment de Puppetagent is, werd vermoed dat het verschil hier aan te wijten is. Dit vermoeden werd gestaafd toen de Puppetagent tijdelijk uitgezet werd. Het ramgeheugen daalde onmiddellijk naar gelijkwaardige waarden als deze van de Ansibleclient. Zonder configuratie gebruiken Puppetclients gemiddeld 58\% geheugen van de 500MB ram. Bij Ansible is dit 47\%. Dit betekent dat met een verschil van 11\%, er bij 500 MB 55MB meer RAM-geheugen gebruikt wordt bij Puppet.
 
+\textbf{Er is dus een duidelijk verschil tussen het geheubengebruik van Puppet clients ten opzichte van Ansible clients. Hierbij gebruikt Puppet dankzij de Puppetagent beduidend meer resources. Ookal een service meer of minder doorgaans niet zorgt voor radicale gevolgen is de grootste bottleneck nog steeds dat deze service in de eerste plaats ge\"instelleerd en geconfigureerd dient te worden. Iets wat niet door Puppet verzorgt kan worden.}
+
+{\color{red} Hoe zet VRT  momenteel puppetagent op zijn puppetclients?}
+
 
 \begin{figure}
   \includegraphics[width=\linewidth]{img/geheugengebruik}
@@ -235,7 +239,9 @@ Op grafiek \ref{fig:geheugengebruik} is per tijdseenheid het gemiddeld gebruikt 
 \label{sec:schaalbaarheid}
 
 
-Het zou niet bedrijfs-realistisch zijn om het gedrag van de resources  - gemeten in \ref{sec:methodologie-technische-verschillen} - op dezelfde wijze te meten door meer clients toe te voegen. Bij Ansible is het namelijk Ansible Tower die bepaalt wanneer de clients ge\"update moeten worden. Maar Puppet werkt niet volgens dit principe, hier valt deze verantwoordelijkheid onder de clients zelf. De kans is dus klein dat in het geval van Puppet alle clients tegelijk een catalogus aan zouden vragen en hierdoor de Puppetmaster (te) zwaar zouden belasten.
+Het zou niet bedrijfs-realistisch zijn om het gedrag van de resources  - gemeten in \ref{sec:methodologie-technische-verschillen} - op dezelfde wijze te meten door meer clients toe te voegen. Bij Ansible is het namelijk Ansible Tower die bepaalt wanneer de clients ge\"update moeten worden. Maar Puppet werkt niet volgens dit principe, hier valt deze verantwoordelijkheid onder de clients zelf. De kans is dus klein dat in het geval van Puppet alle clients tegelijk een catalogus aan zouden vragen en hierdoor de Puppetmaster (te) zwaar zouden belasten. 
+
+Bovendien moet Ansible Tower zich intensiever bezig houden met zijn clients dan Puppet. Eens Puppetclients hun \gls{catalog} ontvangen hebben is de Puppetmaster klaar. Bij Ansible is dit niet. Ansible moet voordurend nieuwe opdrachten doorsturen.
 
  Toch zijn er hier en daar zaken die de performantie ten goede komen. Zo blijft het downloaden van software de grootste bottleneck van een goede en snelle deploy. Heel wat verkeer moet het lokale netwerk verlaten om bestanden van een externe bron op te halen. Een oplossing hiervoor is om een lokale server op te stellen die een kopie bewaart van de (meest) gebruikte services. \autocite{AnsibleTuning}.
  
@@ -276,7 +282,16 @@ Ansible adviseert verder ook om gebruik te maken van \texttt{with\_items} bij he
  Puppet is door zijn manier van werken 'van nature' meer geloadbalanced dan Ansible. Toch zijn ook hier een paar zaken die de performantie ten goede komen. Het aantal aanvragen dat Puppet tegelijk kan behandelen varieert van server tot server. Dit is standaard '(aantal CPU's) - 1' met een minimum van \'e\'en en een maximum van vier. Het aantal gebruikte CPU's staat gelijk aan het aantal aanvragen dat Puppet tegelijk kan behandelen. Wanneer er meer aanvragen zijn dan beschikbare CPU's zal het overschot aan aanvragen geblokkeerd worden tot er een slot vrijkomt. Dit aantal kan handmatig verhoogd worden met behulp van de variabele \texttt{max-active-instances}. Wanneer deze naar bijvoorbeeld twee gebracht wordt, zullen twee core's van de processor gebruikt worden, wat tot gevolg heeft dat er ook twee aanvragen tegelijk behandeld kunnen worden. \newline
  Een tweede zaak is het verhogen van de \texttt{max heap size} van JVM. Door dit te verhogen kan het JVM proces meer geheugen opvragen bij het besturingssysteem \autocite{PuppetTuning}.
  
+ %\textbf{Ondanks het feit dat beide tools mogelijkheden bieden om de performantie te verhogen blijft Puppet beter geloadbalanced. Bij Puppet zijn het dus de clients die verantwoordelijk zijn voor de updates. De kans blijft klein dat alle server tegelijk een aanvraag zouden doen om te updaten. Ansible is in staat om meerdere servers te configureren dan Puppet maar de kans dat Puppet eenzelfde aantal tegelijk moet configureren is vrij klein. Dit kan eenmalig gebeuren maar is geen repetitief voorval. }
  
+Ansible is dus in staat om meerdere servers  parallel te behandelen dan Puppet. Maar door de mannier van werken kost het Ansible wel meer  tijd om al deze servers te configureren. Voor 100 servers in parallel is een minimum van 4 GB vereist. Bij meerdere servers zal het RAM-geheugen uitgebreid moeten worden.
+ 	
+ Puppet kan dus minder servers tegelijk behandelen maar de tijd die Puppet hierin steekt is wel aanzienlijk korten. Eens de \gls{catalog} verstuurd is kan Puppet de volgende aanvraag behandelen. De kans dat alle Puppetclient tegelijk een aanvraag zouden doen is bovendien vrij klein. Puppet kan dus beter overweg met toenemende drukte. Indien Puppet systematisch gebruik moet maken van zijn wachtrij zal de CPU uitgebreid moeten worden. 
+ 
+ \textbf{Ansible zal dus sneller nood hebben aan een upgrade van de hardware dan Puppet. Een voordeel bij Ansible is dat het hoofdzakelijk het RAM geheugen is dat een upgrade vereist. Dit komt goedkoper uit dat een CPU met meerdere cores.}
+ \section{Veiligheid}
+ 
+ To Do, gesprek met mr. Gerben
  %---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \section{Wat is het verloop van een dergelijke transitperiode?}
 \label{sec:methodologie-verloop-transit}
@@ -305,6 +320,3 @@ Het enigste wat dit als nadelig gevolg kan hebben is dat de configuratie langer 
 
 
 
-\section{Veiligheid}
-
-To Do, gesprek met mr. Gerben

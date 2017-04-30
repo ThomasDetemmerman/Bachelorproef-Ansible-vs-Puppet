@@ -5,11 +5,27 @@
 \chapter{Conclusie}
 \label{ch:conclusie}
 
-%% TODO: Trek een duidelijke conclusie, in de vorm van een antwoord op de
-%% onderzoeksvra(a)g(en). Wat was jouw bijdrage aan het onderzoeksdomein en
-%% hoe biedt dit meerwaarde aan het vakgebied/doelgroep? Reflecteer kritisch
-%% over het resultaat. Had je deze uitkomst verwacht? Zijn er zaken die nog
-%% niet duidelijk zijn? Heeft het ondezoek geleid tot nieuwe vragen die
-%% uitnodigen tot verder onderzoek?
+Puppet heeft niet voor niets meer dan 36.000 bedrijven die hun infrastructuur met behulp van Puppet uitbouwen. Zo blijkt ook uit dit onderzoek waarbij Puppet performanter is dan Anible maar dat Puppet ook beter kan opereren in grote netwerken. Echter tot het bekomen van dergelijke integraties is er nood aan degelijk opgeleid personeel. Het opstellen van deze servers en bijbehorende configuraties vergt een heel karwei. Ansible is op dit vlak heel wat eenvoudiger. Ansible Tower is eenvoudig op te zetten en bijhorende clients dienen niet geconfigureerd te worden. Bovendien wordt YAML, waarin Ansible code geschreven wordt, door heel wat mensen gezien als eenvoudig en gemakkelijk aan te leren. Een technologie kan performant zijn, maar dit houdt niet in dat deze handig is in gebruik.
 
-TO DO
+Aan bedrijven die beschikken over de nodige kennis omtrend Puppet wordt geadviseerd om bij deze infrastructuur te blijven. Een overschakeling kost veel werk en geld, bovendien is er geen winst op gebied van performantie en schaalbaarheid.
+
+Bedrijven die geen ervaring hebben met dit soort technologie\"en wordt aangeraden om voor Ansible te kiezen. Ansible is eenvoudig om op te stellen en aan te leren. De essentie van dit soort tools is nog steeds het configureren van servers. De eenvoud in syntax moet dan ook gezien worden als belangrijskte factor. Andere aspecten zoals configuratietijden zijn interressant maar blijven bijzaak.
+
+Ook voor bedrijven die zichzelf herkken in de situatie van de VRT zoals beschreven is in sectie \ref{sec:methodologie-redenen-omschakeling} wordt deze stap aangeraden. Dit soort overschakelingen kunnen geleidelijk verlopen aangezien beide tools kunnen bestaan in dezelfde omgeving (zie \ref{sec:methodologie-verloop-transit})
+
+\begin{center}
+	\begin{tabular}{ l | c  c  }
+	
+		 							& Puppet 		   & Ansible 				\\ \hline
+Infrastructuur & & \checkmark \\
+Leercurve &						&  \checkmark			\\ 
+Configuratietijd   & \checkmark		&\\ 
+Schaalbaarheid   & \checkmark		&\\ 
+ \hline \hline
+		Belasting netwerk &             		 &	\checkmark			 \\ 
+		 Geheugengebruik &						&  \checkmark			\\ 
+			
+	\end{tabular}
+\end{center}
+
+
