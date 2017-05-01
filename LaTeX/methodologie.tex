@@ -107,7 +107,7 @@ Aantal CPU's: 1\newline
 Geheugen: 500 MB
 \end{minipage}}
 
-\subsubsection{Configuratie van servers door de CMT's }
+\subsubsection{Configuratie van servers door CMT's }
 
 
 Voor de testen in sectie \ref{sec:technischeanalyse} is er gekozen om gebruik te maken van een LAMP-stack. Dit is zowel voor Ansible als Puppet gebeurd. Bovendien werd er getracht om in de mate van het mogelijke beide configuraties zo analoog mogelijk te houden. Om dit te realiseren wordt er httpd, php, php-mysql en mariaDB ge\"installeerd op de servers. Vervolgens wordt er een webpagina op de site geplaatst. Deze is geschreven in PHP en controleert of alle zaken naar behoren werken. Om af te sluiten wordt HTTP doorgelaten door de firewall, de service httpd gestart en MariaDB gestopt. 
@@ -174,7 +174,7 @@ Hierbij blijkt dat Z buiten het kritisch gebied valt waardoor de nulhypotese ver
 
 De verschillen worden echter nog groter wanneer de test gedaan wordt met een gedeeltelijke configuratie. Hiermee wordt bedoeld dat er vertrokken is van servers die reeds geconfigureerd zijn en er slechts enkele aanpassingen moeten doorgevoerd worden. Deze aanpassingen zijn een service starten en de inhoud van de webpagina veranderen. De resultaten lopen niet door elkaar waardoor een Z-toets niet echt nodig is. Ansible deed gemiddeld 19,10 seconden voor de deploy met een vrij grote variatie van 33,40 seconden. Puppet haalde maar een vrij consistente 3,10 seconden met een variatie van 0,35.
 
-In laatste instantie is er gekeken naar de tijd die het zou kosten tot de \gls{CMT} vaststelt dat de server reeds volledig is geconfigureerd en dat geen aanpassingen nodig zijn. Hierbij resulteert Ansible op een gemiddelde van 18 seconden met opnieuw een vrij grote variatie van 18,25 seconden. Ook hier doet Puppet het opnieuw beter waarbij er minder dan een seconde nodig heeft om vast te stellen dan dat geen aanpassingen nodig zijn. Uiteraard zijn al deze waarden afhankelijk van de configuratie maar ze geven wel een duidelijke indicatie van de verschillen tussen beide \gls{CMT}'s.
+In laatste instantie is er gekeken naar de tijd die het zou kosten tot de \gls{CMT} vaststelt dat de server reeds volledig geconfigureerd is en dat er geen aanpassingen meer nodig zijn. Hierbij resulteert Ansible op een gemiddelde van 18 seconden met opnieuw een vrij grote variatie van 18,25 seconden. Ook hier doet Puppet het opnieuw beter waarbij hij minder dan een seconde nodig heeft om vast te stellen dan dat er geen aanpassingen nodig zijn. Uiteraard zijn al deze waarden afhankelijk van de configuratie maar ze geven wel een duidelijke indicatie van de verschillen tussen beide \gls{CMT}'s.
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{img/overzichtgemiddeldeconfigtijd.png} 
@@ -184,25 +184,25 @@ In laatste instantie is er gekeken naar de tijd die het zou kosten tot de \gls{C
 
 \textbf{Opmerking:} De \gls{connectietijd} is niet meegerekend in deze metingen. Het omvat hier uitsluitend de \gls{configuratietijd}.
 
-De reden dat Ansible trager is dan Puppet wordt gewijd aan de manier van communiceren. Puppet verstuurt namelijk een volledige configuratie bij de start. Ansible doet dit niet en verstuurd taak per taak. Hierdoor wordt de verbinding meerdere malen ge\"initialiseerd en opnieuw verbroken. Deze veronderstelling werd gestaaft met de volgende test:
+De reden dat Ansible trager is dan Puppet wordt gewijd aan de manier van communiceren. Puppet verstuurt namelijk een volledige configuratie bij de start. Ansible doet dit niet en verstuurt taak per taak. Hierdoor wordt de verbinding meerdere malen geinitialiseerd en opnieuw verbroken. Deze veronderstelling werd gestaafd door de volgende test:
 
 \begin{addmargin}[2em]{0cm}
 \underline{Hypothese A}: Ansible verstuurt taak per taak.\newline
-\underline{Hypothese P}: Puppet verstuurt een gehele configuratie op het momend van initialisatie.
+\underline{Hypothese P}: Puppet verstuurt een gehele configuratie op het moment van initialisatie.
 
 \underline{Test}: De verbinding wordt verbroken tijdens het configureren.
 
-\underline{Verwachting A}: Nadat de verbinding verbroken is wordt geen nieuw taak gestart.\newline
-\underline{Verwachting P}: De configuratie gaat zonder problemen verder.
+\underline{Verwachting A}: nadat de verbinding verbroken is wordt geen nieuw taak gestart.\newline
+\underline{Verwachting P}: de configuratie gaat zonder problemen verder.
 
-\underline{Resultaat A}: De configuratie valt stil. Opmerkelijk hierbij is dat ondanks de configuratie stilvalt, deze niet stopt. De master heeft namelijk niet door dat de verbinding verbroken is en verondersteld dat de client eenvoudigweg nog bezig is met configuren. Als later de verbinding hersteld wordt, gaat de configuratie opnieuw verder.\newline
-\underline{Resultaat P}: De configuratie gaat ongestoord verder.
+\underline{Resultaat A}: de configuratie valt stil. Opmerkelijk hierbij is dat niettemin de configuratie stilvalt, deze niet stopt. De master heeft namelijk niet door dat de verbinding verbroken is en veronderstelt dat de client eenvoudigweg nog bezig is met configuren. Als later de verbinding hersteld wordt, gaat de configuratie opnieuw verder.\newline
+\underline{Resultaat P}: de configuratie gaat ongestoord verder.
 \end{addmargin}
 
-Er wordt dus per taak, en dus ook per connectie, een module overgebracht van de master naar de client. Deze bestanden zijn terug te vinden in \texttt{$\sim$/.ansible/tmp}. Hierin is duidelijk te zien hoe tijdens een configuratie er per taak een nieuwe module (geschreven in python) verschijnt en vervolgens weer verdwijnt. Dit wordt in dit onderzoek gezien als \'e\'en van de grootste oorzaken waarom Ansible trager is.  \textcite{AnsibleTuning} hekend dit probleem en biedt hiervoor een alternatief aan, genaamd 'pipelinging'. Hierdoor zouder er minder SSH-verbindingen nodig zijn die modules moeten overzetten. Een nadeel hieraan is wel dat \texttt{requiretty} uitgezet moet worden wat mogelijk tot een beveiligingsprobleem kan leiden.
+Er wordt dus per taak, en dus ook per connectie, een module overgebracht van de master naar de client. Deze bestanden zijn terug te vinden in \texttt{$\sim$/.ansible/tmp}. Hierin is duidelijk te zien hoe, tijdens een configuratie, er per taak een nieuwe module (geschreven in Python) verschijnt en vervolgens weer verdwijnt. Dit wordt in dit onderzoek gezien als \'e\'en van de grootste oorzaken waarom Ansible trager is.  \textcite{AnsibleTuning} herkend dit probleem en biedt hiervoor een alternatief aan, genaamd 'pipelinging'. Hierdoor zouder er minder SSH-verbindingen nodig zijn die modules moeten overzetten. Een nadeel hieraan is wel dat \texttt{requiretty} uitgezet moet worden wat  {\color{red} mogelijk tot een beveiligingsprobleem kan leiden}.
 
 \subsubsection{Connectietijd}
-Ook hier lopen de resultaten door elkaar zoals te zien is op grafiek \ref{fig:connectiontime}, bovendien liggen de gemiddelden hier veel dichter bij elkaar. Om vast te stellen of er een significant verschil is, is er opnieuw gebruik gemaakt geweest van de Z toets. Deze berekingen kunnen teruggevonden worden in bijlage A, hypothese connectietijd. Z ligt hier echter in het aanvaardingsgebied waardoor de nulhypothese, die stelt dat beide gemiddelden gelijk zijn, kunnen aanvaarden. Er is bijgevolg geen statistisch verschil tussen beide waarden.
+Ook hier lopen de resultaten door elkaar zoals te zien is op grafiek \ref{fig:connectiontime}. Bovendien liggen de gemiddelden hier veel dichter bij elkaar. Om vast te stellen of er een significant verschil is, is er opnieuw gebruik gemaakt geweest van de Z toets. Deze berekingen kunnen teruggevonden worden in bijlage A, hypothese connectietijd. Z ligt hier echter in het aanvaardingsgebied waardoor de nulhypothese, die stelt dat beide gemiddelden gelijk zijn, kunnen aanvaarden. Er is bijgevolg geen statistisch verschil tussen beide waarden.
 %\begin{figure}
 %  \includegraphics[width=\linewidth]{img/connectiontime.png} 
  % \caption{Tijd tot het initialiseren van een deploy}  
