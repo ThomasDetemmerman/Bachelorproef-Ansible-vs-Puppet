@@ -234,19 +234,19 @@ Op grafiek \ref{fig:geheugengebruik} is per tijdseenheid het gemiddeld gebruikt 
 \end{figure}
 
 %---------------------------------------------
-
 \subsection{Schaalbaarheid}
 \label{sec:schaalbaarheid}
 
+Puppet kan minder servers  in parallel behandelen dan Ansible. Dit is ook niet nodig bij Puppet. Eens de Puppetmaster de \gls{catalog} gecompileert heeft neemt de Puppetagent die draait op de client het over. Dit is beduidend een kortere doorlooptijd dan Ansible. Aangezien Ansible geen gebruik maakt van deze agents valt niet enkel het compileren onder de verantwoordelijkheid van de master maar ook de uitvoering hiervan. Dit betekend dat Ansible zich om zijn clients moet ontfermen zolang deze hun gewenste consistente staat niet bereikt hebben.
 
-Het zou niet bedrijfs-realistisch zijn om het gedrag van de resources  - gemeten in \ref{sec:methodologie-technische-verschillen} - op dezelfde wijze te meten door meer clients toe te voegen. Bij Ansible is het namelijk Ansible Tower die bepaalt wanneer de clients ge\"update moeten worden. Maar Puppet werkt niet volgens dit principe, hier valt deze verantwoordelijkheid onder de clients zelf. De kans is dus klein dat in het geval van Puppet alle clients tegelijk een catalogus aan zouden vragen en hierdoor de Puppetmaster (te) zwaar zouden belasten. 
+Puppet heeft buiten de kortere doorlooptijd ook nog het principe van pull-mode die in zijn voordeel werkt. Aanvragen voor \gls{catalog}sen gebeurt meer verspreid aangezien elke Puppetclient zelf verantwoordelijk is voor zijn updates. De kans dat veel servers tegelijk een aanvraag doen is vrij klein.  Bij Ansible wordt vanwege de push-mode wel meerdere servers tegelijk behandeld. Het is dus vanzelfsprekend dan Ansible in staat moet zijn om meerdere configuraties in parallel te behandelen. 
 
-Bovendien moet Ansible Tower zich intensiever bezig houden met zijn clients dan Puppet. Eens Puppetclients hun \gls{catalog} ontvangen hebben is de Puppetmaster klaar. Bij Ansible is dit niet. Ansible moet voordurend nieuwe opdrachten doorsturen.
 
- Toch zijn er hier en daar zaken die de performantie ten goede komen. Zo blijft het downloaden van software de grootste bottleneck van een goede en snelle deploy. Heel wat verkeer moet het lokale netwerk verlaten om bestanden van een externe bron op te halen. Een oplossing hiervoor is om een lokale server op te stellen die een kopie bewaart van de (meest) gebruikte services. \autocite{AnsibleTuning}.
- 
+
+
  \subsubsection{Tips om de performantie van Ansible te verbeteren}
- Standaard is Ansible geconfigureerd om 5 servers tegelijk te kunnen configureren. Dit aantal kan verhoogd worden door de parameter \texttt{\gls{fork}s} naar 25 tot zelfs 100 te brengen. 
+ 
+ Standaard is Ansible geconfigureerd om 5 servers tegelijk te kunnen configureren. Dit aantal kan toenemen door de parameter \texttt{\gls{fork}s} te verhogen naar 100 of zelfs meer. Dit zal inhouden dat Ansible 100 servers op hetzelfde moment kan configureren. Om dit te realiseren is Ansible afhankelijk van het RAM-geheugen. Hoe meer ramgeheugen er beschikbaar is hoe hoger de paramter \texttt{\gls{fork}s} ge\"initialiseerd kan worden.
  
 Ansible adviseert verder ook om gebruik te maken van \texttt{with\_items} bij het installeren van meerdere packages. Door het gebruik van \texttt{with\_items} zal Ansible deze packages combineren in \'e\'en transactie blok wat de performantie ten goede komt. Zo zou het dus beter zijn om listing \ref{lst:yamltwotask} te structuren zoals listing \ref{lst:yamlonetask}. 
 
@@ -279,16 +279,15 @@ Ansible adviseert verder ook om gebruik te maken van \texttt{with\_items} bij he
   Verder beschikt Ansible over een 'Pull-mode' waarbij elke server zelf instaat voor zijn configuratie. Elke server haalt de code op van een centraal punt en configureerd vervolgens zichzelf. Deze mannier van werken vereist wel een scriptje op elke server en doet denken aan de werking van Puppet. Een centraal management punt is in deze opstelling echter niet aanwezig en is dus af te raden voor grotere infrastructuren \autocite{AnsibleTuning} .
   
  \subsubsection{Tips om de performantie van Puppet te verbeteren}
- Puppet is door zijn manier van werken 'van nature' meer geloadbalanced dan Ansible. Toch zijn ook hier een paar zaken die de performantie ten goede komen. Het aantal aanvragen dat Puppet tegelijk kan behandelen varieert van server tot server. Dit is standaard '(aantal CPU's) - 1' met een minimum van \'e\'en en een maximum van vier. Het aantal gebruikte CPU's staat gelijk aan het aantal aanvragen dat Puppet tegelijk kan behandelen. Wanneer er meer aanvragen zijn dan beschikbare CPU's zal het overschot aan aanvragen geblokkeerd worden tot er een slot vrijkomt. Dit aantal kan handmatig verhoogd worden met behulp van de variabele \texttt{max-active-instances}. Wanneer deze naar bijvoorbeeld twee gebracht wordt, zullen twee core's van de processor gebruikt worden, wat tot gevolg heeft dat er ook twee aanvragen tegelijk behandeld kunnen worden. \newline
+ Puppet is door zijn manier van werken 'van nature' meer geloadbalanced dan Ansible. Toch zijn ook hier een paar zaken die de performantie ten goede komen. Het aantal aanvragen dat Puppet tegelijk kan behandelen is afhankelijk van het aantal cores aanwezig in de processor. Het aantal gebruikte cores staat gelijk aan het aantal aanvragen dat Puppet tegelijk kan behandelen. Wanneer er meer aanvragen zijn dan beschikbare cores zal het overschot aan aanvragen geblokkeerd worden tot er een core weer vrijkomt. Het aantal cores dat Puppet mag gebruiken kan handmatig ingesteld worden met behulp van de paramter \texttt{max-active-instances}. Wanneer deze naar bijvoorbeeld twee gebracht wordt, zullen twee core's van de processor gebruikt worden, wat tot gevolg heeft dat er ook twee aanvragen tegelijk behandeld kunnen worden. 
+ 
  Een tweede zaak is het verhogen van de \texttt{max heap size} van JVM. Door dit te verhogen kan het JVM proces meer geheugen opvragen bij het besturingssysteem \autocite{PuppetTuning}.
  
- %\textbf{Ondanks het feit dat beide tools mogelijkheden bieden om de performantie te verhogen blijft Puppet beter geloadbalanced. Bij Puppet zijn het dus de clients die verantwoordelijk zijn voor de updates. De kans blijft klein dat alle server tegelijk een aanvraag zouden doen om te updaten. Ansible is in staat om meerdere servers te configureren dan Puppet maar de kans dat Puppet eenzelfde aantal tegelijk moet configureren is vrij klein. Dit kan eenmalig gebeuren maar is geen repetitief voorval. }
+ \textbf{Ondanks het feit dat beide tools mogelijkheden bieden om de performantie te verhogen blijft Puppet beter geloadbalanced. Ansible zal dus sneller nood hebben aan een upgrade van de hardware dan Puppet. Een voordeel bij Ansible is dat het hoofdzakelijk het RAM geheugen is dat een upgrade vereist. Dit komt goedkoper uit dat een CPU met meerdere cores. }
  
-Ansible is dus in staat om meerdere servers  parallel te behandelen dan Puppet. Maar door de mannier van werken kost het Ansible wel meer  tijd om al deze servers te configureren. Voor 100 servers in parallel is een minimum van 4 GB vereist. Bij meerdere servers zal het RAM-geheugen uitgebreid moeten worden.
- 	
- Puppet kan dus minder servers tegelijk behandelen maar de tijd die Puppet hierin steekt is wel aanzienlijk korten. Eens de \gls{catalog} verstuurd is kan Puppet de volgende aanvraag behandelen. De kans dat alle Puppetclient tegelijk een aanvraag zouden doen is bovendien vrij klein. Puppet kan dus beter overweg met toenemende drukte. Indien Puppet systematisch gebruik moet maken van zijn wachtrij zal de CPU uitgebreid moeten worden. 
+
  
- \textbf{Ansible zal dus sneller nood hebben aan een upgrade van de hardware dan Puppet. Een voordeel bij Ansible is dat het hoofdzakelijk het RAM geheugen is dat een upgrade vereist. Dit komt goedkoper uit dat een CPU met meerdere cores.}
+ 
  \section{Veiligheid}
  
  To Do, gesprek met mr. Gerben
