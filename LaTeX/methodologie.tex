@@ -46,20 +46,21 @@ Ansible biedt met Ansible Tower een ge\"integreede monitoringstool. Bovendien wo
 & \textbf{Ansible} & \textbf{Puppet} \\
   \hline	  		
 \gls{programmeerparadigma}  & declaratief & declaratief  \\
-   \hline
- Geschreven in & YAML & eigen \gls{dsl}  \\
-     \hline
-      Gecompileerd naar & Python & Ruby \\
-     \hline
-   Communicatieprotocol & SSH & HTTPS \\
-  
+\hline
+Geschreven in & YAML & eigen \gls{dsl}  \\
+\hline
+Gecompileerd naar & Python & Ruby \\
+\hline
+Communicatieprotocol & SSH & HTTPS \\
+
    \hline
   Push / Pull principe (standaard)\footnote{Beide technologie\"en zijn in staat om zowel volgens push als pull methode te functioneren. Zo heeft ansible 'pull-mode' \autocite{ansiblePull} en \textcite{puppetkick} 'Puppet kick' } & \gls{push} & \gls{pull} \\
    \hline
    open poorten\footnote{Dit zijn de minimale vereisten van open poorten. Voor sommige features dienen meer poorten open te staan. Bijvoorbeeld 443 voor Ansible Tower of 8140 op elke Puppetclient voor de Puppet kick functionaliteit \autocite{puppetkick} }  & 22/tcp (client) & 8140/tcp (master)\\
   \end{tabular}
   \end{minipage}   
- \textcite{languagePuppet}, \textcite{masterproef}, \textcite{ansibledoc}
+
+ Informatie opgehaald van \textcite{languagePuppet}, \textcite{masterproef}, \textcite{ansibledoc}
 
 \subsection{Werking van Puppet}
 
@@ -133,7 +134,7 @@ Een nadeel aan het feit dat er enkel in het begin en op het einde communicatie i
 
 Vervolgens is er ook gekeken naar de totale netwerkbelasting. Hiervoor is er per client een cumulatie genomen van de kilobytes/minuut gedurende de gehele deploy. Deze waarden zijn terug te vinden in grafiek \ref{fig:netwerkverbruik}. Hier heeft Ansible een gemiddelde van 5802,29 kilobytes/deploy. Dit terwijl Puppet gemiddeld 9464,32 kilobytes/deploy haalt. 
 
-\textbf{We kunnen dus concluderen dat Ansible minder grote bestanden verstuurd over het netwerk door deze op te splitsen in meerdere kleine bestanden. Hierbij is wel een voordurende verbinding vereist tussen beide servers. Puppet aan de andere kant weet de communicatie te beperken tot twee reeksen. Op het einde van de rit heeft Puppet wel meer bestanden uitgewisseld dan  Ansible. }
+\textbf{We kunnen dus concluderen dat Ansible minder grote bestanden verstuurd over het netwerk door deze op te splitsen in meerdere kleine bestanden. Hierbij is wel een voorturende verbinding vereist tussen beide servers. Puppet aan de andere kant weet de communicatie te beperken tot twee reeksen. Op het einde van de rit heeft Puppet wel meer bestanden uitgewisseld dan  Ansible. }
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{img/netwerkverbruik.png}
@@ -202,14 +203,16 @@ De reden dat Ansible trager is dan Puppet wordt gewijd aan de manier van communi
 Er wordt dus per taak, en dus ook per connectie, een module overgebracht van de master naar de client. Deze bestanden zijn terug te vinden in \texttt{$\sim$/.ansible/tmp}. Hierin is duidelijk te zien hoe, tijdens een configuratie, er per taak een nieuwe module (geschreven in Python) verschijnt en vervolgens weer verdwijnt. Dit wordt in dit onderzoek gezien als \'e\'en van de grootste oorzaken waarom Ansible trager is.  \textcite{AnsibleTuning} herkend dit probleem en biedt hiervoor een alternatief aan, genaamd 'pipelinging'. Hierdoor zouder er minder SSH-verbindingen nodig zijn die modules moeten overzetten. Een nadeel hieraan is wel dat \texttt{requiretty} uitgezet moet worden wat  {\color{red} mogelijk tot een beveiligingsprobleem kan leiden}.
 
 \subsubsection{Connectietijd}
-Ook hier lopen de resultaten door elkaar zoals te zien is op grafiek \ref{fig:connectiontime}. Bovendien liggen de gemiddelden hier veel dichter bij elkaar. Om vast te stellen of er een significant verschil is, is er opnieuw gebruik gemaakt geweest van de Z toets. Deze berekingen kunnen teruggevonden worden in bijlage A, hypothese connectietijd. Z ligt hier echter in het aanvaardingsgebied waardoor de nulhypothese, die stelt dat beide gemiddelden gelijk zijn, kunnen aanvaarden. Er is bijgevolg geen statistisch verschil tussen beide waarden.
+ {\color{red} uitleggen wat connectietijd is}.
+
+Bij de resultaten van de connectietijd is geen duidelijk verschil op te merken. Bovendien liggen de gemiddelden hier veel dichter bij elkaar. Om vast te stellen of er een significant verschil is, is er opnieuw gebruik gemaakt geweest van de Z toets. Deze berekingen kunnen teruggevonden worden in bijlage A, hypothese connectietijd. Z ligt hier echter in het aanvaardingsgebied waardoor de nulhypothese, die stelt dat beide gemiddelden gelijk zijn, kunnen aanvaarden. Er is bijgevolg geen statistisch verschil tussen beide waarden.
 %\begin{figure}
 %  \includegraphics[width=\linewidth]{img/connectiontime.png} 
  % \caption{Tijd tot het initialiseren van een deploy}  
  % \label{fig:connectiontime}
 %\end{figure}
 
-\textbf{Er kan hier dus geconcludeerd worden dat Ansible nood heeft aan een voordurend goede verbinding tussen de master en de client om een snelle configuratie te kunnen verzekeren. Bij Puppet is dit niet zozeer nodig aangezien hierbij alle nodige bestanden voor een goede configuratie bij de meet af aan al aanwezig zijn. Vermoed wordt dat dit \'e\'en van de redenen is waarom Puppet sneller is in configureren.}
+\textbf{Er kan hier dus geconcludeerd worden dat Ansible nood heeft aan een voortdurend goede verbinding tussen de master en de client om een snelle configuratie te kunnen verzekeren. Bij Puppet is dit niet zozeer nodig aangezien hierbij alle nodige bestanden voor een goede configuratie van meet af al aanwezig zijn. Vermoed wordt dat dit \'e\'en van de redenen is waarom Puppet sneller is in configureren.}
 
  {\color{red}Volgens deze link zou een reden zijn dat ansible trager is dan puppet omdat ze ssh gebruiken. te onderzoeken. http://www.intigua.com/blog/puppet-vs.-chef-vs.-ansible-vs.-saltstack}
 
@@ -222,7 +225,7 @@ Ook hier lopen de resultaten door elkaar zoals te zien is op grafiek \ref{fig:co
 
 Op grafiek \ref{fig:geheugengebruik} is per tijdseenheid het gemiddeld gebruikt ramgeheugen weergegeven. Hierop is te zien hoe Puppet opvallend meer geheugen gebruikt. Niet alleen tijdens een deploy maar ook ervoor en erna. Zelfs wanneer een Ansible client en een Puppet client juist opgezet worden met behulp van Vagrant, is er al een verschil in het gebruikte geheugen. Gezien het feit dat er al een verschil waar te nemen is in deze vroege levensfase van de server en het enige verschil in configuratie op dit moment de Puppetagent is, werd vermoed dat het verschil hier aan te wijten is. Dit vermoeden werd gestaafd toen de Puppetagent tijdelijk uitgezet werd. Het ramgeheugen daalde onmiddellijk naar gelijkwaardige waarden als deze van de Ansibleclient. Zonder configuratie gebruiken Puppetclients gemiddeld 58\% geheugen van de 500MB ram. Bij Ansible is dit 47\%. Dit betekent dat met een verschil van 11\%, er bij 500 MB 55MB meer RAM-geheugen gebruikt wordt bij Puppet.
 
-\textbf{Er is dus een duidelijk verschil tussen het geheubengebruik van Puppet clients ten opzichte van Ansible clients. Hierbij gebruikt Puppet dankzij de Puppetagent beduidend meer resources. Ookal een service meer of minder doorgaans niet zorgt voor radicale gevolgen is de grootste bottleneck nog steeds dat deze service in de eerste plaats ge\"instelleerd en geconfigureerd dient te worden. Iets wat niet door Puppet verzorgt kan worden.}
+\textbf{Er is dus een duidelijk verschil tussen het geheugengebruik van Puppet clients ten opzichte van Ansible clients. Hierbij gebruikt Puppet dankzij de Puppetagent beduidend meer resources. Ondanks het feit dat een service meer of minder doorgaans niet zorgt voor radicale gevolgen, is de grootste bottleneck nog steeds dat deze service in de eerste plaats ge\"installeerd en geconfigureerd dient te worden. Iets dat niet door Puppet verzorgd kan worden.}
 
 {\color{red} Hoe zet VRT  momenteel puppetagent op zijn puppetclients?}
 
@@ -237,18 +240,18 @@ Op grafiek \ref{fig:geheugengebruik} is per tijdseenheid het gemiddeld gebruikt 
 \subsection{Schaalbaarheid}
 \label{sec:schaalbaarheid}
 
-Puppet kan minder servers  in parallel behandelen dan Ansible. Dit is ook niet nodig bij Puppet. Eens de Puppetmaster de \gls{catalog} gecompileert heeft neemt de Puppetagent die draait op de client het over. Dit is beduidend een kortere doorlooptijd dan Ansible. Aangezien Ansible geen gebruik maakt van deze agents valt niet enkel het compileren onder de verantwoordelijkheid van de master maar ook de uitvoering hiervan. Dit betekend dat Ansible zich om zijn clients moet ontfermen zolang deze hun gewenste consistente staat niet bereikt hebben.
+Puppet kan minder servers  in parallel behandelen dan Ansible. Dit is ook niet nodig bij Puppet. Eens de Puppetmaster de \gls{catalog} gecompileerd heeft, neemt de Puppetagent die draait op de client het over. Dit is beduidend een kortere doorlooptijd dan Ansible. Aangezien Ansible geen gebruik maakt van deze agents valt niet enkel het compileren onder de verantwoordelijkheid van de master maar ook de uitvoering hiervan. Dit betekent dat Ansible zich over zijn clients moet ontfermen zolang deze hun gewenste consistente staat niet bereikt hebben.
 
-Puppet heeft buiten de kortere doorlooptijd ook nog het principe van pull-mode die in zijn voordeel werkt. Aanvragen voor \gls{catalog}sen gebeurt meer verspreid aangezien elke Puppetclient zelf verantwoordelijk is voor zijn updates. De kans dat veel servers tegelijk een aanvraag doen is vrij klein.  Bij Ansible wordt vanwege de push-mode wel meerdere servers tegelijk behandeld. Het is dus vanzelfsprekend dan Ansible in staat moet zijn om meerdere configuraties in parallel te behandelen. 
+Puppet heeft buiten de kortere doorlooptijd ook nog het principe van pull-mode dat in zijn voordeel werkt. Aanvragen voor \gls{catalog}sen gebeurt meer verspreid aangezien elke Puppetclient zelf verantwoordelijk is voor zijn updates. De kans dat veel servers tegelijk een aanvraag doen is vrij klein.  Bij Ansible worden vanwege de push-mode wel meerdere servers tegelijk behandeld. Het is dus vanzelfsprekend dan Ansible in staat moet zijn om meerdere configuraties in parallel te behandelen. 
 
 
 
 
  \subsubsection{Tips om de performantie van Ansible te verbeteren}
  
- Standaard is Ansible geconfigureerd om 5 servers tegelijk te kunnen configureren. Dit aantal kan toenemen door de parameter \texttt{\gls{fork}s} te verhogen naar 100 of zelfs meer. Dit zal inhouden dat Ansible 100 servers op hetzelfde moment kan configureren. Om dit te realiseren is Ansible afhankelijk van het RAM-geheugen. Hoe meer ramgeheugen er beschikbaar is hoe hoger de paramter \texttt{\gls{fork}s} ge\"initialiseerd kan worden.
+ Standaard is Ansible geconfigureerd om 5 servers tegelijk te kunnen configureren. Dit aantal kan toenemen door de parameter \texttt{\gls{fork}s} te verhogen naar 100 of zelfs meer. Dit zal inhouden dat Ansible 100 servers op hetzelfde moment kan configureren. Om dit te realiseren is Ansible afhankelijk van het RAM-geheugen. Hoe meer ramgeheugen er beschikbaar is, hoe hoger de paramter \texttt{\gls{fork}s} ge\"initialiseerd kunnen worden.
  
-Ansible adviseert verder ook om gebruik te maken van \texttt{with\_items} bij het installeren van meerdere packages. Door het gebruik van \texttt{with\_items} zal Ansible deze packages combineren in \'e\'en transactie blok wat de performantie ten goede komt. Zo zou het dus beter zijn om listing \ref{lst:yamltwotask} te structuren zoals listing \ref{lst:yamlonetask}. 
+Ansible adviseert verder ook om gebruik te maken van \texttt{with\_items} bij het installeren van meerdere packages. Door het gebruik van \texttt{with\_items} zal Ansible deze packages combineren in \'e\'en transactieblok wat de performantie ten goede komt. Zo zou het dus beter zijn om listing \ref{lst:yamltwotask} te structuren zoals listing \ref{lst:yamlonetask}. 
 
 
    \lstset{language=clean,caption={Installeer de vereiste onderdelen van PHP in twee delen},label={lst:yamltwotask}}
@@ -276,10 +279,10 @@ Ansible adviseert verder ook om gebruik te maken van \texttt{with\_items} bij he
     - php-mysqli
 \end{lstlisting}
 
-  Verder beschikt Ansible over een 'Pull-mode' waarbij elke server zelf instaat voor zijn configuratie. Elke server haalt de code op van een centraal punt en configureerd vervolgens zichzelf. Deze mannier van werken vereist wel een scriptje op elke server en doet denken aan de werking van Puppet. Een centraal management punt is in deze opstelling echter niet aanwezig en is dus af te raden voor grotere infrastructuren \autocite{AnsibleTuning} .
+  Verder beschikt Ansible over een 'Pull-mode' waarbij elke server zelf instaat voor zijn configuratie. Elke server haalt de code op van een centraal punt en configureerd vervolgens zichzelf. Deze manier van werken vereist wel een scriptje op elke server en doet denken aan de werking van Puppet. Een centraal management punt is in deze opstelling echter niet aanwezig en is dus af te raden voor grotere infrastructuren \autocite{AnsibleTuning} .
   
  \subsubsection{Tips om de performantie van Puppet te verbeteren}
- Puppet is door zijn manier van werken 'van nature' meer geloadbalanced dan Ansible. Toch zijn ook hier een paar zaken die de performantie ten goede komen. Het aantal aanvragen dat Puppet tegelijk kan behandelen is afhankelijk van het aantal cores aanwezig in de processor. Het aantal gebruikte cores staat gelijk aan het aantal aanvragen dat Puppet tegelijk kan behandelen. Wanneer er meer aanvragen zijn dan beschikbare cores zal het overschot aan aanvragen geblokkeerd worden tot er een core weer vrijkomt. Het aantal cores dat Puppet mag gebruiken kan handmatig ingesteld worden met behulp van de paramter \texttt{max-active-instances}. Wanneer deze naar bijvoorbeeld twee gebracht wordt, zullen twee core's van de processor gebruikt worden, wat tot gevolg heeft dat er ook twee aanvragen tegelijk behandeld kunnen worden. 
+ Puppet is door zijn manier van werken 'van nature' meer geloadbalanced dan Ansible. Toch zijn ook hier een paar zaken die de performantie ten goede komen. Het aantal aanvragen dat Puppet tegelijk kan behandelen is afhankelijk van het aantal cores aanwezig in de processor. Het aantal gebruikte cores staat gelijk aan het aantal aanvragen dat Puppet tegelijk kan behandelen. Wanneer er meer aanvragen zijn dan beschikbare cores zal het overschot aan aanvragen geblokkeerd worden tot er een core weer vrijkomt. Het aantal cores dat Puppet mag gebruiken kan handmatig ingesteld worden met behulp van de paramter \texttt{max-active-instances}. Wanneer deze naar bijvoorbeeld twee gebracht wordt, zullen twee cores van de processor gebruikt worden, wat tot gevolg heeft dat er ook twee aanvragen tegelijk behandeld kunnen worden. 
  
  Een tweede zaak is het verhogen van de \texttt{max heap size} van JVM. Door dit te verhogen kan het JVM proces meer geheugen opvragen bij het besturingssysteem \autocite{PuppetTuning}.
  
@@ -303,7 +306,7 @@ Ansible adviseert verder ook om gebruik te maken van \texttt{with\_items} bij he
 \caption{\label{fig:vicieuzecirkel}Vicieuze cirkel van twee \gls{CMT}'s hetzelfde bestand proberen te configureren.}
 \end{wrapfigure}
 
-Het is vanzelfsprekend dat de manier om Ansible te integreren afhankelijk is van bedrijf tot bedrijf. In het geval van de VRT verloopt dit vlot. \textbf{Ansible en Puppet kunnen namelijk perfect naast elkaar in dezelfde infrastructuur bestaan.} Dit is ideaal voor een geleidelijke overgang. E\'en en dezelfde server kan bovendien geconfigureerd worden door zowel Puppet als Ansible. Dit heeft als voordeel dat niet alle modules geschreven in Puppet onmiddellijk vertaald hoeven te worden naar Ansible. Enkele rollen kunnen geschreven zijn voor Ansible terwijl een ander deel nog onder de bevoegdheid van Puppet valt.
+Het is vanzelfsprekend dat de manier om Ansible te integreren afhankelijk is van bedrijf tot bedrijf. In het geval van de VRT verloopt dit vlot. \textbf{Ansible en Puppet kunnen namelijk perfect naast elkaar in dezelfde infrastructuur bestaan.} Dit is ideaal voor een geleidelijke overgang. E\'en en dezelfde server kan bovendien geconfigureert worden door zowel Puppet als Ansible. Dit heeft als voordeel dat niet alle modules geschreven in Puppet onmiddellijk vertaald hoeven te worden naar Ansible. Enkele rollen kunnen geschreven zijn voor Ansible terwijl een ander deel nog onder de bevoegdheid van Puppet valt.
 
  Belangrijk hierbij is wel dat Puppet en Ansible verschillende configuraties dienen te behandelen. Wanneer beide \gls{CMT}'s eenzelfde configuratie uitvoeren, kan er door subtiele verschillen een vicieuze cirkel ontstaan.
 Veronderstel een situatie zoals in figuur \ref{fig:vicieuzecirkel}. In Ansible staat een bestand met een extra spatie, hier wordt deze voor het gemak 'foo1' genoemd. Bij puppet staat deze extra spatie er niet, deze wordt 'foo2' genoemd. 
