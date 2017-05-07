@@ -8,13 +8,15 @@
 %--------------------------------- woordenlijst
 
 \newglossaryentry{puppetplugin}{
-	name = plugin,
-	description = Extra functionaliteiten worden toegevoegd door middel van een plugin. In het geval van Puppet zijn dit scriptjes geschreven worden in Ruby.
+	name = Plugin,
+	text = plugin,
+	description = Extra functionaliteiten worden toegevoegd door middel van een plugin. In het geval van Puppet zijn dit scriptjes die geschreven worden in Ruby
 }
 
 \newglossaryentry{fact}{
-	name = fact,
-	description = {Ansible en Puppet maken gebruik van facts. Dit zijn gegevens die de master nodig heeft van zijn clients. Dit zijn zaken zoals hostname, besturingssysteem, IP addres etc.}
+	name = Fact,
+	text = fact,
+	description = {Ansible en Puppet maken gebruik van facts. Dit zijn gegevens die de master nodig heeft van zijn clients. Dit zijn zaken zoals hostname, besturingssysteem, IP adres etc}
 }
 
 
@@ -29,25 +31,25 @@
 \newglossaryentry{packagemanager}{
 	name = {Package manager},
 	text = package manager,
-	description = Een mechanisme die het mogelijk maakt om software te installeren op UNIX gebaseerde systemen. \textit{(voorbeelden: yum, apt, dpkg,...} 
+	description = Een mechanisme die het mogelijk maakt om software te installeren op UNIX gebaseerde systemen \textit{(voorbeelden: yum, apt, dpkg,..} 
 }
 
 \newglossaryentry{configuratietijd}{
 	name = {Configuratietijd},
 	text = configuratietijd,
-	description = {De tijd die de configuration management tool nodig heef tot het bekomen van een volledig geconfigureerde server.}
+	description = {De tijd die de configuration management tool nodig heeft tot het bekomen van een volledig geconfigureerde server}
 }
 
 \newglossaryentry{connectietijd}{
 	name = Connectietijd,
 	text = connectietijd,
-	description = {Dit is de tijd die het kost alvorens er effectief overgegaan kan worden tot configureren. Hieronder zitten zaken zoals het opstellen van een verbinding, het verzamelen van de nodige gegevens en het versturen van een gepersonaliseerde configuratie.}
+	description = {De tijd die het kost alvorens er effectief overgegaan kan worden tot configureren. Hieronder zitten zaken zoals het opstellen van een verbinding, het verzamelen van de nodige gegevens en het versturen van een gepersonaliseerde configuratie}
 }
 
 \newglossaryentry{partialconfig}{
 	name = {Gedeeltelijke configuratie},
 	text = gedeeltelijke configuratie,
-	description = {Er is reeds een configuratie aanwezig op de server maar deze is niet meer up-to-date. Bijgevolg moet er een deel opnieuw geconfigureerd worden.}
+	description = {Er is reeds een configuratie aanwezig op de server maar deze is niet meer up-to-date. Bijgevolg moet er een deel opnieuw geconfigureerd worden}
 }
 
 \newglossaryentry{fork}{
@@ -63,19 +65,19 @@
 \newglossaryentry{push}{
 	name = Push,
 	text = push,
-	description = {Een mannier van communiceren waarbij de actie gestart wordt vanuit een centraal punt, de zender. \autocite{pushpullmeaning}}
+	description = {Een manier van communiceren waarbij de actie gestart wordt vanuit een centraal punt, de zender \autocite{pushpullmeaning}}
 }
 
 \newglossaryentry{pull}{
 	name = Pull,
 	text = pull,
-	description = {Een mannier van communiceren waarbij de actie gestart wordt vanuit de clients, de ontvangers \autocite{pushpullmeaning}}
+	description = {Een manier van communiceren waarbij de actie gestart wordt vanuit de clients, de ontvangers \autocite{pushpullmeaning}}
 }
 
 \newglossaryentry{adhoccommando}{
-	name = ad-hoc commando,
+	name = Ad-hoc commando,
 	text = ad-hoc commando,
-	description = {Een ad-hoc commando is een taak die snel uitgevoerd moet worden maar dat niet opgeslagen wordt voor later \autocite{adhoc}. Het is een eenmalig commando dat geen deel uitmaakt van een groter geheel zoals een playbook}
+	description = {Een ad-hoc commando is een taak die snel uitgevoerd moet worden maar die niet opgeslagen wordt voor later \autocite{adhoc}. Het is een eenmalig commando dat geen deel uitmaakt van een groter geheel zoals een playbook}
 }
 
 %	description = 
