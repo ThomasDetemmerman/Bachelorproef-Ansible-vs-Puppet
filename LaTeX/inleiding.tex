@@ -11,28 +11,20 @@
 %Soms wil je de auteur niet expliciet vernoemen, dan gebruik je \texttt{$\backslash${}autocite\{\}}. Hieronder een voorbeeld van elk.
 
 %\textcite{Knuth1998} schreef een van de standaardwerken over sorteer- en zoekalgoritmen. Experten zijn het erover eens dat cloud computing een interessante opportuniteit vormen, zowel voor gebruikers als voor dienstverleners op vlak van informatietechnologie~\autocite{Creeger2009}.
-
-
-
-
-
-
-
-
 %--------------------------------------
-
 \section{Stand van zaken}
 \label{sec:stand-van-zaken}
+
 Bedrijven kunnen tegenwoordig niet zonder IT-infrastructuur. Deze infrastructuur kan uitgebreid en complex zijn. Bovendien moet ze ook nog schalen naarmate het bedrijf groeit. Als systeembeheerder heb je diverse taken zoals incident management, 
 het volgen van de laatste technologische trends of maatregelen treffen tegen cyberdreigingen. Het opzetten en configureren van de zoveelste identieke server is een groot tijd- en geldverlies. Daarom werden configuration management tools in het leven geroepen. De eerst bekende tool was Puppet. Deze technologie stelt ons in staat om configuraties op declaratieve wijze te programmeren \autocite{PuppetDeclaratief}. Eens de gewenste configuratie geprogrammeerd is, kunnen extra gelijkaardige servers veel sneller opgezet worden. 
 Puppet is een \gls{CMT} die daar altijd al marktleider in geweest. Dit is ook te zien op grafiek \ref{fig:popcon_everybody}. Maar daar komt nu verandering in. Er is de laatste jaren meer concurrentie op de markt gekomen waaronder relatief bekenden zoals Salt en Chef. 
-Echter, \'e\'en van deze nieuwe \gls{CMT} 's doet het opvallend beter op gebied van populariteit en dat is Ansible inc. Zoals op de grafiek te zien is, heeft Ansible in 2015 de leiding genomen. Het was bovendien ook in dat jaar dat Ansible werd vernoemd door multinationals waaronder Gartner, die over Ansible schreef in een artikel over 'Cool Vendors in DevOps' \autocite{gartner}. Verder was het \textcite{redhatovername} die aankondigde dat er een akkoord was om Ansible over te nemen. Grafiek \ref{fig:popcon_everybody} toont hoe vaak Ansible en Puppet gedownload zijn op een Debian distributie en voorlopig laat Ansible zijn concurrenten ver achter zich. 
-
+Echter, \'e\'en van deze nieuwe \gls{CMT} 's doet het opvallend beter op gebied van populariteit en dat is Ansible inc. Zoals op de grafiek te zien is, heeft Ansible in 2015 de leiding genomen. Het was bovendien ook in dat jaar dat Ansible werd vernoemd door multinationals waaronder Gartner, die over Ansible schreef in een artikel over 'Cool Vendors in DevOps' \autocite{gartner}. Verder was het \textcite{redhatovername} die aankondigde dat er een akkoord was om Ansible over te nemen. Grafiek \ref{fig:popcon_everybody} toont hoe vaak Ansible en Puppet gedownload zijn op een Debian distributie en voorlopig laat Ansible zijn concurrenten ver achter zich. \newline
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{img/popcon_everybody.png}
-  \caption{Deze grafiek toont het aantal keer dat een bepaald softwarepakket ge\"{\i}nstalleerd is op een Debian distributie. \autocite{popcon}}
-  \label{fig:popcon_everybody}
+	%width=\linewidth
+	\includegraphics[width=400px]{img/popcon_everybody.png}
+	\caption{Deze grafiek van \textcite{popcon} toont het aantal keer dat een bepaald softwarepakket ge\"{\i}nstalleerd is op een Debian distributie. }
+	\label{fig:popcon_everybody}
 \end{figure}
 
 \subsection{Profiel van Puppet}

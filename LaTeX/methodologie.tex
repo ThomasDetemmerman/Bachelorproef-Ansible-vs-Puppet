@@ -147,17 +147,19 @@ Vervolgens is er ook gekeken naar de totale netwerkbelasting. Hiervoor is er per
 \textbf{We kunnen dus concluderen dat Ansible minder grote bestanden verstuurd over het netwerk door deze op te splitsen in meerdere kleine bestanden verspreidt over de hele deploy. Hierbij is wel een voorturende verbinding vereist tussen beide servers.  Puppet aan de andere kant weet de communicatie te beperken tot twee reeksen. Op het einde van de rit heeft Puppet wel meer bestanden uitgewisseld dan Ansible. }
 
 \begin{figure}
+	\includegraphics[width=430px]{img/deploytypes.png}
+	\caption{Manier van communiceren. Aantal kilobytes per tijdseenheid op een netwerkkaart die uitsluitend bedoeld is voor communicatie met Ansible Tower / Puppetmaster. }  
+	\label{fig:deploytypes}
+\end{figure}
+
+\begin{figure}
 	\includegraphics[width=\linewidth]{img/netwerkverbruik.png}
 	\caption{Totaal verbruikte netwerkcapaciteit per client gedurende het deployen. Dit bevat enkel communicatie tussen master en client.}  
 	\label{fig:netwerkverbruik}
 \end{figure}
 
 
-\begin{figure}
-	\includegraphics[width=\linewidth]{img/deploytypes.png}
-	\caption{Manier van communiceren. Aantal kilobytes per tijdseenheid op een netwerkkaart die uitsluitend bedoeld is voor communicatie met Ansible Tower / Puppetmaster. }  
-	\label{fig:deploytypes}
-\end{figure}
+
  %-------------------------------------------------- einde netwerk
  
 \subsection{Tijd tot het bekomen van een consistente staat}
@@ -170,16 +172,15 @@ Het eerste deel van de tijd zal de \gls{connectietijd} genoemd worden. Dit is de
 
 
 \subsubsection{\gls{configuratietijd}}
+
+%Aangezien de resultaten van 'volledige configuratie' (zie bijlage C: deploytijden) 
+Op afbeelding \ref{fig:deploytime_fullconfig} is geen eenduidig verschil aan te tonen tussen beide \gls{CMT}'s. Bijgevolg is er met behulp van de Z-toets aangetoond of er al dan niet een statistisch verschil is. Deze berekingen kunnen teruggevonden worden in bijlage A: hypothese configuratietijd.
+
 \begin{figure}
-  \includegraphics[width=\linewidth]{img/deploytime_fullconfig.png} 
-  \caption{Tijd tot het bekomen van een consistente staat, vertrekkende van een 'lege' server.}  
-  \label{fig:deploytime_fullconfig}
+	\includegraphics[width=\linewidth]{img/deploytime_fullconfig.png} 
+	\caption{Tijd tot het bekomen van een consistente staat, vertrekkende van een lege' server.}  
+	\label{fig:deploytime_fullconfig}
 \end{figure}
-
-
-
-
-Aangezien de resultaten van 'volledige configuratie' (zie bijlage C: deploytijden) geen eenduidig verschil tonen tussen beide \gls{CMT}'s is er met behulp van de Z-toets aangetoond of er al dan niet een statistisch verschil is. Deze berekingen kunnen teruggevonden worden in bijlage A: hypothese configuratietijd.
 
 Hierbij blijkt dat Z buiten het kritisch gebied valt waardoor de nulhypotese verworpen kan worden. Bijgevolg wordt aangenomen dat beide gemiddelden niet tot dezelfde verzameling behoren. Er kan dus worden geconcludeerd dat wanneer er wordt vertrokken van een lege server, Ansible er gemiddeld langer over doet dan Puppet. Dit is in dit geval een verschil van gemiddeld 11,3 seconden. 
 
@@ -187,10 +188,11 @@ De verschillen worden echter nog groter wanneer de test gedaan wordt met een ged
 
 In laatste instantie is er gekeken naar de tijd die het zou kosten tot de \gls{CMT} vaststelt dat de server reeds volledig geconfigureerd is en dat er geen aanpassingen meer nodig zijn. Hierbij resulteert Ansible op een gemiddelde van 18 seconden met opnieuw een vrij grote variatie van 18,25 seconden. Ook hier doet Puppet het opnieuw beter waarbij hij minder dan een seconde nodig heeft om vast te stellen dan dat er geen aanpassingen nodig zijn. Uiteraard zijn al deze waarden afhankelijk van de configuratie maar ze geven wel een duidelijke indicatie van de verschillen tussen beide \gls{CMT}'s.
 
+
 \begin{figure}
 	\includegraphics[width=\linewidth]{img/overzichtgemiddeldeconfigtijd.png} 
 	\caption{Gemiddelde configuratietijd in seconden.}  
-	\label{fig:deploytime_fullconfig}
+
 \end{figure}
 
 \textbf{Opmerking:} De \gls{connectietijd} is niet meegerekend in deze metingen. Het omvat hier uitsluitend de \gls{configuratietijd}.
@@ -210,7 +212,7 @@ De reden dat Ansible trager is dan Puppet wordt gewijd aan de manier van communi
 \underline{Resultaat P}: de configuratie gaat ongestoord verder.
 \end{addmargin}
 
-Er wordt dus per taak, en dus ook per connectie, een module overgebracht van de master naar de client. Deze bestanden zijn terug te vinden in \texttt{$\sim$/.ansible/tmp}. Hierin is duidelijk te zien hoe, tijdens een configuratie, er per taak een nieuwe module (geschreven in Python) verschijnt en vervolgens weer verdwijnt. Dit wordt in dit onderzoek gezien als \'e\'en van de grootste oorzaken waarom Ansible trager is.  \textcite{AnsibleTuning} herkend dit probleem en biedt hiervoor een alternatief aan, genaamd 'pipelinging'. Hierdoor zouder er minder SSH-verbindingen nodig zijn die modules moeten overzetten. Een nadeel hieraan is wel dat \texttt{requiretty} uitgezet moet worden wat  {\color{red} mogelijk tot een beveiligingsprobleem kan leiden}.
+Er wordt dus per taak, en dus ook per connectie, een module overgebracht van de master naar de client. Deze bestanden zijn terug te vinden in \texttt{$\sim$/.ansible/tmp}. Hierin is duidelijk te zien hoe, tijdens een configuratie, er per taak een nieuwe module (geschreven in Python) verschijnt en vervolgens weer verdwijnt. Dit wordt in dit onderzoek gezien als \'e\'en van de grootste oorzaken waarom Ansible trager is.  \textcite{AnsibleTuning} herkend dit probleem en biedt hiervoor een alternatief aan, genaamd 'pipelinging'. Hierdoor zouder er minder SSH-verbindingen nodig zijn die modules moeten overzetten. Om dit mogelijk te maken moet \texttt{requiretty} uitgezet worden.
 
 \subsubsection{Connectietijd}
 
@@ -223,7 +225,7 @@ De \gls{connectietijd} is de periode tussen het moment waarop de opdracht om te 
 
 \textbf{Er kan hier dus geconcludeerd worden dat Ansible nood heeft aan een voortdurend goede verbinding tussen de master en de client om een snelle configuratie te kunnen verzekeren. Bij Puppet is dit niet zozeer nodig aangezien hierbij alle nodige bestanden voor een goede configuratie van meet af al aanwezig zijn. Vermoed wordt dat dit \'e\'en van de redenen is waarom Puppet sneller is in configureren.}
 
- {\color{red}Volgens deze link zou een reden zijn dat ansible trager is dan puppet omdat ze ssh gebruiken. te onderzoeken. http://www.intigua.com/blog/puppet-vs.-chef-vs.-ansible-vs.-saltstack}
+ %{\color{red}Volgens deze link zou een reden zijn dat ansible trager is dan puppet omdat ze ssh gebruiken. te onderzoeken. http://www.intigua.com/blog/puppet-vs.-chef-vs.-ansible-vs.-saltstack}
 
 
 
@@ -239,7 +241,7 @@ Op grafiek \ref{fig:geheugengebruik} is per tijdseenheid het gemiddeld gebruikt 
 {\color{red} Hoe zet VRT  momenteel puppetagent op zijn puppetclients? > met template maar hoe bij fysieke server???}
 
 
-\begin{figure}
+\begin{figure}[hbt!]
   \includegraphics[width=\linewidth]{img/geheugengebruik}
  \caption{Verbruikt percentage van het RAM geheugen. Gemeten bij servers met elk 500 MB. }  
   \label{fig:geheugengebruik}
@@ -358,5 +360,5 @@ Eens de inventories aangemaakt worden en de source code opgehaald is geweest is 
 %---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------        prijskaartje ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
  \section{Prijskaartje}
 
-Ansible berekend de prijs op een lichtjes andere prijs dan Puppet. Bijgevolg hangt de prijs af van de situatie. Voor standaard enterprise support rekent Ansible 9.092,15 euro voor 100 nodes. Puppet berekend de prijst op het aantal gebruikte nodes. Dit is dan 109,12 euro per node. Bij 100 nodes komt Puppet dus duurder uit. Heb je echter minder als 100 nodes is Ansible duurder want je betaald standaard voor 100 nodes. Bij meerdere nodes dient een offerte aangevraagd te worden. Ook voor de premium editie dient voor beide technologie\"en een offerte aangevraagd te worden. \footnote{De valuta is geraadpleegd geweest op mei 2017 en zijn omgerekend van USD naar EUR tegen de wisselkoers op 5-5-2017}
+Ansible berekend de prijs op een lichtjes andere prijs dan Puppet. Bijgevolg hangt de prijs af van de situatie. Voor standaard enterprise support rekent Ansible 9.092,15 euro voor 100 nodes. Puppet berekend de prijst op het aantal gebruikte nodes. Dit is dan 109,12 euro per node. Bij 100 nodes komt Puppet dus duurder uit. Heb je echter minder als 100 nodes is Ansible duurder want je betaald standaard voor 100 nodes. Bij meerdere nodes dient een offerte aangevraagd te worden. Ook voor de premium editie dient voor beide technologie\"en een offerte aangevraagd te worden. \footnote{De prijzen zijn geraadpleegd geweest op mei 2017 en zijn omgerekend van USD naar EUR tegen de wisselkoers op 5/5/2017}
 
