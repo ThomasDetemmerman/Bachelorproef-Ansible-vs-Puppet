@@ -100,21 +100,22 @@ Verloop en redenen van een omschakeling.}
 
 %%---------  (eigen)-----------------------------
 \input{woordenlijst}
+
+
+%%---------- Back matter ------------------------------------------------------
+\printbibliography
+\addcontentsline{toc}{chapter}{\textcolor{maincolor}{Bibliografie}}
+
+\listoffigures
+\addcontentsline{toc}{chapter}{\textcolor{maincolor}{Lijst van figuren}}
+%\listoftables
+
+
+%%----------- bijlagen ------------------------
 \input{mathematiek}
 \input{bachelorproefvoorstel}
 \input{datasets}
 
 
-
-
-
-%%---------- Back matter ------------------------------------------------------
-\printbibliography
-
-\addcontentsline{toc}{chapter}{\textcolor{maincolor}{Bibliografie}}
-%
-
-\listoffigures
-%\listoftables
 
 \end{document}

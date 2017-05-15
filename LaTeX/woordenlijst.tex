@@ -8,10 +8,16 @@
 
 %--------------------------------- woordenlijst
 
+\newglossaryentry{deploy}{
+	name = Deploy,
+	text = deploy,
+	description = Een configuratie uitvoeren. In dit rapport is een vaakgebruikt synoniem configureren. Bijvoorbeeld: Puppet voert een deploy uit op server A. Dit betekend dat Puppet server A configureerd.
+}
+
 \newglossaryentry{puppetplugin}{
 	name = Plugin,
 	text = plugin,
-	description = Extra functionaliteiten worden toegevoegd door middel van een plugin. In het geval van Puppet zijn dit scriptjes die geschreven worden in Ruby
+	description = Extra functionaliteiten worden toegevoegd door middel van een plugin. In het geval van Puppet zijn dit functionaliteiten die geschreven worden in Ruby
 }
 
 \newglossaryentry{fact}{
@@ -26,13 +32,13 @@
 \newglossaryentry{catalog}{
 	name = Catalogus,
 	text = catalogus,
-	description = Eng: Catalog. Een catalogus beschrijft de gewenste configuratie voor een specifieke computer \autcite{puppetdoc}
+	description = Eng: Catalog. Een catalogus is een term uit de Puppetwereld en is in feite een gecompileerde module. Deze bevat de gewenste configuratie voor een specifieke computer. \autcite{puppetdoc}
 }
 
 \newglossaryentry{packagemanager}{
 	name = {Package manager},
 	text = package manager,
-	description = Een mechanisme die het mogelijk maakt om software te installeren op UNIX gebaseerde systemen \textit{(voorbeelden: yum, apt, dpkg,..} 
+	description = Een mechanisme die het mogelijk maakt om software te installeren op UNIX gebaseerde systemen \textit{(voorbeelden: yum, apt, dpkg,..)} 
 }
 
 \newglossaryentry{configuratietijd}{
@@ -60,7 +66,7 @@
 }
 \newglossaryentry{programmeerparadigma}{
 	name = Programmeerparadigma,
-	description = Synoniemen zijn ook programmeerstijl of programmeermodel, voorbeelden zijn object-georienteerd, procedureel, imperatief..., \autocite{journalofinformation} 
+	description = {Synoniemen zijn ook programmeerstijl of programmeermodel. Voorbeelden zijn object-georienteerd, procedureel, imperatief... \autocite{journalofinformation} }
 }
 
 \newglossaryentry{push}{
@@ -78,7 +84,7 @@
 \newglossaryentry{adhoccommando}{
 	name = Ad-hoc commando,
 	text = ad-hoc commando,
-	description = {Een ad-hoc commando is een taak die snel uitgevoerd moet worden maar die niet opgeslagen wordt voor later \autocite{adhoc}. Het is een eenmalig commando dat geen deel uitmaakt van een groter geheel zoals een playbook}
+	description = {Een ad-hoc commando is een taak die snel uitgevoerd moet worden maar die niet opgeslagen wordt voor later gebruik \autocite{adhoc}. Het is een eenmalig commando dat geen deel uitmaakt van een groter geheel zoals een playbook}
 }
 
 %	description = 
@@ -86,7 +92,9 @@
 %	description = {Een ad-hoc commando is een taak die snel uitgevoerd moet worden maar dat niet opgeslagen wordt voor later \autocite{adhoc}. Het is een eenmalig commando dat geen deel uitmaakt van een groter geheel zoals een playbook.}
 
 \printglossary[type=\acronymtype,title={Lijst van acroniemen}]
+\addcontentsline{toc}{chapter}{\textcolor{maincolor}{Lijst van acroniemen}}
 \printglossary
+\addcontentsline{toc}{chapter}{\textcolor{maincolor}{Verklarende woordenlijst}}
 
 
 
