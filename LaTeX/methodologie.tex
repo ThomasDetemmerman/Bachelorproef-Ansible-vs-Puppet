@@ -70,7 +70,7 @@ Tussen de master en de client bestaat er een vertrouwensrelatie die onderhouden 
 
 \begin{figure}  \begin{center}
   \includegraphics[width=250px]{img/aanvraagCatalogus.png}
- \end{center}\caption{aanvraag van een catalogus bij de Puppetmaster door een Puppetclient. De Puppetagent is een deamon (stukje software) die op de Puppetclient draait.}  
+ \end{center}\caption{Aanvraag van een catalogus bij de Puppetmaster door een Puppetclient. De Puppetagent is een deamon (stukje software) die op de Puppetclient draait.}  
   \label{fig:aanvraagCatalogus}
 \end{figure}
 
@@ -178,7 +178,7 @@ Op afbeelding \ref{fig:deploytime_fullconfig} is geen eenduidig verschil aan te 
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{img/deploytime_fullconfig.png} 
-	\caption{Tijd tot het bekomen van een consistente staat, vertrekkende van een lege' server.}  
+	\caption{Tijd tot het bekomen van een consistente staat, vertrekkende van een ‘lege' server.}  
 	\label{fig:deploytime_fullconfig}
 \end{figure}
 
@@ -309,7 +309,7 @@ Een \gls{CMT} kan hier een oplossing bieden.  Aangezien een goed geconfigureerde
 
 Normaal komen veiligheidsproblemen pas heel laat aan het licht en meestal zelfs pas als het al te laat is. Dankzij een \gls{CMT} kan dit in belangrijke mate gereduceerd worden. Belangrijk hierbij is dat de rapporten die de \gls{CMT} genereert op regelmatige basis gecontroleerd worden.  Wanneer een belangrijke configuratie om een verkeerde mannier aangepast is geweest, moet misschien de oorzaak van deze wijziging onderzocht worden om dit in de toekomst te kunnen voorkomen.
 
-Een goede beveiliging van de Puppetmaster of Ansible Tower is van het allergrootst belang. Dit omdat deze server toegang heeft tot verschillende andere servers. Wanneer een ‘gewone' server in verkeerde handen valt, kan dit vanzelfsprekend tot verregaande gevolgen leiden maar de impact op andere servers blijft beperkt. Wanneer dit echter de Ansible- of Puppetmaster betreft, is de impact veel groter. Deze master heeft niet enkel toegang tot vele andere servers maar doorgaans ook verregaande rechten om de nodige zaken te kunnen configureren.
+Een goede beveiliging van de Puppetmaster of Ansible Tower is van het allergrootst belang. Dit omdat deze server toegang heeft tot verschillende andere servers. Wanneer een ‘gewone' server in verkeerde handen valt, kan dit vanzelfsprekend tot verregaande gevolgen leiden maar de impact op andere servers blijft beperkt. Wanneer dit echter de Ansible- of Puppetmaster betreft, is de impact veel groter. Deze master heeft niet enkel toegang tot vele andere servers maar doorgaans ook belangrijke rechten om de nodige zaken te kunnen configureren.
 
 Bij grotere bedrijven worden Ansible rollen en Puppet modules doorgaans bewaard op daarvoor bestemde servers bedoeld voor source control. Ook voor deze server in het van belang dat personen enkel toegang krijgen tot specifieke rollen en modules. Zo moet de databankbeheerder enkel toegang krijgen tot code die zijn databanken configureren terwijl dat voor andere personen weer andere rollen en modules zullen zijn. Het is dus van belang dat de correcte rechten worden toegepast op deze source control servers.
 
@@ -340,7 +340,7 @@ Veronderstel een situatie zoals in figuur \ref{fig:vicieuzecirkel}. In Ansible s
 \item  Eventjes later stelt Ansible vast dat de configuratie niet meer overeenkomt met deze beschreven in het playbook. Hij wijzigt foo1 naar foo2 en herstart de service zodat aanpassingen doorgevoerd zouden worden.
 \item  Op een later ogenblik zal Puppet dit waarnemen en het bestand terugdraaien naar foo1, opnieuw gevolgd door een gestart van de gerelateerde service.
 \end{enumerate}
-Het is vanzelfsprekend dat dit voor onnodige aanpassingen zorgt met eventueel ongewenste of onverwachte gevolgen, zoals het voortdurend herstarten van een service.
+Het is vanzelfsprekend dat dit voor onnodige aanpassingen zorgt met eventueel ongewenste of onverwachte gevolgen zoals het voortdurend herstarten van een service.
 
 In de testopstelling is gekeken geweest naar het gedrag van beide \gls{CMT}'s wanneer deze op hetzelfde moment dezelfde server trachten te configureren. Dit veroorzaakte geen problemen.
 Het enigste wat dit als nadelig gevolg kan hebben, is dat de configuratie langer duurt dan normaal. Wanneer \gls{CMT} A een lock heeft op de \gls{packagemanager}, dan zal \gls{CMT} B moeten wachten tot deze vrij komt. 
