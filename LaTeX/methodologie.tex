@@ -18,11 +18,19 @@ Puppet is een CMT met vele mogelijkheden maar heeft als nadeel zijn complexe lee
 
 Door het gebrek aan een goed ingebouwde monitoringstool kost het veel werk om te controleren welke servers correct geconfigureerd zijn. Idealiter zou er  `s ochtends gekeken worden welke servers groen en rood kleuren. Voorlopig gebeurt dit via de command line interface.  
 
-Verder maakt de \gls{VRT}, zoals vele bedrijven, gebruik van meerdere omgevingen. Zo bestaat er van veel servers een versie in development, staging en productie. Op die manier kunnen nieuwe configuraties eerst in de development omgeving uitgetest worden alvorens deze in productie te brengen. Puppet was op de \gls{VRT} niet geoptimaliseerd om het verschil te kennen tussen deze omgevingen. Dit heeft tot gevolg dat Puppet nieuwe configuraties pusht naar elke server, ongeacht of deze productie-kritisch is of niet. Dit is vanzelfsprekend niet de bedoeling en om dit te voorkomen, wordt er momenteel handmatig bepaald welke servers mogen updaten en niet. 
+Verder maakt de \gls{VRT}, zoals vele bedrijven, gebruik van meerdere omgevingen. Zo bestaat er van veel servers een versie in development, staging en productie zoals ook te zien is op afbeelding \ref{fig:multistage}. Op die manier kunnen nieuwe configuraties eerst in de development omgeving uitgetest worden alvorens deze in productie te brengen. Puppet was op de \gls{VRT} niet geoptimaliseerd om het verschil te kennen tussen deze omgevingen. Dit heeft tot gevolg dat Puppet nieuwe configuraties pusht naar elke server, ongeacht of deze productie-kritisch is of niet. Dit is vanzelfsprekend niet de bedoeling en om dit te voorkomen, wordt er momenteel handmatig bepaald welke servers mogen updaten en niet. 
  
 Puppet biedt voor veel van deze problemen een oplossing (denk maar aan Puppet dashboard). Doch, mochten veel van deze oplossingen ge\"integreerd worden, dan zou dit leiden tot een  nieuwe refactor van de infrastructuur. Dit, terwijl een refactor in het verleden al tot twee maal toe gebeurd is. Daarom is er besloten om over te schakelen naar Ansible om een zo groot mogelijk draagvlak te cre\"eren. Hoe meer mensen in staat zijn om met Ansible te werken; hoe beter deze \gls{CMT} ge\"integreerd en gebruikt zal worden. Iets wat bij Puppet niet mogelijk is vanwege de complexiteit.
 
 Ansible biedt met Ansible Tower een ge\"integreerde monitoringstool. Bovendien wordt deze \gls{CMT} door velen geprezen vanwege zijn eenvoud in syntax. Ook de opstelling van de infrastructuur is eenvoudiger. Zo heeft Ansible geen agent nodig om servers te configureren wat een enorm voordeel biedt. Er kan dus zonder iets te moeten installeren onmiddellijk overgegaan worden tot het configureren van clients. Ansible Tower kan met vele externe technologie\"en overweg wat de mogelijkheden tot continuous deployment vereenvoudigt. Zo is bijvoorbeeld git ingebouwd wat zorgt voor een eenvoudig beheer van de source code.
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{img/multistage.png} 
+	\caption{Ontwikkelingsproces van software.}  
+	  \label{fig:multistage}
+\end{figure}
+
+
 
 %TO DO - hoe eenvoudig ansible is om te leren
 %- slechte monitoring
@@ -39,7 +47,9 @@ Ansible biedt met Ansible Tower een ge\"integreerde monitoringstool. Bovendien w
 
 \subsection{Overzicht van Puppet en Ansible}
 
-
+In onderstaande tabel kunnen de belangrijkste technische eigenschappen teruggevonden worden. Zo zijn zowel Puppet als Ansible declaratief wat inhoud dat de eindtoestand beschreven wordt en niet hoe deze bereikt moet worden. Een voorbeeld van een declaratief zin is: "Het bestand `foo' moet aanwezig zijn". Merk op dat deze zin niet beschrijft hoe dat bestand aangemaakt moet worden. \newline
+Ansible wordt geschreven in YAML wat een eenvoudig leesbare syntax. Ansible zal deze gegevens vertalen naar een uitvoerbaar script dat geschreven is in Python. Puppet is ontwikkeld in Ruby en maakt gebruik van zijn eigen \gls{dsl}. \newline
+Verder ligt de verantwoordelijkheid voor het aanvragen van configuraties bij Puppet bij de clients zelf. Dit wordt het Pull-model genoemd. Je `trekt' als het ware de laatste configuratie los van de master. Hiervoor moet op de master in staat zijn om HTTPS-berichten op poort 8140 te ontvangen. Bij Ansible ligt deze verantwoordelijkheid bij de master zelf en daarom werkt deze volgens het Push-model. De master `duwt' configuraties naar de clients. Dit gebeurt bij Ansible bovendien via SSH naar de standaard poort 22.
 
 \begin{minipage}{15cm}
 \begin{tabular}{ r |c c }
@@ -77,12 +87,21 @@ Tussen de master en de client bestaat er een vertrouwensrelatie die onderhouden 
 
 \subsection{Werking van Ansible}
 
-In tegenstelling tot Puppet maakt Ansible geen gebruik van zogenaamde agents. Dit betekent dat de Ansibleserver enkel de naam en het wachtwoord dient te kennen van de servers die hij moet configureren. Het authenticeren kan op verschillende manieren. Er wordt aangeraden om gebruik te maken van een SSH-key, wat het eenvoudigst is, maar ook andere middelen zoals een eenvoudig wachtwoord of het Kerberos-protocol worden ondersteund. De gewenste configuraties worden geschreven in playbooks met bijhorende Ansiblerollen. Eens een verbinding tot stand is gebracht, wordt het gecompileerde playbook naar de te configureren server gestruurd. Deze worden vervolgens op de clients uitgevoerd  en weer verwijderd. Ook Ansible bezit de functionaliteit om na te gaan of de huidige configuratie in lijn is met de ontvangen modules. Om servers te configureren met Ansible bestaan er bovendien twee manieren. Ansible playbooks kunnen in principe verstuurd worden naar de servers vanaf elke computer. Voor een grotere hoeveelheid servers is dit echter moeilijk onderhoudbaar en onoverzichtelijk. Hiervoor bestaat er de commerci\"ele versie waarbij de playbooks verstuurd worden vanaf een centraal punt. Dit centraal punt wordt Ansible Tower genoemd; die heeft een inventaris van alle servers en playbooks die onder zijn verantwoordelijkheid vallen. Verschillende gebruikers kunnen vervolgens verschillende toegangsrechten krijgen zodat personen enkel servers kunnen configureren die onder hun bevoegdheid vallen \autocite{ansibledoc}.
+In tegenstelling tot Puppet maakt Ansible geen gebruik van zogenaamde agents. Dit betekent dat de Ansibleserver enkel de naam en het wachtwoord dient te kennen van de servers die hij moet configureren. Het authenticeren kan op verschillende manieren. Er wordt aangeraden om gebruik te maken van een SSH-key, wat het eenvoudigst is, maar ook andere middelen zoals een eenvoudig wachtwoord of het Kerberos-protocol worden ondersteund. \newline
+De gewenste configuraties worden geschreven in playbooks met bijhorende Ansiblerollen. Eens een verbinding tot stand is gebracht, wordt het gecompileerde playbook naar de te configureren server gestruurd. Deze worden vervolgens op de clients uitgevoerd  en weer verwijderd. Ook Ansible bezit de functionaliteit om na te gaan of de huidige configuratie in lijn is met de ontvangen modules. \newline
+Om servers te configureren met Ansible bestaan er bovendien twee manieren. Ansible playbooks kunnen in principe verstuurd worden naar de servers vanaf elke computer. Voor een grotere hoeveelheid servers is dit echter moeilijk onderhoudbaar en onoverzichtelijk. Hiervoor bestaat er de commerci\"ele versie waarbij de playbooks verstuurd worden vanaf een centraal punt. Dit centraal punt wordt Ansible Tower genoemd; die heeft een inventaris van alle servers en playbooks die onder zijn verantwoordelijkheid vallen. Verschillende gebruikers kunnen vervolgens verschillende toegangsrechten krijgen zodat personen enkel servers kunnen configureren die onder hun bevoegdheid vallen \autocite{ansibledoc}.
 
-%------------------------------------
+
+
 
 \section{Technische analyse van Ansible en Puppet}
 \label{sec:technischeanalyse}
+
+Het luik technische analyse kan opgedeelt worden in een inleiding gevolgd door drie essenti\"ele onderdelen. De inleiding bespreekt de opstelling van de testomgeving zodat deze eenvoudig na te bouwen is voor derden. \newline
+Hierna komt de eerste categorie aan bod die de belasting van het netwerk bespreekt  en hoe beide \gls{CMT}'s zich gedragen op het netwerk. \newline
+Vervolgens komt de tweede categorie ter sprake betreffende de tijd dat het kost tot het bekomen van een consistente toestand. Dit wordt getest voor de volgende drie situaties: een lege server, een gedeeltelijk geconfigureerde server en een volledig geconfigureerde server.\newline
+In laatste instantie wordt het geheugengebruik behandeld waarbij gekeken wordt welke \gls{CMT} het meeste werkgeheugen gebruikt en waarom.
+
 \subsection{Opstelling van de testomgeving}
 \label{sec:opstellingtestevn}
 \subsubsection{Architectuur van de opstelling}
@@ -105,7 +124,7 @@ Deze opstelling is gerealiseerd door gebruik te maken van \textcite{whatisvagran
 
 \fbox{\begin{minipage}{15em}
 \textbf{Technische specificaties clients}\newline
-Basebox: bertvv/centos72\newline
+Basebox: centos/7 \newline
 Aantal CPU's: 1\newline
 Geheugen: 500 MB
 \end{minipage}}
@@ -182,18 +201,21 @@ Op afbeelding \ref{fig:deploytime_fullconfig} is geen \'e\'enduidig verschil aan
 	\label{fig:deploytime_fullconfig}
 \end{figure}
 
-Hierbij blijkt dat Z buiten het kritisch gebied valt waardoor de nulhypotese verworpen kan worden. Bijgevolg wordt aangenomen dat beide gemiddelden niet tot dezelfde verzameling behoren. Er kan dus worden geconcludeerd dat wanneer er wordt vertrokken van een lege server, Ansible er gemiddeld langer over doet dan Puppet. Dit is in dit geval een verschil van gemiddeld 11,3 seconden. 
+Hierbij blijkt dat Z buiten het kritisch gebied valt waardoor de nulhypotese verworpen kan worden. Er kan dus worden geconcludeerd dat wanneer er wordt vertrokken van een lege server, Ansible er gemiddeld langer over doet dan Puppet. Dit is in dit geval een verschil van gemiddeld 11,3 seconden. 
 
 De verschillen worden echter nog groter wanneer de test gedaan wordt met een gedeeltelijke configuratie. Hiermee wordt bedoeld dat er vertrokken is van servers die reeds geconfigureerd zijn en er slechts enkele aanpassingen doorgevoerd moeten worden. Deze aanpassingen zijn een service starten en de inhoud van de webpagina veranderen. De resultaten lopen niet door elkaar waardoor een Z-toets niet echt nodig is. Ansible deed gemiddeld 19,10 seconden voor de \gls{deploy} met een vrij grote variatie van 33,40 seconden. Puppet haalde maar een vrij consistente 3,10 seconden met een variatie van 0,35.
 
 In laatste instantie is er gekeken naar de tijd die het zou kosten tot de \gls{CMT} vaststelt dat de server reeds volledig geconfigureerd is en dat er geen aanpassingen meer nodig zijn. Hierbij resulteert Ansible op een gemiddelde van 18 seconden met opnieuw een vrij grote variatie van 18,25 seconden. Ook hier doet Puppet het opnieuw beter aangezien deze minder dan een seconde nodig heeft om vast te stellen dat er geen aanpassingen nodig zijn. Uiteraard zijn al deze waarden afhankelijk van de configuratie maar ze geven wel een duidelijke indicatie van de verschillen tussen beide \gls{CMT}'s.
 
+Ansible heeft vrij inconsistente deploytijden. Vermoedelijk is dit te wijten aan het netwerk tussen de master en de client. Ansible moet voor elk \gls{werkpakket} een nieuwe verbinding opzetten. Puppet hiertegen verstuurd alle bestanden op hetzelfde moment en vervolgens kan de client alle nodige informatie van zijn eigen harde schijf lezen, ongeacht een al dan niet betrouwbare verbinding tussen de master en de client. Het inlezen van bestanden op een harde schrijf is namelijk nog steeds betrouwbaarder dan communiceren over het netwerk.
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{img/overzichtgemiddeldeconfigtijd.png} 
 	\caption{Gemiddelde configuratietijd in seconden.}  
 
 \end{figure}
+
+
 
 \textbf{Opmerking:} De \gls{connectietijd} is niet meegerekend in deze metingen. Het omvat hier uitsluitend de \gls{configuratietijd}.
 
@@ -208,7 +230,7 @@ De reden dat Ansible trager is dan Puppet is te wijten aan de manier van communi
 \underline{Verwachting A}: nadat de verbinding verbroken is, wordt geen nieuw taak gestart.\newline
 \underline{Verwachting P}: de configuratie gaat zonder problemen verder.
 
-\underline{Resultaat A}: de configuratie valt stil. Opmerkelijk hierbij is dat niettemin de configuratie stilvalt, deze niet stopt. De master heeft namelijk niet door dat de verbinding verbroken is en veronderstelt dat de client eenvoudigweg nog bezig is met configureren. Als later de verbinding hersteld wordt, gaat de configuratie opnieuw verder.\newline
+\underline{Resultaat A}: de configuratie valt stil. Opmerkelijk hierbij is dat niettemin de configuratie stilvalt, deze niet stopt. De master heeft namelijk niet door dat de verbinding verbroken is en veronderstelt dat de client eenvoudigweg nog bezig is met configureren. Als later de verbinding hersteld wordt, gaat de configuratie opnieuw verder. Met andere woorden, als de connectie onderbroken wordt zal het huidige \gls{werkpakket} voltooid worden maar er wordt geen nieuwe  meer gestart. Wanneer de verbinding hersteld is gaat de configuratie verder waar deze zojuist ge\"eindigd was en wordt de eindtoestand alsnog bereikt. \newline
 \underline{Resultaat P}: de configuratie gaat ongestoord verder.
 \end{addmargin}
 
@@ -262,7 +284,7 @@ Puppet heeft buiten de kortere doorlooptijd ook nog het principe van pull-mode d
  
  Standaard is Ansible geconfigureerd om 5 servers tegelijk te kunnen configureren. Dit aantal kan toenemen door de parameter \texttt{\gls{fork}s} te verhogen naar 100 of zelfs meer. Dit zal inhouden dat Ansible 100 servers op hetzelfde moment kan configureren. Om dit te realiseren is Ansible afhankelijk van het werkgeheugen. Hoe meer werkgeheugen er beschikbaar is, hoe hoger de parameter \texttt{\gls{fork}s} ge\"initialiseerd kunnen worden.
  
-Ansible adviseert verder ook om gebruik te maken van \texttt{with\_items} bij het installeren van meerdere packages. Door het gebruik van \texttt{with\_items} zal Ansible deze packages combineren in \'e\'en transactieblok wat de performantie ten goede komt. Zo zou het dus beter zijn om listing \ref{lst:yamltwotask} te structureren zoals listing \ref{lst:yamlonetask}. 
+Ansible adviseert verder ook om gebruik te maken van \texttt{with\_items} bij het installeren van meerdere packages. Door het gebruik van \texttt{with\_items} zal Ansible deze packages combineren in \'e\'en transactieblok wat de performantie ten goede komt. Zo zal listing \ref{lst:yamltwotask} twee \gls{werkpakket}ten versturen terwijl dit eenvoudig tot \'e\'en \gls{werkpakket}  had beperkt kunnen blijven door deze te structuren zoals listing \ref{lst:yamlonetask}.
 
 
    \lstset{language=clean,caption={Installeer de vereiste onderdelen van PHP in twee delen},label={lst:yamltwotask}}
@@ -273,7 +295,7 @@ Ansible adviseert verder ook om gebruik te maken van \texttt{with\_items} bij he
     name: php
     state: present
 
-- name: installeer php-mysql
+- name: installeer php-mysqli
   package:
     name: php-mysqli
     state: present
@@ -321,6 +343,9 @@ Of Ansible veiliger is dan Puppet is moeilijk te bewijzen. Er zijn wel enkele aa
 
  %---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \section{Wat is het verloop van een transitperiode?}
+
+In deze sectie wordt beschreven hoe de VRT deze transitperiode ervaren heeft. Allereerst wordt beschreven hoe een geleidelijke overgang perfect mogelijk is maar op welke punten gelet moet worden. Vervolgens wordt beschreven hoe de VRT ansible ge\"integreerd heeft in zijn bestaande Puppet omgeving.
+
 \label{sec:methodologie-verloop-transit}
 \subsection{Een geleidelijke overgang}
 
@@ -347,12 +372,12 @@ Het is vanzelfsprekend dat dit voor onnodige aanpassingen zorgt met eventueel on
 In de testopstelling is gekeken geweest naar het gedrag van beide \gls{CMT}'s wanneer deze op hetzelfde moment dezelfde server trachten te configureren. Dit veroorzaakte geen problemen.
 Het enigste wat dit als nadelig gevolg kan hebben, is dat de configuratie langer duurt dan normaal. Wanneer \gls{CMT} A een lock heeft op de \gls{packagemanager}, dan zal \gls{CMT} B moeten wachten tot deze vrij komt. 
 
-\subsection{Implementatie van Ansible}
-In eerste instantie moet Ansible beschikken over een overzicht van alle servers. In de omgeving van de \gls{VRT} maakt Puppet gebruik van \gls{LDAP}. Hieruit kan hij de nodige variabelen ophalen. Vervolgens configureert Puppet de servers met deze waarden. Ideaal is dat de nieuwe Ansible integratie zo analoog mogelijk is aan de huidige manier van werken. Om de waarden op te kunnen halen uit \gls{LDAP} voorziet Ansible Tower geen standaard functionaliteit. Dit wordt opgevangen door gebruik te maken van een script. Hierbij dient Ansible twee methodes op te roepen. Een eerste voor het populeren van groepen en hosts en een tweede voor het toevoegen van variabelen voor elk van deze hosts. Ansible Tower verwacht dat deze methodes JSON retourneren. Op deze wijze kan Ansible dynamisch een inventaris maken van alle servers die onder zijn verantwoordelijkheid vallen.
+%\subsection{Implementatie van Ansible}
+%In eerste instantie moet Ansible beschikken over een overzicht van alle servers. In de omgeving van de \gls{VRT} maakt Puppet gebruik van \gls{LDAP}. Hieruit kan hij de nodige variabelen ophalen. Vervolgens configureert Puppet de servers met deze waarden. Ideaal is dat de nieuwe Ansible integratie zo analoog mogelijk is aan de huidige manier van werken. Om de waarden op te kunnen halen uit \gls{LDAP} voorziet Ansible Tower geen standaard functionaliteit. Dit wordt opgevangen door gebruik te maken van een script. Hierbij dient Ansible twee methodes op te roepen. Een eerste voor het populeren van groepen en hosts en een tweede voor het toevoegen van variabelen voor elk van deze hosts. Ansible Tower verwacht dat deze methodes JSON retourneren. Op deze wijze kan Ansible dynamisch een inventaris maken van alle servers die onder zijn verantwoordelijkheid vallen.
 
-In tweede instantie moet Ansible de juiste playbooks op kunnen halen. Hiervoor dient de source control server correct ingesteld te staan. Niet alleen op gebied van rechten zoals aangehaald in sectie \ref{sec:veiligheid}, maar ook op gebied van configuratie. Aangezien servers in productie niet dezelfde configuratie mogen hebben als servers in staging moet een duidelijk onderscheid gemaakt worden. Dit kan verwezenlijkt worden door gebruik te maken van \gls{Git-branch}ing. Vervolgens wordt elke branch gekoppeld met de corresponderende groep servers uit de inventaris die worden gegenereerd zoals beschreven in voorgaande alinea. Om hierbij aan een goed versiebeheer te kunnen doen, wordt elke Ansible rol in \gls{Git} toegevoegd als een \gls{submodule}. Elke commit gaat gepaard met een versienummer. Dit stelt de gebruikers in staat om eenvoudig een roll-back te doen in het geval dat bepaalde updates zouden mislukken.
+%In tweede instantie moet Ansible de juiste playbooks op kunnen halen. Hiervoor dient de source control server correct ingesteld te staan. Niet alleen op gebied van rechten zoals aangehaald in sectie \ref{sec:veiligheid}, maar ook op gebied van configuratie. Aangezien servers in productie niet dezelfde configuratie mogen hebben als servers in staging moet een duidelijk onderscheid gemaakt worden. Dit kan verwezenlijkt worden door gebruik te maken van \gls{Git-branch}ing. Vervolgens wordt elke branch gekoppeld met de corresponderende groep servers uit de inventaris die worden gegenereerd zoals beschreven in voorgaande alinea. Om hierbij aan een goed versiebeheer te kunnen doen, wordt elke Ansible rol in \gls{Git} toegevoegd als een \gls{submodule}. Elke commit gaat gepaard met een versienummer. Dit stelt de gebruikers in staat om eenvoudig een roll-back te doen in het geval dat bepaalde updates zouden mislukken.
 
-Eens de inventories aangemaakt worden en de source code opgehaald is geweest is het de taak van  Ansible Tower om deze twee te combineren en uit te voeren op de servers. Hiervoor dient hij uiteraard toegang te krijgen tot de desbetreffende servers.
+%Eens de inventories aangemaakt worden en de source code opgehaald is geweest is het de taak van  Ansible Tower om deze twee te combineren en uit te voeren op de servers. Hiervoor dient hij uiteraard toegang te krijgen tot de desbetreffende servers.
 
 %\subsection{Doel van Ansible Tower}
 %Overschakelen naar Ansible Tower houdt automatisch in dat er wordt overgeschakeld naar de commerci\"ele versie van Ansible. Indien er getwijfeld wordt of Ansible Tower een meerwaarde biedt aan de infrastructuur wordt er best rekening gehouden met de volgende zaken. Ansible Tower biedt pas een meerwaarde in grotere omgevingen. 
