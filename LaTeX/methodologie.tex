@@ -20,7 +20,7 @@ Door het gebrek aan een goed ingebouwde monitoringstool kost het veel werk om te
 
 Verder maakt de \gls{VRT}, zoals vele bedrijven, gebruik van meerdere omgevingen. Zo bestaat er van veel servers een versie in development, staging en productie zoals ook te zien is op afbeelding \ref{fig:multistage}. Op die manier kunnen nieuwe configuraties eerst in de development omgeving uitgetest worden alvorens deze in productie te brengen. Puppet was op de \gls{VRT} niet geoptimaliseerd om het verschil te kennen tussen deze omgevingen. Dit had tot gevolg dat Puppet nieuwe configuraties pushte naar elke server, ongeacht of deze productie-kritisch was of niet. Dit was vanzelfsprekend niet de bedoeling en om het te voorkomen, wordt er momenteel handmatig bepaald welke servers mogen updaten en niet. 
  
-Puppet biedt voor veel van deze problemen een oplossing (denk maar aan Puppet dashboard). Doch, mochten veel van deze oplossingen ge\"integreerd worden, dan zou dit leiden tot een  nieuwe refactor van de infrastructuur. Dit, terwijl een refactor in het verleden al tot twee maal toe gebeurd is. Er werd besloten om over te schakelen naar Ansible om een zo groot mogelijk draagvlak te cre\"eren: hoe meer mensen in staat zijn om met Ansible te werken, hoe beter deze \gls{CMT} ge\"integreerd en gebruikt zal worden. Iets wat bij Puppet niet mogelijk is vanwege de complexiteit.
+Puppet biedt voor veel problemen een oplossing (denk maar aan Puppet dashboard). Doch, mochten veel van deze oplossingen ge\"integreerd worden, dan zou dit leiden tot een  nieuwe refactor van de infrastructuur. Dit, terwijl een refactor in het verleden al tot twee maal toe gebeurd is. Er werd besloten om over te schakelen naar Ansible om een zo groot mogelijk draagvlak te cre\"eren: hoe meer mensen in staat zijn om met Ansible te werken, hoe beter deze \gls{CMT} ge\"integreerd en gebruikt zal worden. Iets wat bij Puppet niet mogelijk is vanwege de complexiteit.
 
 Ansible biedt met Ansible Tower een ge\"integreerde monitoringstool. Bovendien wordt deze \gls{CMT} door velen geprezen vanwege zijn eenvoud in syntax. Ook de opstelling van de infrastructuur is eenvoudiger. Zo heeft Ansible geen agent nodig om servers te configureren wat een enorm voordeel biedt. Er kan dus zonder iets te moeten installeren onmiddellijk overgegaan worden tot het configureren van clients. Ansible Tower kan met vele externe technologie\"en overweg wat de mogelijkheden tot continuous deployment vereenvoudigt. Zo is bijvoorbeeld git ingebouwd wat zorgt voor een eenvoudig beheer van de source code.
 
@@ -103,10 +103,8 @@ Om servers te configureren met Ansible bestaan er bovendien twee manieren. Ansib
 \section{Technische analyse van Ansible en Puppet}
 \label{sec:technischeanalyse}
 
-Het luik technische analyse kan opgedeelt worden in een inleiding gevolgd door drie essenti\"ele onderdelen. De inleiding bespreekt de opstelling van de testomgeving zodat deze eenvoudig na te bouwen is voor derden. \newline
-Hierna komt de eerste categorie aan bod die de belasting van het netwerk bespreekt  en hoe beide \gls{CMT}'s zich gedragen op het netwerk. \newline
-Vervolgens komt de tweede categorie ter sprake betreffende de tijd dat het kost tot het bekomen van een consistente toestand. Dit wordt getest voor de volgende drie situaties: een lege server, een gedeeltelijk geconfigureerde server en een volledig geconfigureerde server.\newline
-In laatste instantie wordt het geheugengebruik behandeld waarbij gekeken wordt welke \gls{CMT} het meeste werkgeheugen gebruikt en waarom.
+Het luik technische analyse kan opgedeeld worden in een inleiding gevolgd door drie essenti\"ele onderdelen. De inleiding bespreekt de opstelling van de testomgeving zodat deze eenvoudig na te bouwen is voor derden. Hierna komt de eerste categorie aan bod die de belasting van het netwerk bespreekt  en ook hoe beide \gls{CMT}'s zich gedragen op het netwerk. Vervolgens komt de tweede categorie ter sprake betreffende de tijd die het kost tot het bekomen van een consistente toestand. Dit wordt getest voor de volgende drie situaties: een lege server, een gedeeltelijk geconfigureerde server en een volledig geconfigureerde server. In laatste instantie wordt het geheugengebruik behandeld waarbij gekeken wordt welke \gls{CMT} het meeste werkgeheugen gebruikt en waarom.
+
 
 \subsection{Opstelling van de testomgeving}
 \label{sec:opstellingtestevn}
@@ -159,6 +157,17 @@ Deze configuraties kunnen teruggevonden worden op Github op de volgende links\fo
 \subsection{Belasting van het netwerk}
 Ansible en Puppet hebben een groot verschil in de manier van communiceren en dit weerspiegelt zich in het gedrag van de \gls{CMT}. De grafieken op afbeeldingen \ref{fig:deploytypes} en \ref{fig:netwerkverbruik} weerspiegelen uitsluitend het dataverkeer tussen de server (Ansible Tower of Puppetmaster) en de desbetreffende client. Andere data zoals bijvoorbeeld het downloaden van services of uploaden van logbestanden naar de monitoringstool zijn hierin \underline{niet} opgenomen. Dit wordt verwezenlijkt door gebruik te maken van verschillende netwerkkaarten. Wanneer er geen deploy gebeurt, is de kilobyte/ minuut op deze netwerkkaart gelijk aan nul; een bewijs dat hier geen andere data dan deze van de \gls{CMT} over wordt verstuurd.  
 	
+\begin{figure}[hbt!]
+	\includegraphics[width=430px]{img/deploytypes.png}
+	\caption{Twee manieren van communiceren. Aantal kilobytes per tijdseenheid op een netwerkkaart die uitsluitend bedoeld is voor communicatie met Ansible Tower / Puppetmaster. }  
+	\label{fig:deploytypes}
+\end{figure}
+\begin{figure}[hbpt!]
+	\includegraphics[width=\linewidth]{img/netwerkverbruik.png}
+	\caption{Totaal verbruikte netwerkcapaciteit per client gedurende het deployen. Dit bevat enkel communicatie tussen master en client.}  
+	\label{fig:netwerkverbruik}
+\end{figure}
+
 De manier van communicatie is te herkennen in de grafieken. Zo onderhoudt Ansible de communicatie met de client gedurende de \gls{deploy}. Hiermee wordt bedoeld dat Ansible op de hoogte is van de laatste stand van zaken op de client. Wanneer een bepaalde taak voltooid is, wordt Ansibel Tower hier onmiddellijk van op de hoogte gebracht. Zoals te zien is op grafiek \ref{fig:deploytypes} is er geregeld communicatie tussen beide servers. Weliswaar is er enkel communicatie wanneer iets voltooid is; er is dus geen onnodige communicatie. Zo is ook te zien hoe op T5 de communicatie nul is. Ansible had voor die periode niets te melden\footnote{Hier betreft het de service MariaDB die wordt gedownload.}. 
 
 Deze manier van werken is handig tijdens het testen van nieuwe Ansible rollen. Je krijgt namelijk live feedback tijdens het uittesten. Een nadeel is wel dat het netwerk geen rust krijgt. Bovendien wordt deze functionaliteit van ‘live feedback' enkel gebruikt voor testen. Eens een rol operationeel is, loopt deze doorgaans tijdens de nacht en is het voldoende om de dag daarna een algemeen overzicht te krijgen. 
@@ -171,17 +180,8 @@ Vervolgens is er ook gekeken naar de totale netwerkbelasting. Hiervoor is er per
 
 \textbf{We kunnen dus concluderen dat Ansible minder grote bestanden verstuurt over het netwerk door deze op te splitsen in meerdere kleine bestanden verspreid over de hele \gls{deploy}. Hierbij is wel een voortdurende verbinding vereist tussen beide servers.  Puppet aan de andere kant weet de communicatie te beperken tot twee reeksen. Op het einde van de rit heeft Puppet wel meer bestanden uitgewisseld dan Ansible. }
 
-\begin{figure}
-	\includegraphics[width=430px]{img/deploytypes.png}
-	\caption{Twee manieren van communiceren. Aantal kilobytes per tijdseenheid op een netwerkkaart die uitsluitend bedoeld is voor communicatie met Ansible Tower / Puppetmaster. }  
-	\label{fig:deploytypes}
-\end{figure}
 
-\begin{figure}
-	\includegraphics[width=\linewidth]{img/netwerkverbruik.png}
-	\caption{Totaal verbruikte netwerkcapaciteit per client gedurende het deployen. Dit bevat enkel communicatie tussen master en client.}  
-	\label{fig:netwerkverbruik}
-\end{figure}
+
 
 
 
