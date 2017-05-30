@@ -1,0 +1,9 @@
+- hosts: ansible
+  become: yes
+  tasks:
+    - name: test
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - httpd
