@@ -1,6 +1,9 @@
 # Bachelorproef-Ansible-vs-Puppet
 Technische voor-en nadelen van Puppet en Ansible. Verloop en redenen van een omschakeling
 
+#HoGent
+Permalink naar de bib van HoGent waar deze bachelorproef is gepubliceerd.  
+[https://catalogus.hogent.be/catalog/hog01:000709431](https://catalogus.hogent.be/catalog/hog01:000709431)
 # Bachelorproefvoorstel
 [./Bachelorproefvoorstel.pdf](./Bachelorproefvoorstel.pdf)
 
